@@ -22,6 +22,12 @@ create table public.platform_memberships (
   primary key (user_id, role)
 );
 
+-- Governance: only one active SuperAdmin/PLATFORM_OWNER can exist.
+-- Never provision or grant this role via client, seed or invitation.
+create unique index platform_one_active_owner
+  on public.platform_memberships (role)
+  where role = 'OWNER' and active;
+
 create table public.agencies (
   id uuid primary key default gen_random_uuid(),
   legal_name text not null check (length(btrim(legal_name)) between 1 and 240),

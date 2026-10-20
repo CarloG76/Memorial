@@ -4,6 +4,7 @@
 - `supabase/migrations/20261020190000_m1_identity_tenancy.sql` — candidato di schema, **non applicato sul DB Memorial**.
 - Sette tabelle: `profiles`, `platform_memberships`, `agencies`, `agency_members`, `memorials` minimale, `family_members`, `family_invites`.
 - RLS deny-by-default, SELECT sotto policy, nessun grant DML per anon/authenticated; hash inviti non esposti.
+- Vincolo database `platform_one_active_owner`: al massimo un ruolo OWNER di piattaforma attivo, in coerenza con la regola di un solo SuperAdmin. Nessun utente viene automaticamente assegnato a quel ruolo.
 - `src/lib/authz` — guard delle aree di lavoro basato su membership server-side e identità verificata.
 - `src/app/api/v1/me` — elenco delle aree consentite senza dettaglio tenant.
 

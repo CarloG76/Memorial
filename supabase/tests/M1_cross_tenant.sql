@@ -196,4 +196,16 @@ BEGIN
 END $test$;
 ROLLBACK;
 
+-- Test 10: never allow two active PLATFORM_OWNER / SuperAdmin accounts.
+-- The authenticated role has no DML rights; test the physical uniqueness as DB owner.
+DO $test$
+BEGIN
+  BEGIN
+    INSERT INTO public.platform_memberships(user_id,role,active)
+      VALUES ('00000000-0000-4000-8000-000000000003','OWNER',true);
+    RAISE EXCEPTION 'More than one active SuperAdmin was accepted';
+  EXCEPTION WHEN unique_violation THEN NULL;
+  END;
+END $test$;
+
 \echo 'M1 cross-tenant RLS assertions passed (disposable test database only)'
