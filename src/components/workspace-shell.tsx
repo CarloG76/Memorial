@@ -3,7 +3,7 @@ import { Brand } from "./brand";
 import { WORKSPACE_NAV, type WorkspaceArea } from "@/lib/navigation";
 
 const workspaceTitle: Record<WorkspaceArea, string> = {
-  piattaforma: "SuperAdmin",
+  piattaforma: "Piattaforma",
   agenzia: "Agenzia",
   famiglia: "Famiglia",
 };

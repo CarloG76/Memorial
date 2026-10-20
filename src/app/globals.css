@@ -118,3 +118,11 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+/* M1: factual, RLS-scoped dashboard panels. No mock or sensitive content. */
+.overview-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,270px),1fr)); gap: 18px; margin-top: 24px; }
+.workspace-panel.overview-card { margin-top: 0; }
+.overview-card h2 { font-size: 28px; font-weight: 400; margin: 10px 0 20px; }
+.overview-card p { margin-bottom: 9px; }
+.overview-card p strong { display: inline; color: var(--navy); }
+.overview-number { font: 400 52px/1.2 Georgia,serif; margin: 14px 0 !important; }
