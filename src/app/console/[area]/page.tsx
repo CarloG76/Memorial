@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { WorkspaceShell } from "@/components/workspace-shell";
-import { requireAuthenticatedIdentity } from "@/lib/auth";
+import { requireWorkspaceAccess } from "@/lib/authz/server";
 import { isWorkspaceArea } from "@/lib/navigation";
 
 export const dynamic = "force-dynamic";
@@ -12,23 +12,24 @@ export default async function WorkspacePage({
 }) {
   const { area } = await params;
   if (!isWorkspaceArea(area)) notFound();
-  await requireAuthenticatedIdentity();
+  await requireWorkspaceAccess(area);
 
-  // Important: the user is authenticated, but not yet role-authorized.
-  // M0 deliberately renders no tenant data or privileged controls.
+  // M1 verifies workspace membership. It still renders NO cross-tenant data,
+  // payments, personal contacts, private messages or privileged mutations.
   return (
     <WorkspaceShell area={area}>
-      <span className="workspace-label">Fondamenta applicative · M0</span>
-      <h1>Ambiente in preparazione</h1>
+      <span className="workspace-label">Milestone M1 · accesso verificato</span>
+      <h1>Il tuo ambiente Memorial</h1>
       <p className="muted">
-        L&apos;identità è stata verificata. L&apos;abilitazione ai dati e alle funzioni richiederà i controlli
-        di ruolo, appartenenza e Row Level Security della milestone M1.
+        Il tuo account dispone di un&apos;abilitazione attiva per questo ambiente.
+        Le operazioni sui contenuti saranno disponibili solo dopo i controlli
+        specifici per agenzia, memoriale, ruolo e stato della risorsa.
       </p>
       <section className="workspace-panel" aria-label="Stato della console">
-        <strong>Nessun dato riservato esposto</strong>
+        <strong>Accesso limitato e tracciabile</strong>
         <p>
-          In questa versione i menu sono riferimenti di navigazione non interattivi.
-          Non sono ancora disponibili operazioni sui memoriali, pagamenti o dati delle famiglie.
+          Questa schermata non mostra dati operativi. Per ora non sono disponibili
+          acquisti, pubblicazione, gestione privata o accessi trasversali ai tenant.
         </p>
       </section>
     </WorkspaceShell>

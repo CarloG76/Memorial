@@ -13,8 +13,8 @@ export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) return response;
-  // No user-controlled post-login redirect: prevent open redirects.
-  const destination = NextResponse.redirect(new URL("/console/agenzia", request.url));
+  // Never use caller-supplied next URLs: prevent redirect injection.
+  const destination = NextResponse.redirect(new URL("/console", request.url));
   destination.headers.set("Cache-Control", "no-store");
   return destination;
 }
