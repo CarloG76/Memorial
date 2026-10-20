@@ -1,5 +1,12 @@
 # Memorial — Changelog tecnico
 
+## 2026-10-21 — M1 database verificato e hardening RPC
+- Tre migrazioni M1 applicate in Supabase Memorial: `20261020220618`, `20261020220643`, `20261020220855` (timestamp UTC 20/10).
+- Nove tabelle con RLS attiva; nessun SELECT anon o INSERT/UPDATE diretto authenticated.
+- Funzione privilegiata spostata in schema `app_private` e wrapper pubblico `SECURITY INVOKER`; zero warning nel security advisor, due INFO intenzionali.
+- Allineati nomi dei file SQL GitHub alla tabella di migrazioni reale.
+- Registrazione ancora chiusa in assenza di documenti B2B; nessun account creato.
+
 ## 2026-10-20 — Hardening Supabase preesistente
 - Revocato EXECUTE a PUBLIC/anon/authenticated sulla funzione `public.rls_auto_enable()` con migrazione applicata `20261020215132_lock_down_rls_event_trigger_execute`.
 - Ricontrollato il progetto Supabase: avvisi security advisor da 2 a 0.

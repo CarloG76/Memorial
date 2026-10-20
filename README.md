@@ -28,7 +28,7 @@ pnpm test:e2e
 ## Stato operativo
 
 - M0: applicazione, design system, Auth SSR, CI ed endpoint health integrati in `main`.
-- M1: modelli identity/tenancy e guard membership integrati nel codice, ma **migrazione SQL candidata non applicata**; RLS non ancora collaudate su database reale. In assenza di schema il sistema nega l'accesso ai dati e alle console.
+- M1: modelli identity/tenancy e guard membership integrati nel codice, ma **schema SQL e RLS applicati, con account e registrazione ancora non attivi**; RLS non ancora collaudate su database reale. In assenza di schema il sistema nega l'accesso ai dati e alle console.
 - Nessuna funzione di pagamento live, contenuti familiari, demo permanente o pubblicazione di memoriali ancora attiva.
 - Il repository è pubblico: non inserirvi chiavi server-side, segreti o dati personali.
 - Le decisioni ufficiali in `01_DECISIONI.md` delle fonti di progetto prevalgono sulle specifiche subordinate e sull'SQL preliminare; le questioni aperte restano in `02_APERTI.md`.

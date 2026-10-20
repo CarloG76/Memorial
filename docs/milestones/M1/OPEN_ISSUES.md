@@ -1,9 +1,11 @@
-# M1 — Problemi residui
+# M1 — Problemi e gate ancora aperti
 
-1. Verificare l'esito del job SQL in GitHub Actions ed eseguire correzioni finché è verde.
-2. L'ambiente Supabase operativo non ha schema applicativo; nessuna migrazione verrà lanciata finché test e sicurezza non saranno rivisti.
-3. Manca test reale Auth/PostgREST con utenti test verificati; serve ambiente isolato o piano di test esplicito prima di operare con utenti reali.
-4. WF01 registrazione agenzia, WF04 invito/accettazione e provisioning SuperAdmin necessitano servizi server-side auditati, email e test autorizzativi.
-5. Consolidare audit logging, controlli MFA staff, attivazione/sospensione ruolo e limiti tenant/permission per azione.
-6. Le decisioni aperte e aspetti legali rimangono in `02_APERTI.md`; il codice CI non decide retention, export, limiti media o tariffe.
-7. Le Preview Vercel rimangono protette: fetch remoto 403 fino a permessi corretti.
+1. Eseguire e raccogliere **prova positiva** del job CI PostgreSQL `postgres-rls`; l'esito non è disponibile nel connettore che filtra le workflow run al contesto PR.
+2. Test RLS **con JWT Supabase realmente firmati**, due agenzie e famiglie diverse, in ambiente isolato: non ancora completato.
+3. SuperAdmin: account personale e MFA da creare/provisionare con autorizzazione dell'interessato; mai self-registration come platform OWNER.
+4. Documenti B2B e informativa privacy: mancanti; non attivare il gate di registrazione senza versioni approvate e URL pubblici validi.
+5. Auth callback, deliverability email, rate limiting e anti-abuso: test reali ancora mancanti.
+6. Recensionare la scelta SECURITY DEFINER nello schema privato con wrapper invoker, registrazione audit e limiti ad utenti verificati.
+7. Adeguare comportamento UI in caso di agenzia sospesa, revisionare contract/legal acceptance e contatti privacy.
+
+**Chiusi:** schema M1 applicato, policy RLS abilitate, permessi SQL anon e client verficati, RPC privilegiata isolata, migrazioni GitHub rinominate con ID remote effettivi.

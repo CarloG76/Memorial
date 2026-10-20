@@ -1,12 +1,9 @@
-# M1 — Identity & Tenancy
+# M1 — Identity, Tenancy e registrazione B2B
 
-**Origine storica:** PR [#2](https://github.com/CarloG76/Memorial/pull/2), consolidata su `main` con commit squash `afc3acc7` il 20 ottobre 2026. Da M2 vale lo sviluppo ordinario diretto su `main`.
+**Situazione al 21/10/2026:** schema M1 e WF01 applicati nel progetto Supabase Memorial. La registrazione resta disabilitata fino alla pubblicazione delle condizioni B2B e alla verifica email. Nessun utente o agenzia reale creato in questa attività.
 
-**Ambito codice:** modelli profili/membership, migrazione candidata con RLS fail-closed, accessi SSR alla console, endpoint `/api/v1/me`.
-**Stato:** CODICE IN `main` E CI VERIFICATA. **DB NON MIGRATO / RLS NON COLLAUDATE IN POSTGRES.**
+Tre migrazioni applicate oltre all'hardening RLS preesistente: `20261020220618`, `20261020220643`, `20261020220855`. L'ultima sposta la funzione privilegiata nello schema `app_private` e rende il wrapper pubblico `SECURITY INVOKER`.
 
-La migrazione candidata definisce profili, ruoli piattaforma, agenzie e membership, un memoriale UUID minimo, appartenenze famiglia e inviti con token hash. Non sono attivi pagamenti o dati privati.
+**Verificato live:** nove tabelle, tutte con RLS; anon privo di SELECT; authenticated privo di INSERT/UPDATE diretti; funzione RPC pubblica invoker e non eseguibile da anon. Due linter INFO su tabelle senza policy deliberate. **Da verificare:** test CI PostgreSQL, test fra due tenant con dati sintetici in staging e sessioni Supabase Auth reali.
 
-GitHub Actions [39475813862](https://github.com/CarloG76/Memorial/actions/runs/39475813862) superata sulla revisione pre-merge `a26f1da3`. Successivo deploy main da verificare separatamente.
-
-**Gate operativo:** test RLS cross-tenant su database isolato con due agenzie, famiglie owner/editor/viewer, anonimo e diversi ruoli piattaforma. Non applicare migrazioni al DB live prima del controllo completo, né attivare console dati in assenza delle policy. L'integrazione del solo codice non costituisce attestazione di sicurezza delle RLS.
+Dettagli: [registro](VERIFICATION.md), [WF01](WF01_IMPLEMENTATION.md), [sicurezza](SECURITY_REVIEW.md), [questioni aperte](OPEN_ISSUES.md).
