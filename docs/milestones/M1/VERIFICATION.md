@@ -21,3 +21,10 @@
 - Aggiunta migrazione M1-1 per documenti B2B versionati, P.IVA unica, audit accettazione e RPC atomica.
 - Aggiunti test SQL: documenti mancanti, email verificata/non verificata, idempotenza, conflitto P.IVA, grant anonimi.
 - I test sono collegati a GitHub Actions nel job Postgres 17 temporaneo; **esito ancora da confermare**. Nessuna scrittura sul database live.
+
+## Sicurezza Supabase (eseguito davvero)
+
+- Security advisors prima: 2 WARN per `public.rls_auto_enable()` `SECURITY DEFINER` eseguibile da `anon` e `authenticated`.
+- Migrazione Supabase realmente applicata: `20261020215132_lock_down_rls_event_trigger_execute` (solo REVOKE EXECUTE, nessuna tabella business).
+- Security advisors dopo: **0 lints**. Questa verifica non certifica le policy RLS delle migrazioni M1 non ancora applicate.
+- Il test di `M1_onboarding.sql` e tutti i workflow Auth/PostgREST reali sono ancora **da confermare**: build Vercel READY non equivale a test SQL.

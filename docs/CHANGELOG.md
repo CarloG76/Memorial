@@ -1,5 +1,10 @@
 # Memorial — Changelog tecnico
 
+## 2026-10-20 — Hardening Supabase preesistente
+- Revocato EXECUTE a PUBLIC/anon/authenticated sulla funzione `public.rls_auto_enable()` con migrazione applicata `20261020215132_lock_down_rls_event_trigger_execute`.
+- Ricontrollato il progetto Supabase: avvisi security advisor da 2 a 0.
+- Nessuna migrazione M1 applicata e nessun utente creato.
+
 ## 2026-10-20 — WF01 registrazione Free (codice candidato)
 - Procedura transazionale dopo email verificata: agenzia Free, Owner, documenti B2B versionati, audit accettazione e P.IVA univoca.
 - Inserita UI /console/onboarding e collegamento dalla dashboard senza ruoli.
