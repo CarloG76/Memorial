@@ -25,6 +25,13 @@ pnpm test:e2e
 
 `pnpm test:e2e` richiede Chromium (`pnpm exec playwright install chromium`). La route `/api/health` risponde con un payload pubblico minimo.
 
+## Accesso
+
+- [Accedi](https://memorial-ai-visions.vercel.app/accedi) — richiede un account Supabase Auth con email verificata e membership.
+- [Registra agenzia](https://memorial-ai-visions.vercel.app/registrati) — UI disponibile ma **invio disabilitato** finché informativa e condizioni B2B non sono approvate e configurate.
+- [Onboarding Free](https://memorial-ai-visions.vercel.app/console/onboarding) — dopo login e con documenti B2B attivi; crea la società e la membership in una transazione.
+- Il primo SuperAdmin non si auto-assegna: provisioning riservato, non attivo. Nessun account operativo creato finora.
+
 ## Stato operativo
 
 - M0: applicazione, design system, Auth SSR, CI ed endpoint health integrati in `main`.
