@@ -1,5 +1,9 @@
 # Memorial — Changelog tecnico
 
+## 2026-10-21 — Dashboard M1 su main
+- Implementate viste con dati reali sotto RLS: agenzia (anagrafica, piano, stato, conteggio memoriali), famiglia (membership e ruoli), staff (conteggi solo Owner/Admin).
+- Deploy Production READY su commit `895aecec`. Senza utenti Auth, i flussi autenticati non sono stati ancora verificati dal browser.
+
 ## 2026-10-21 — M1 database verificato e hardening RPC
 - Tre migrazioni M1 applicate in Supabase Memorial: `20261020220618`, `20261020220643`, `20261020220855` (timestamp UTC 20/10).
 - Nove tabelle con RLS attiva; nessun SELECT anon o INSERT/UPDATE diretto authenticated.
