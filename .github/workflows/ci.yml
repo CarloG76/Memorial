@@ -84,3 +84,7 @@ jobs:
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/M1_readonly_security_assertions.sql
       - name: Test authenticated and anonymous tenant boundaries
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/M1_cross_tenant.sql
+      - name: Apply agency onboarding candidate in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/20261020231500_m1_agency_onboarding.sql
+      - name: Test agency onboarding against role and identity restrictions
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/M1_onboarding.sql

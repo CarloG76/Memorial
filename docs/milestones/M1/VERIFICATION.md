@@ -15,3 +15,9 @@
 | SQL live, seed/dummy, pagamenti | NON APPLICATI | Supabase `ojzkikhtcrqcpsvhepbp` senza tabelle applicative all'ultimo controllo |
 
 **Non attribuire a Vercel READY un superamento dei test SQL:** sono due verifiche separate. M1 non è completa operativamente finché il DB RLS non è verificato nel contesto Supabase reale e i workflow di provisioning non sono implementati.
+
+## WF01 — Nuova verifica candidata
+
+- Aggiunta migrazione M1-1 per documenti B2B versionati, P.IVA unica, audit accettazione e RPC atomica.
+- Aggiunti test SQL: documenti mancanti, email verificata/non verificata, idempotenza, conflitto P.IVA, grant anonimi.
+- I test sono collegati a GitHub Actions nel job Postgres 17 temporaneo; **esito ancora da confermare**. Nessuna scrittura sul database live.

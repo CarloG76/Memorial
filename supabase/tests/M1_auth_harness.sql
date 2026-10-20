@@ -9,7 +9,9 @@ GRANT USAGE ON SCHEMA auth TO authenticated;
 GRANT USAGE ON SCHEMA public TO anon, authenticated;
 
 CREATE TABLE auth.users (
-  id uuid PRIMARY KEY
+  id uuid PRIMARY KEY,
+  email text,
+  email_confirmed_at timestamptz
 );
 
 CREATE FUNCTION auth.uid()

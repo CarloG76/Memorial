@@ -1,5 +1,11 @@
 # Memorial — Changelog tecnico
 
+## 2026-10-20 — WF01 registrazione Free (codice candidato)
+- Procedura transazionale dopo email verificata: agenzia Free, Owner, documenti B2B versionati, audit accettazione e P.IVA univoca.
+- Inserita UI /console/onboarding e collegamento dalla dashboard senza ruoli.
+- Aggiornata CI PostgreSQL effimera con test SQL dell'onboarding, inclusi abusi e duplicati.
+- Funzionalità ancora non attiva: documenti legali non pubblicati, schema non migrato in Supabase, zero account Auth.
+
 ## 2026-10-20 — M1 registrazione e accessi (parziale, disattivata)
 - Aggiunte pagina `/registrati`, schermata esito, callback `/auth/confirm`, collegamento dal login.
 - Validazione P.IVA italiana con checksum, email e ragione sociale, test unitari e Playwright.

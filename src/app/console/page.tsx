@@ -28,10 +28,10 @@ export default async function WorkspaceChooser() {
           <span className="section-kicker">ACCESSO MEMORIAL</span>
           <h1 id="workspace-title">Il tuo spazio</h1>
           {areas.length === 0 ? (
-            <p role="status">
-              Non risultano ancora ruoli attivi associati al tuo account.
-              Nessun dato riservato è accessibile.
-            </p>
+            <div role="status">
+              <p>Non risultano ruoli attivi. Nessun dato riservato è accessibile.</p>
+              <p>Se rappresenti un'agenzia, <Link className="text-link" href="/console/onboarding">completa la registrazione Free</Link>.</p>
+            </div>
           ) : (
             <>
               <p>Seleziona una delle aree per cui disponi di un&apos;abilitazione.</p>
