@@ -1,16 +1,14 @@
-# Registro delle milestone — MEMORIAL
+# MEMORIAL — Registro delle milestone
 
-Questa directory è il registro tecnico persistente del progetto.
+La directory registra gli sviluppi previsti dalla documentazione ufficiale. **Da M2 si implementa direttamente su `main`** con CI e deploy Vercel principale; per richieste extra e integrazioni isolate utilizzare branch `feature/*` e `docs/features/`.
 
-Per ogni milestone `Mxx` sono previsti:
-- `README.md`: obiettivo, ambito, requisiti collegati, criteri di accettazione.
-- `IMPLEMENTATION.md`: file modificati, codice, integrazioni, scelte tecniche.
-- `VERIFICATION.md`: prove effettivamente eseguite (timestamp, ambiente, risultato, commit).
-- `OPEN_ISSUES.md`: problemi, rischi, decisioni bloccanti, possibili interventi successivi.
-- `ROLLBACK.md`: procedura concreta per annullare la modifica in sicurezza.
+Per ogni `Mxx`:
+- `README.md` — ambito, requisiti ufficiali, stato e criteri di accettazione.
+- `IMPLEMENTATION.md` — file, moduli, database, dipendenze, decisioni tecniche.
+- `VERIFICATION.md` — test realmente eseguiti, commit, run CI, target Vercel, SQL/RLS.
+- `OPEN_ISSUES.md` — blocchi, rischi, decisioni non prese e prossimo passo.
+- `ROLLBACK.md` — recupero applicativo e dati, senza operazioni distruttive automatiche.
 
-Distinguere sempre **IMPLEMENTATO**, **VERIFICATO** e **NON VERIFICATO**.
-Non dichiarare una milestone chiusa senza build, test e verifica accettazione.
-Le decisioni business restano governate da `01_DECISIONI.md` nelle fonti e questioni aperte da `02_APERTI.md`; questi report non possono modificarle.
+Ogni modifica aggiorna il changelog. Non dichiarare collaudata una parte solo perché CI o build è verde: le autorizzazioni richiedono test RLS e gli incassi richiedono test di webhook e riconciliazione.
 
-Convenzioni: feature branch dedicato, PR, migrazioni additive numerate, test automatici e release preview; produzione solo dopo accettazione esplicita.
+**Precedenza:** `01_DECISIONI.md` è prevalente in materia di prodotto/business; `02_APERTI.md` contiene questioni irrisolte. La regola git vive in `docs/DEVELOPMENT_WORKFLOW.md`. M0 e M1 sono stati consolidati da PR storiche; non è il modello da ripetere per le milestone ordinarie.
