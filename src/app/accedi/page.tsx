@@ -37,6 +37,11 @@ export default async function LoginPage({
               Impossibile accedere. Verifica le credenziali e riprova.
             </p>
           )}
+          {errore === "verifica" && (
+            <p role="alert" className="auth-error">
+              Verifica l&apos;indirizzo email del tuo account prima di effettuare l&apos;accesso.
+            </p>
+          )}
           <form action={signIn}>
             <div className="field">
               <label htmlFor="email">Indirizzo email</label>

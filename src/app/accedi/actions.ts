@@ -15,7 +15,14 @@ export async function signIn(formData: FormData) {
   }
 
   const supabase = await createServerSupabaseClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) redirect("/accedi?errore=accesso");
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error || !data.user) redirect("/accedi?errore=accesso");
+
+  // Unverified accounts are never allowed into a membership-bound workspace.
+  if (!data.user.email_confirmed_at) {
+    await supabase.auth.signOut();
+    redirect("/accedi?errore=verifica");
+  }
+
   redirect("/console");
 }

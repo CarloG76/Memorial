@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Brand } from "@/components/brand";
 import { readIdentityAndMemberships } from "@/lib/authz/server";
 import { visibleWorkspaces } from "@/lib/authz/workspaces";
+import { signOut } from "./actions";
 
 const LABELS = {
   piattaforma: "Piattaforma Memorial",
@@ -45,6 +46,9 @@ export default async function WorkspaceChooser() {
               </nav>
             </>
           )}
+          <form action={signOut}>
+            <button className="button auth-submit" type="submit">Esci dal tuo account</button>
+          </form>
         </section>
       </main>
     </>
