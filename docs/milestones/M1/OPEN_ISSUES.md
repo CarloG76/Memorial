@@ -1,14 +1,9 @@
-# M1 — Blocchi e questioni aperte
+# M1 — Problemi residui
 
-Il codice è stato integrato su `main` con PR #2. Questo non equivale a migrazione validata o autorizzazione live.
-
-1. Serve uno staging PostgreSQL isolato (da valutare costo prima di crearlo) per applicare una migrazione di prova.
-2. Eseguire test negativi RLS: due agenzie, due memoriali, famiglia OWNER/EDITOR/VIEWER, visitatore anonimo e ruoli staff separati; controllare i grants e token.
-3. Completare i workflow server-side di registrazione agenzia, inviti, accettazione/revoca con audit, scadenza, idempotenza e concorrenza.
-4. Bootstrap SuperAdmin solo su identità esplicitamente autorizzata, mai self-grant; prevedere MFA.
-5. Testare Supabase Auth SSR e cookie con utenti verificati in ambiente di test; rilevare gestione sessioni e errori.
-6. Membership console è soltanto l'ingresso; ogni futura operazione necessita enforcement su specifica agency/memorial/resource.
-7. Preview Vercel protette non apribili in lettura dal connettore corrente a causa di HTTP 403; verificare con account autorizzato.
-
-## Regole di prodotto
-Nessuna decisione di `02_APERTI.md` è risolta implicitamente dal modello dati o dal merge. Priorità a `01_DECISIONI.md`.
+1. Verificare l'esito del job SQL in GitHub Actions ed eseguire correzioni finché è verde.
+2. L'ambiente Supabase operativo non ha schema applicativo; nessuna migrazione verrà lanciata finché test e sicurezza non saranno rivisti.
+3. Manca test reale Auth/PostgREST con utenti test verificati; serve ambiente isolato o piano di test esplicito prima di operare con utenti reali.
+4. WF01 registrazione agenzia, WF04 invito/accettazione e provisioning SuperAdmin necessitano servizi server-side auditati, email e test autorizzativi.
+5. Consolidare audit logging, controlli MFA staff, attivazione/sospensione ruolo e limiti tenant/permission per azione.
+6. Le decisioni aperte e aspetti legali rimangono in `02_APERTI.md`; il codice CI non decide retention, export, limiti media o tariffe.
+7. Le Preview Vercel rimangono protette: fetch remoto 403 fino a permessi corretti.
