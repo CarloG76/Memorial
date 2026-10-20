@@ -17,6 +17,5 @@ export async function signIn(formData: FormData) {
   const supabase = await createServerSupabaseClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) redirect("/accedi?errore=accesso");
-  // No role is assumed on sign-in. Only a safe M0 landing is available.
-  redirect("/console/agenzia");
+  redirect("/console");
 }
