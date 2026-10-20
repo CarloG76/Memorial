@@ -1,7 +1,8 @@
-# M2 — Problemi e attività aperte
+# M2 — Questioni aperte
 
-1. Prima di usare importi come base di incasso, versione del listino e price snapshot firmato/immutabile a DB.
-2. Account agenzia verificato, RLS M1 in ambiente reale, rate limit e audit delle richieste ordine.
-3. Definire e collaudare idempotenza, transazione credito e gestione fallimento zero-Euro senza inventare conferme di pagamento.
-4. Non implementare upgrade/proratazione, durata di riattivazione 1 anno o IVA fino alle decisioni in `02_APERTI.md`.
-5. Gateway Stripe/provider pagamenti: sviluppare su `feature/stripe-payments` con soli pagamenti di test e merge dopo test.
+1. Applicazione IVA a prezzi B2B e fatturazione elettronica: `02_APERTI.md` punto 9. **Calcolo puramente matematico implementato**, ma scelta imponibile/IVA inclusa, aliquota per transazione, territorialità e documento fiscale non approvati. `docs/milestones/M2/VAT_DESIGN.md`.
+2. Versione listino e snapshot immutabile a DB prima dei pagamenti; il preventivo client non autorizza l'incasso.
+3. Test con veri account agenzia, RLS M1 in ambiente autentico, rate limit e audit.
+4. Idempotenza ordine, transazione per crediti Pro e trattamento zero-euro: da progettare e verificare.
+5. Non implementare proratazione o upgrade conservazione e riattivazione di durata annuale non prezzata.
+6. Provider pagamenti: branch isolato `feature/stripe-payments`, test mode, non attivare live senza decisione esplicita.
