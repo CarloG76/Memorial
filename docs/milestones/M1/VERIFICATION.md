@@ -19,3 +19,9 @@
 | Pubblicazione condizioni B2B | Documenti non approvati | NON ATTIVATA |
 
 Il deploy Vercel READY prova la compilazione, non sostituisce test di segregazione con token firmati. Per i linter INFO vedere [revisione di sicurezza](SECURITY_REVIEW.md).
+
+## Dashboard operative
+- Commit `895aecec`: viste iniziali per Agenzia, Famiglia e Piattaforma con dati di appartenenza letti sotto RLS server-side.
+- Vercel Production `dpl_2Dx7jmUorABoUi7qXCvExLLnA1mJ`: stato READY, verificato sul commit esatto.
+- Test interattivi con identità autentiche: non eseguiti perché nessun utente Auth è stato creato.
+- Condizioni B2B: nessun documento approvato caricato, quindi registrazione pubblica ancora disabilitata.
