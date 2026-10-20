@@ -45,13 +45,13 @@ declare
  principal uuid:=auth.uid();
  confirmed_email text;
  agency_id uuid;
- legal_name text:=btrim(p_legal_name);
+ v_legal_name text:=btrim(p_legal_name);
 begin
  if principal is null then raise exception 'Verified login required'; end if;
  select u.email into confirmed_email from auth.users u
  where u.id=principal and u.email_confirmed_at is not null;
  if confirmed_email is null or confirmed_email='' then raise exception 'Verified email required'; end if;
- if legal_name is null or length(legal_name) not between 2 and 240
+ if v_legal_name is null or length(v_legal_name) not between 2 and 240
  or not app_private.is_valid_it_vat(p_vat_number) then
   raise exception 'Invalid agency data';
  end if;
@@ -70,7 +70,7 @@ begin
  and m.user_id=principal and m.role='OWNER' and m.active limit 1;
  if agency_id is not null then return agency_id; end if;
  insert into public.agencies(legal_name,vat_number,contact_email,country_code,plan)
- values(legal_name,p_vat_number,confirmed_email,'IT','FREE')
+ values(v_legal_name,p_vat_number,confirmed_email,'IT','FREE')
  returning id into agency_id;
  insert into public.agency_members(agency_id,user_id,role)
  values(agency_id,principal,'OWNER');
