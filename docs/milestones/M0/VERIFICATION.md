@@ -1,17 +1,17 @@
 # M0 — Evidenze di verifica
 
-Verifica effettuata il **20 ottobre 2026**.
+Aggiornamento 20 ottobre 2026 (verifiche effettuate tramite GitHub, Supabase, Vercel).
 
 | Oggetto | Evidenza | Stato |
 |---|---|---|
-| Repository | GitHub `CarloG76/Memorial`, main iniziale solo README | VERIFICATO |
-| Supabase | progetto attivo, schema `public` senza tabelle, elenco migrazioni vuoto | VERIFICATO |
-| Vercel primo build | preview errore `STATIC_BUILD_NO_OUT_DIR`: progetto configurato come statico | VERIFICATO / CORRETTO |
-| Vercel secondo build | deployment `dpl_AZjK8TfudmDCB3qErWjtqgZhFaxj` stato `READY`, commit `cec5161`, Next.js | VERIFICATO |
-| GitHub Actions prima run | run 39462158036 fallita su `setup-node cache: pnpm` per assenza `pnpm-lock.yaml` | VERIFICATO / FIX IN PR |
-| Unit/integration/E2E | non ancora eseguiti con esito positivo in GitHub Actions | NON VERIFICATO |
-| Lockfile | non presente, da generare e versionare | APERTO |
-| Runtime Auth | config pubblicabile impostata; test di login con utente verificato non ancora eseguito | NON VERIFICATO |
-| DDL/dummy/payments | nessuno eseguito | VERIFICATO |
+| Repository | `CarloG76/Memorial`, main iniziale solo README | VERIFICATO |
+| Supabase | Progetto attivo, schema public senza tabelle, zero migrazioni | VERIFICATO |
+| Vercel build da commit `24c0441` | `dpl_6kzPxMcaFgzRR1Y6gepan13Q4cJ2` READY, Next.js | VERIFICATO |
+| GitHub Actions M0 | Run [39464155669](https://github.com/CarloG76/Memorial/actions/runs/39464155669): lint, typecheck, Vitest, Next build, Playwright completati con successo | VERIFICATO |
+| Blocco CI originario | Setup Node mancava lockfile per cache pnpm: recuperato e corretto | RISOLTO |
+| Lockfile risolto in runner | `pnpm-lock.yaml` generato da `pnpm install` in runner; blob Git creato dai byte esatti dei logs | GENERATO |
+| CI con lockfile versionato e frozen install | Deve essere eseguita dopo commit definitivo | NON ANCORA VERIFICATO |
+| Auth reale con utente test | Login+membership reali non esercitati | NON VERIFICATO |
+| DDL/dummy/payment | Nessuna scrittura Supabase applicativa eseguita | VERIFICATO |
 
-Un deployment READY attesta la compilazione e la distribuzione; **non** dimostra di per sé test funzionali, RLS o autorizzazione.
+La build READY non dimostra sicurezza delle policy RLS o autorizzazioni fra tenant. La M0 termina sul codice applicativo e sulle smoke assertions non autenticate; il collaudo Auth+RLS è di M1.

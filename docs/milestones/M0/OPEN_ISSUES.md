@@ -1,9 +1,8 @@
-# M0 — Problemi aperti
+# M0 — Problemi e dipendenze
 
-1. Generare e committare `pnpm-lock.yaml` coerente con il manifest; successivamente impostare `pnpm install --frozen-lockfile` e ripristinare cache.
-2. Verificare tutti gli step GitHub Actions dopo il fix al job `setup-node`, correggendo eventuali errori.
-3. Eseguire Playwright desktop/mobile e smoke runtime Preview con accesso Vercel autorizzato.
-4. Verificare flusso Auth con utente test non privilegiato, senza credenziali nella chat.
-5. Allineare la documentazione a eventuali differenze rilevate in CI.
+1. Verificare GitHub Actions anche con `pnpm install --frozen-lockfile` e cache pnpm usando il lockfile versionato.
+2. Test runtime Preview dietro Vercel SSO da account autorizzato.
+3. Test login con utente Auth verificato e membership reale demandato a M1 dopo test migratorio su staging.
+4. Garantire PR review e controllo umano prima di un merge su `main`.
 
-Non chiudere M0 per il solo successo della build Vercel.
+**Risolti:** deployment statico erroneo (Vercel framework Next.js), perdita accidentale dell'albero Git nei commit (ripristino completo), errore cache per lockfile mancante (lockfile generato e versionato).
