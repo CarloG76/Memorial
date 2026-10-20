@@ -1,17 +1,24 @@
 # M0 — Evidenze di verifica
 
-Aggiornamento 20 ottobre 2026 (verifiche effettuate tramite GitHub, Supabase, Vercel).
+**Aggiornamento:** 20 ottobre 2026. Fonte diretta: GitHub Actions, GitHub, Supabase e Vercel.
 
-| Oggetto | Evidenza | Stato |
+| Area | Prova riproducibile | Risultato |
 |---|---|---|
-| Repository | `CarloG76/Memorial`, main iniziale solo README | VERIFICATO |
-| Supabase | Progetto attivo, schema public senza tabelle, zero migrazioni | VERIFICATO |
-| Vercel build da commit `24c0441` | `dpl_6kzPxMcaFgzRR1Y6gepan13Q4cJ2` READY, Next.js | VERIFICATO |
-| GitHub Actions M0 | Run [39464155669](https://github.com/CarloG76/Memorial/actions/runs/39464155669): lint, typecheck, Vitest, Next build, Playwright completati con successo | VERIFICATO |
-| Blocco CI originario | Setup Node mancava lockfile per cache pnpm: recuperato e corretto | RISOLTO |
-| Lockfile risolto in runner | `pnpm-lock.yaml` generato da `pnpm install` in runner; blob Git creato dai byte esatti dei logs | GENERATO |
-| CI con lockfile versionato e frozen install | Deve essere eseguita dopo commit definitivo | NON ANCORA VERIFICATO |
-| Auth reale con utente test | Login+membership reali non esercitati | NON VERIFICATO |
-| DDL/dummy/payment | Nessuna scrittura Supabase applicativa eseguita | VERIFICATO |
+| GitHub | Codice M0 presente sul branch `m0-bootstrap` e [PR #1](https://github.com/CarloG76/Memorial/pull/1) | VERIFICATO |
+| Supabase | Progetto `ojzkikhtcrqcpsvhepbp` attivo; schema public senza tabelle, zero migrazioni | VERIFICATO |
+| Dipendenze | `pnpm-lock.yaml` completo, installazione `pnpm install --frozen-lockfile` | VERIFICATO |
+| GitHub Actions | Run [39465265519](https://github.com/CarloG76/Memorial/actions/runs/39465265519), commit `f94e7eac`, conclusione **success** | VERIFICATO |
+| Lint, Typecheck, Vitest, Next build, Playwright | Passaggi inclusi nella run e privi di errori | VERIFICATO |
+| Vercel Preview | `dpl_EEVUjrWGKaHcxMZyAYfqYZTFUpWB`, `READY` sul commit `f94e7eac` | VERIFICATO |
+| Preview protetta via connettore | Richiesta browser Vercel respinta 403 sulla risorsa SSO/alias | NON VERIFICABILE CON PERMESSI CORRENTI |
+| Auth con utente reale verificato | Test non eseguito | DA FARE IN M1 CON DATI TEST |
+| DDL, dummy, pagamenti | Nessuna scrittura applicativa eseguita sul DB | VERIFICATO |
 
-La build READY non dimostra sicurezza delle policy RLS o autorizzazioni fra tenant. La M0 termina sul codice applicativo e sulle smoke assertions non autenticate; il collaudo Auth+RLS è di M1.
+## Incidenti risolti
+1. Framework Vercel inizialmente statico: configurato Next.js.
+2. Operazione Git tree senza base che rimuoveva file precedenti: ripristino integrale e correzione.
+3. GitHub Actions `setup-node` falliva per lockfile assente: lockfile generato da GitHub runner.
+4. Primo trasferimento del lockfile incompleto (mancava ultimo chunk base64): trasferimento corretto e verifica con `--frozen-lockfile` riuscita.
+
+## Conclusione tecnica
+M0 **implementata e verificata in CI**, ma PR ancora in bozza e non rilasciata in produzione. I test Auth reali non sostituiscono i test E2E anonimi; verranno eseguiti con staging M1. Nessuna dichiarazione di RLS testate.

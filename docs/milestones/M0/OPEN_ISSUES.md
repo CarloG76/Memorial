@@ -1,8 +1,7 @@
-# M0 — Problemi e dipendenze
+# M0 — Problemi aperti / dipendenze
 
-1. Verificare GitHub Actions anche con `pnpm install --frozen-lockfile` e cache pnpm usando il lockfile versionato.
-2. Test runtime Preview dietro Vercel SSO da account autorizzato.
-3. Test login con utente Auth verificato e membership reale demandato a M1 dopo test migratorio su staging.
-4. Garantire PR review e controllo umano prima di un merge su `main`.
+1. Verifica interattiva Preview protetta: il connettore corrente riceve HTTP 403 durante la lettura del bypass Vercel. Serve autorizzazione di accesso al team/progetto se si desidera collaudo remoto tramite connettore.
+2. Test autenticazione con account Supabase verificato e membership reale demandato a M1 in staging.
+3. Revisione PR #1 e successivo eventuale merge su `main` solo dopo consenso alla pubblicazione in produzione.
 
-**Risolti:** deployment statico erroneo (Vercel framework Next.js), perdita accidentale dell'albero Git nei commit (ripristino completo), errore cache per lockfile mancante (lockfile generato e versionato).
+**Risolto:** framework errato Vercel, albero Git sovrascritto, lockfile mancante/incompleto, installazione frozen, lint, typecheck, Vitest, build, Playwright.
