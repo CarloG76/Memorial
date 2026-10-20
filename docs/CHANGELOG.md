@@ -1,18 +1,17 @@
 # Memorial — Changelog tecnico
 
-## 2026-10-20 — M2 catalogo B2B (prima tranche su main)
-- Calcolatore preventivi Standard/Premium Free/Pro con durate TOTALE 1/3/5/10 anni in centesimi.
-- Sconto teorico credito Pro €3,90, esplicitamente senza riserva/consumo; zero pagamento e zero attivazione.
-- Preventivo riattivazione €10 + tariffa 3/5/10; bloccato 1 anno non approvato.
-- Test unitari e documentazione M2; non applicate migrazioni né scritture DB.
+## 2026-10-20 — M1 registrazione e accessi (parziale, disattivata)
+- Aggiunte pagina `/registrati`, schermata esito, callback `/auth/confirm`, collegamento dal login.
+- Validazione P.IVA italiana con checksum, email e ragione sociale, test unitari e Playwright.
+- Nessun accesso clienti automatico: provisioning agenzia, condizioni B2B e piano Free richiedono completamento WF01.
+- Gate server-side `AGENCY_SIGNUP_ENABLED=false` fino a pubblicazione informativa/approvazione; nessun dato raccolto nell'attuale configurazione.
+- Documentazione `docs/milestones/M1/REGISTRATION_ACCESS.md` per login, SuperAdmin e verifiche.
+- Nessun ruolo privilegiato assegnato, nessuna migrazione live e nessun account creato.
 
-## 2026-10-20 — M1 RLS, sessione, permessi
-- PostgreSQL 17 effimero con test RLS multi-tenant in CI, candidato M1 non applicato su Supabase.
-- Singleton SuperAdmin attivo a livello di indice univoco.
-- Guard email verificata, logout e capability familiari testabili.
+## 2026-10-20 — M1 / M2
+- M1: identity/tenancy, RLS candidati, test PostgreSQL sintetici, capability e logout.
+- M2: prezzi B2B puri, niente ordini o pagamenti.
+- Workflow main-first per requisiti canonici, `feature/*` per ogni extra.
 
-## 2026-10-20 — Workflow
-- Main per specifiche approvate, feature branch dedicato per **qualsiasi** nuova richiesta fuori dalle fonti (non solo Stripe).
-
-## 2026-10-20 — M0/M1 baseline
-- Codice incorporato in `main` via PR #1 e #2; deployment Production Vercel.
+## 2026-10-20 — M0
+- Next.js App Router, TypeScript, Supabase SSR, CI, UI navy/avorio/oro; PR storiche incorporate su main.

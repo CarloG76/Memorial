@@ -54,7 +54,7 @@ export default async function LoginPage({
             <button className="button auth-submit" type="submit" disabled={!ready}>Accedi in sicurezza</button>
           </form>
           <p className="auth-note">
-            La registrazione delle agenzie e l&apos;assegnazione dei ruoli saranno attivate nelle milestone successive.
+            Sei un&apos;agenzia? <Link href="/registrati" className="text-link">Registrati come agenzia</Link>.
           </p>
         </section>
       </main>
