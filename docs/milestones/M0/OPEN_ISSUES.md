@@ -1,7 +1,8 @@
-# M0 — Problemi aperti / dipendenze
+# M0 — Problemi e dipendenze residue
 
-1. Verifica interattiva Preview protetta: il connettore corrente riceve HTTP 403 durante la lettura del bypass Vercel. Serve autorizzazione di accesso al team/progetto se si desidera collaudo remoto tramite connettore.
-2. Test autenticazione con account Supabase verificato e membership reale demandato a M1 in staging.
-3. Revisione PR #1 e successivo eventuale merge su `main` solo dopo consenso alla pubblicazione in produzione.
+**Integrata su main** con PR #1 il 20/10/2026. CI e build Production verdi.
 
-**Risolto:** framework errato Vercel, albero Git sovrascritto, lockfile mancante/incompleto, installazione frozen, lint, typecheck, Vitest, build, Playwright.
+1. Controllo interattivo dei deployment protetti con SSO non possibile tramite attuale connettore Vercel (403).
+2. Login reali e membership database da verificare durante M1 su ambiente test prima di abilitare flussi riservati.
+
+**Chiusi:** errore framework statico, albero Git perso, lockfile mancante/incompleto, installazione frozen fallita, passaggi CI e merge su main.

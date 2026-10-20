@@ -2,27 +2,31 @@
 
 ## Progetto Vercel
 - Progetto: `memorial`.
-- Branch principale GitHub: `CarloG76/Memorial:main`.
-- Target principale: Vercel **Production** da push `main`.
-- Preview: branch isolati `feature/*` e `fix/*` collegati automaticamente tramite GitHub integration.
-- Framework: Next.js, Node 24. Evitare deployment manuali che scavalchino il branch approvato.
-- SSO Vercel: le anteprime sono protette in base alla configurazione della piattaforma; il connettore ha già riscontrato HTTP 403 nel fetch diretto delle Preview, indipendentemente da build READY.
+- Repository: `CarloG76/Memorial`, branch di produzione: `main`.
+- Le modifiche ordinarie da specifiche approvate avvengono su `main` e avviano il deployment Vercel Production.
+- Nuove funzionalità/isolate (`feature/*`, ad es. Stripe) hanno Preview protetta, test e merge `main`.
+- Framework Next.js, Node 24; non pubblicare segreti in log o nel repository.
 
-## Variabili d'ambiente
-Client Supabase SSR: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (pubblicabili per definizione). Vanno impostate nel pannello Vercel per gli ambienti appropriati senza inserirne i valori nei documenti Git.
-Valori segreti (provider pagamenti, service role, posta): **solo server**, per ambiente, mai `NEXT_PUBLIC_`. Non attivare pagamenti live senza specifica approvazione.
+## Configurazione ambienti (verificata 20/10/2026)
+`NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` sono configurate su **Production**, **Preview** e **Development** tramite Vercel. Sono valori pubblicabili; non sono state inserite service role key, chiavi di Stripe live o segreti di terzi.
 
-## Pipeline e release
-`main` esegue lint, typecheck, Vitest, Next build e Playwright in GitHub Actions; il push avvia anche Vercel automaticamente. Le due pipeline possono correre in parallelo: READY non significa che CI sia stata superata. Se una modifica rompe il sito, preparare un revert puntuale e verificare la successiva produzione; evitare reset di Supabase.
+## Rilascio principale verificato
+- PR #1 M0 → commit `8eaad8f9`, Vercel Production READY.
+- PR #2 M1 → commit `afc3acc7`, Vercel Production READY.
+- Registrazione del workflow main-first → commit `ca44ca7e`, deployment `dpl_6C1DW35pCFA6mXaHF7TgnztzKzVL` Production **READY**. Alias del progetto: `memorial-navy.vercel.app`, `memorial-ai-visions.vercel.app`, `memorial-git-main-ai-visions.vercel.app`.
+- Vercel mantiene SSO Protection sulle URL secondo la configurazione corrente. Il connettore non è riuscito a leggere direttamente la pagina protetta (403). Non disattivare tale protezione implicitamente.
 
-## Livelli di verifica
-1. `CODED`: codice presente su GitHub.
-2. `CI_PASS`: build e test automatici superati.
-3. `DEPLOYED`: deployment Vercel READY sullo SHA atteso.
-4. `RUNTIME_VERIFIED`: controllo HTTP reale e con account/test, se autorizzato.
-5. `ACTIVE`: feature abilitata e, se necessarie, autorizzazioni e servizi live attivati.
+## Controlli su ogni sviluppo
+1. `CODED`: commit versionato.
+2. `CI_PASS`: lint, TS, Vitest, build, Playwright, verificato il run.
+3. `DEPLOYED`: Vercel READY sullo SHA atteso.
+4. `RUNTIME_VERIFIED`: test HTTP/autenticato se autorizzato.
+5. `ACTIVE`: funzionalità abilitata con database, permessi, servizi configurati e approvazioni.
 
-I database non seguono automaticamente il push: SQL e RLS versionati richiedono processo separato, staging e verifica preventiva.
+La pipeline GitHub e il deployment Vercel possono avanzare in parallelo; un deployment READY da solo non certifica il test completo. Le migrazioni non sono automatizzate insieme ai push: staging, review RLS e autorizzazione prima dei dati reali.
 
-## M1: avvertenza
-La migrazione `20261020190000_m1_identity_tenancy.sql` è **candidata**, non è stata applicata al database operativo alla data 20/10/2026. Fino a che non si concludono test RLS/tenancy le console restano prive di dati. Il deployment del codice M1 su main non implica attivazione dell'accesso familiare e dei flussi business.
+## Database M1
+La migrazione `supabase/migrations/20261020190000_m1_identity_tenancy.sql` è **solo proposta** al 20/10/2026. Nessuna migrazione è stata applicata all'ambiente operativo. La console nega accesso ai dati in assenza di schema e membership. Prima di attivare flussi completi: staging, Auth verificata e test RLS negativi reali.
+
+## Rollback
+Revert selettivo di codice con nuovo commit su `main` e verifica del nuovo deployment; per emergenze Vercel valutare rollback di deployment esistente. Nessun DROP/RESET o modifica RLS live senza autorizzazione, backup e verifica impatto. Per feature isolate, fare riferimento al relativo `docs/features/<slug>/ROLLBACK.md`.

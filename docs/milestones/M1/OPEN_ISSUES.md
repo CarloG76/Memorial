@@ -1,13 +1,14 @@
 # M1 — Blocchi e questioni aperte
 
-## Tecniche (non decisioni business)
-1. Staging PostgreSQL isolato da predisporre, costo e creazione solo previa approvazione se fatturabile.
-2. Applicare migrazione M1 su staging e testare RLS per 2 agenzie + 2 memoriali, famiglia owner/editor/viewer, visitatore anon, platform admin/finance/support.
-3. Sicurezza di write server workflows: registrazione agenzia, creazione inviti, accettazione e revoca token hash; necessaria idempotenza, audit e test race.
-4. Provisioning SuperAdmin: solo persona esplicitamente autorizzata, mai self-grant, no seed di utenti reali, MFA per staff.
-5. Allineamento versioni `@supabase/ssr` e Supabase Auth dopo test connessione su Preview.
-6. M0 deve superare CI; lockfile assente finché non versionato.
-7. Le membership delle console indicano solo accesso all'ambiente. I controlli di permesso per singola azione/riga verranno introdotti nelle API successive.
+Il codice è stato integrato su `main` con PR #2. Questo non equivale a migrazione validata o autorizzazione live.
 
-## Decisioni prodotto ereditate
-Restano aperte le questioni ufficiali di `02_APERTI.md`. M1 non anticipa prezzi, date parziali, storage media o policy di cancellazione.
+1. Serve uno staging PostgreSQL isolato (da valutare costo prima di crearlo) per applicare una migrazione di prova.
+2. Eseguire test negativi RLS: due agenzie, due memoriali, famiglia OWNER/EDITOR/VIEWER, visitatore anonimo e ruoli staff separati; controllare i grants e token.
+3. Completare i workflow server-side di registrazione agenzia, inviti, accettazione/revoca con audit, scadenza, idempotenza e concorrenza.
+4. Bootstrap SuperAdmin solo su identità esplicitamente autorizzata, mai self-grant; prevedere MFA.
+5. Testare Supabase Auth SSR e cookie con utenti verificati in ambiente di test; rilevare gestione sessioni e errori.
+6. Membership console è soltanto l'ingresso; ogni futura operazione necessita enforcement su specifica agency/memorial/resource.
+7. Preview Vercel protette non apribili in lettura dal connettore corrente a causa di HTTP 403; verificare con account autorizzato.
+
+## Regole di prodotto
+Nessuna decisione di `02_APERTI.md` è risolta implicitamente dal modello dati o dal merge. Priorità a `01_DECISIONI.md`.

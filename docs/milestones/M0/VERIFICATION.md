@@ -2,23 +2,24 @@
 
 **Aggiornamento:** 20 ottobre 2026. Fonte diretta: GitHub Actions, GitHub, Supabase e Vercel.
 
-| Area | Prova riproducibile | Risultato |
+| Area | Evidenza | Stato |
 |---|---|---|
-| GitHub | Codice M0 presente sul branch `m0-bootstrap` e [PR #1](https://github.com/CarloG76/Memorial/pull/1) | VERIFICATO |
-| Supabase | Progetto `ojzkikhtcrqcpsvhepbp` attivo; schema public senza tabelle, zero migrazioni | VERIFICATO |
-| Dipendenze | `pnpm-lock.yaml` completo, installazione `pnpm install --frozen-lockfile` | VERIFICATO |
-| GitHub Actions | Run [39465265519](https://github.com/CarloG76/Memorial/actions/runs/39465265519), commit `f94e7eac`, conclusione **success** | VERIFICATO |
-| Lint, Typecheck, Vitest, Next build, Playwright | Passaggi inclusi nella run e privi di errori | VERIFICATO |
-| Vercel Preview | `dpl_EEVUjrWGKaHcxMZyAYfqYZTFUpWB`, `READY` sul commit `f94e7eac` | VERIFICATO |
-| Preview protetta via connettore | Richiesta browser Vercel respinta 403 sulla risorsa SSO/alias | NON VERIFICABILE CON PERMESSI CORRENTI |
-| Auth con utente reale verificato | Test non eseguito | DA FARE IN M1 CON DATI TEST |
-| DDL, dummy, pagamenti | Nessuna scrittura applicativa eseguita sul DB | VERIFICATO |
+| GitHub | [PR #1](https://github.com/CarloG76/Memorial/pull/1) incorporata in `main` con squash commit `8eaad8f9` | MERGED |
+| Supabase | Progetto `ojzkikhtcrqcpsvhepbp` attivo, zero tabelle public, zero migrazioni al controllo | VERIFICATO |
+| Dipendenze | `pnpm-lock.yaml`, `pnpm install --frozen-lockfile` | VERIFICATO |
+| GitHub Actions M0 | [Run 39465704854](https://github.com/CarloG76/Memorial/actions/runs/39465704854), commit `f4f68b50`, `success` | VERIFICATO |
+| Test | Lint, typecheck, Vitest, build, Playwright desktop/mobile | PASS |
+| Vercel Preview M0 | `dpl_EEVUjrWGKaHcxMZyAYfqYZTFUpWB` | READY |
+| Vercel Production M0 | Deployment da `main` dopo PR #1 `dpl_Hd1Nr9bWWLBaGJkPB1aTHmLkF1o7` | READY |
+| Runtime interattivo protetto | Connessione browser Vercel a risorsa con SSO restituisce 403 | NON VERIFICATO |
+| Auth con utenti reali | Non eseguito | DA COLLAUDARE CON M1 |
+| SQL e dummy | Nessuna migrazione o fixture applicata | VERIFICATO |
 
 ## Incidenti risolti
-1. Framework Vercel inizialmente statico: configurato Next.js.
-2. Operazione Git tree senza base che rimuoveva file precedenti: ripristino integrale e correzione.
-3. GitHub Actions `setup-node` falliva per lockfile assente: lockfile generato da GitHub runner.
-4. Primo trasferimento del lockfile incompleto (mancava ultimo chunk base64): trasferimento corretto e verifica con `--frozen-lockfile` riuscita.
+- Configurazione Vercel statica → Next.js.
+- Albero Git perso in un commit intermedio → ripristino integrale.
+- Cache pnpm senza lockfile → lockfile generato.
+- Chunk base64 mancante nel primo lockfile → lockfile completo verificato con frozen install.
 
-## Conclusione tecnica
-M0 **implementata e verificata in CI**, ma PR ancora in bozza e non rilasciata in produzione. I test Auth reali non sostituiscono i test E2E anonimi; verranno eseguiti con staging M1. Nessuna dichiarazione di RLS testate.
+## Conclusione
+M0 è **integrata in main, CI superata e distribuita in Vercel Production**. Le console reali e la gestione dati non fanno parte di M0 e non risultano testate. Il deploy non è sinonimo di accesso pubblico: permane la protezione SSO Vercel configurata.
