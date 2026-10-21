@@ -25,10 +25,22 @@ export async function getFamilyDashboard(userId: string) {
     .eq("user_id",userId).eq("active",true);
   if(memberships.error) throw new Error("Accesso famiglia non disponibile.");
   const ids=(memberships.data??[]).map(x=>x.memorial_id);
-  if(!ids.length)return {memorials:[],memberships:[]};
-  const result=await db.from("memorials")
-    .select("id,deceased_name,status,tier,is_demo,agency_id,visibility").in("id",ids);
-  if(result.error)throw new Error("Impossibile caricare i memoriali della famiglia.");
+  if(!ids.length)return {memorials:[],memberships:[],memories:[],thoughts:[]};
+  const [result, memories, thoughts] = await Promise.all([
+    db.from("memorials")
+      .select("id,deceased_name,status,tier,is_demo,agency_id,visibility").in("id",ids),
+    db.from("memorial_memories")
+      .select("id,memorial_id,title,body,moderation_status,is_demo").in("memorial_id",ids),
+    db.from("memorial_thoughts")
+      .select("id,memorial_id,author_name,body,moderation_status,is_demo").in("memorial_id",ids)
+  ]);
+  if(result.error || memories.error || thoughts.error)
+    throw new Error("Impossibile caricare i contenuti della famiglia.");
   const allowed=new Set(ids);
-  return {memorials:(result.data??[]).filter(m=>allowed.has(m.id)),memberships:memberships.data??[]};
+  return {
+    memorials:(result.data??[]).filter(m=>allowed.has(m.id)),
+    memberships:memberships.data??[],
+    memories:(memories.data??[]).filter(m=>allowed.has(m.memorial_id)),
+    thoughts:(thoughts.data??[]).filter(t=>allowed.has(t.memorial_id))
+  };
 }
