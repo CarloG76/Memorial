@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "provision:uat": "node scripts/provision-uat.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
