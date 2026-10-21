@@ -1,6 +1,6 @@
 # MEMORIAL — Registro operativo unico (fonte di avanzamento)
 
-Aggiornato: 21 ottobre 2026, matrice accessi UAT e provisioning membership condizionato agli account Auth.
+Aggiornato: 21 ottobre 2026, implementato provisioning amministrativo per nove identità e cambio password self-service (non ancora eseguito).
 **Regola:** ogni attività deve avere ID stabile, stato, prova oggettiva, dipendenza e prossimo passo. Non confondere preparato, committato, in DB, verificato, rilasciato.
 Stati: [x] provato sul sistema di destinazione; [~] parziale; [ ] da fare; [!] bloccato.
 Le fonti business canoniche sono `01_DECISIONI.md`; questioni aperte `02_APERTI.md`.
@@ -17,9 +17,9 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - [x] M1-01 Migrazioni app identity/agency onboarding presenti in Supabase. Verificato nel registro migrazioni: `m1_identity_tenancy`, `m1_agency_onboarding`, `m1_private_agency_registration_rpc` e hardening.
 - [x] M1-02 Tabelle reali nel progetto Supabase: profiles, platform_memberships, agencies, agency_members, memorials, family_members, family_invites, agency_legal_documents, agency_registration_acceptances.
 - [~] M1-03 Frontend autenticazione e verifica delle membership disponibili su PR #2; non collaudati con utenti reali.
-- [ ] M1-04 Creare/abilitare **account SuperAdmin reale**, senza credenziali in chat/repository e senza autoassegnazione pubblica. **BLOCCANTE per collaudo UI SuperAdmin.**
-- [~] M1-05 Matrice UAT dei 9 account predisposta in `docs/milestones/M2/UAT_ACCESS_MATRIX.md`; gli 8 Auth demo NON sono creati. La creazione via Auth Admin/Dashboard e consegna sicura password sono ancora necessarie.
-- [~] M1-06 Script SQL versionato `supabase/seeds/20261021_m2_bind_demo_auth_users.sql` per assegnazione atomica delle membership dopo creazione Auth; NON eseguito, poiché mancano le identità.
+- [~] M1-04 Provisioning SuperAdmin implementato in `scripts/provision-uat.mjs` per `gonella.carlo@gmail.com`; NON eseguito: manca chiave amministrativa in ambiente sicuro.
+- [~] M1-05 Provisioning Auth Admin API implementato per 8 utenti demo, password da variabili d'ambiente non persistite; non eseguito. Matrice `docs/milestones/M2/UAT_ACCESS_MATRIX.md`.
+- [~] M1-06 Il comando Auth provisioning implementa assegnazioni DB via client amministrativo; script SQL di backup `supabase/seeds/20261021_m2_bind_demo_auth_users.sql`. Non eseguito.
 - [ ] M1-07 Eseguire test autorizzazioni cross-tenant con utenti veri e controlli RLS negativi.
 - [ ] M1-08 Concludere onboarding agenzia e inviti famiglia E2E.
 
@@ -63,3 +63,10 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 6. Implementare e collaudare Reset Dummy Data solo SuperAdmin.
 
 **Politica di completamento:** chiudere una voce [x] solo con prova verificabile, salvata qui e nel report di milestone. Le verifiche non sostituiscono feature.
+
+## M2.1 — Provisioning Auth (21/10/2026)
+- [x] Implementato script `scripts/provision-uat.mjs`: 9 identità, collision-check, marker demo, membership, controllo progetto, idempotenza, segreti solo da env.
+- [x] Documentato `docs/milestones/M2/PROVISIONING.md`.
+- [x] Pagina `/account/password` e server action autenticata per cambio password.
+- [ ] Esecuzione reale: necessita `SUPABASE_SECRET_KEY` da ambiente amministrativo, NON disponibile tramite connettore ChatGPT.
+- [ ] Collaudo login U00–U08 e matrice ruoli cross-tenant: non possibile finché Auth ha 0 utenti.
