@@ -51,7 +51,7 @@ export function WorkspaceShell({
       <div className="workspace-main">
         <header className="workspace-topbar">
           <span>Ambiente {workspaceTitle[area]}</span>
-          <Link href="/" className="text-link">Torna al sito</Link>
+          <div style={{display:"flex",gap:20,alignItems:"center"}}><Link href="/account/password" className="text-link">Cambia password</Link><Link href="/" className="text-link">Torna al sito</Link></div>
         </header>
         <main className="workspace-content" id="contenuto">
           {children}
