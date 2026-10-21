@@ -28,12 +28,30 @@ export async function AgencyWorkspace({userId}:{userId:string}) {
  </div>;
 }
 export async function FamilyWorkspace({userId}:{userId:string}) {
- const {memorials,memberships}=await getFamilyDashboard(userId);
+ const {memorials,memberships,memories,thoughts}=await getFamilyDashboard(userId);
  const membershipMap=new Map(memberships.map(m=>[m.memorial_id,m]));
  return <div><span className="workspace-label">Area Famiglia · dati dal database</span>
  <h1>I memoriali della tua famiglia</h1><p className="muted">Sono visibili soltanto i memoriali per cui disponi di un ruolo attivo.</p>
  <section className="workspace-panel"><div className="catalog-section-head"><h2>Memoriali associati</h2><span>{memorials.length}</span></div>
  <div className="catalog-table-wrap"><table className="catalog-table"><thead><tr><th>Persona</th><th>Stato</th><th>Ruolo</th><th>Modera</th><th>Modifica</th></tr></thead>
  <tbody>{memorials.map(m=>{const role=membershipMap.get(m.id);return <tr key={m.id}><td><strong>{m.deceased_name??"In preparazione"}</strong></td><td>{statusLabels[m.status]??m.status}</td><td>{role?.role??"—"}</td><td>{role?.can_moderate?"Sì":"No"}</td><td>{role?.can_edit_content?"Sì":"No"}</td></tr>})}</tbody>
- </table></div>{memorials.length===0&&<p>Nessun memoriale assegnato al tuo account.</p>}</section></div>;
+ </table></div>{memorials.length===0&&<p>Nessun memoriale assegnato al tuo account.</p>}</section>
+ <section className="workspace-panel">
+   <div className="catalog-section-head"><h2>Ricordi</h2><span>{memories.length} registrati</span></div>
+   {memories.length===0 ? <p className="muted">Nessun ricordo registrato.</p>
+    : memories.map(m=><article key={m.id} style={{paddingBlock:12,borderBottom:"1px solid var(--line)"}}>
+       <strong>{m.title}</strong>
+       <p>{m.body}</p>
+       <span className="workspace-label">Stato: {m.moderation_status}</span>
+     </article>)}
+ </section>
+ <section className="workspace-panel">
+   <div className="catalog-section-head"><h2>Pensieri ricevuti</h2><span>{thoughts.length} registrati</span></div>
+   {thoughts.length===0 ? <p className="muted">Nessun pensiero registrato.</p>
+    : thoughts.map(t=><article key={t.id} style={{paddingBlock:12,borderBottom:"1px solid var(--line)"}}>
+       <strong>{t.author_name}</strong>
+       <p>{t.body}</p>
+       <span className="workspace-label">Stato: {t.moderation_status}</span>
+     </article>)}
+ </section></div>;
 }
