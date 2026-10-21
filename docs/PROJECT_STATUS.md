@@ -1,6 +1,6 @@
 # MEMORIAL — Registro operativo unico (fonte di avanzamento)
 
-Aggiornato: 21 ottobre 2026, dopo implementazione delle schermate DB-backed per SuperAdmin, Agenzia e Famiglia.
+Aggiornato: 21 ottobre 2026, dopo migrazione e seed di ricordi/pensieri reali su Supabase.
 **Regola:** ogni attività deve avere ID stabile, stato, prova oggettiva, dipendenza e prossimo passo. Non confondere preparato, committato, in DB, verificato, rilasciato.
 Stati: [x] provato sul sistema di destinazione; [~] parziale; [ ] da fare; [!] bloccato.
 Le fonti business canoniche sono `01_DECISIONI.md`; questioni aperte `02_APERTI.md`.
@@ -29,7 +29,7 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - [x] M2-03 Migrazione e seed versionati nel branch `m2-persisted-demo`.
 - [~] M2-04 Console SuperAdmin: catalogo DB-backed, filtri e contatori committati; build CI e accesso OWNER ancora da verificare.
 - [~] M2-05 Schermate Agenzia e Famiglia collegati alle membership Supabase e alle relative righe; codice committato, verifica login end-to-end mancante perché Auth non ha utenti.
-- [ ] M2-06 Contenuti demo: biografie, ricordi, pensieri, moderazione, messaggi, ordini/test payment, conservazioni, notifiche e ticket come da `11_DUMMY_GUIDA.md`. Lo schema attuale è insufficiente; migrazioni da fare.
+- [~] M2-06 Contenuti demo: migrazione PostgreSQL applicata per ricordi e pensieri; 2 ricordi, 2 pensieri (uno pending) verificati con query DB, tutti is_demo=true. UI Famiglia legge contenuti e stati dal DB; ancora da implementare scrittura/moderazione, biografie, messaggi privati, ordini, conservazioni, notifiche e ticket.
 - [ ] M2-07 Escludere tutti i dati `is_demo=true` da KPI/billing reali in query/servizi e verificarlo.
 - [ ] M2-08 Reset Dummy Data riservato SuperAdmin: atomico, ID stabili, tocca solo dataset demo e dipendenze demo; non implementato e non eseguibile.
 - [ ] M2-09 Demo visitor (UNLISTED/PUBLIC, approvazioni), nessun mock frontend.
