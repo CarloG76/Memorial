@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import { DemoCatalog } from "@/components/demo-catalog";
+import { AgencyWorkspace, FamilyWorkspace } from "@/components/tenant-workspaces";
 import { readIdentityAndMemberships, requireWorkspaceAccess } from "@/lib/authz/server";
 import { isWorkspaceArea } from "@/lib/navigation";
 
@@ -33,7 +34,9 @@ export default async function WorkspacePage({
     </WorkspaceShell>;
   }
 
-  await requireWorkspaceAccess(area);
+  const identity=await requireWorkspaceAccess(area);
+  if (area==="agenzia") return <WorkspaceShell area={area}><AgencyWorkspace userId={identity.userId}/></WorkspaceShell>;
+  if (area==="famiglia") return <WorkspaceShell area={area}><FamilyWorkspace userId={identity.userId}/></WorkspaceShell>;
   return (
     <WorkspaceShell area={area}>
       <span className="workspace-label">Area autenticata · funzioni in sviluppo</span>
