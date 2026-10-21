@@ -1,6 +1,6 @@
 # MEMORIAL — Registro operativo unico (fonte di avanzamento)
 
-Aggiornato: 21 ottobre 2026, dopo migrazione e seed di ricordi/pensieri reali su Supabase.
+Aggiornato: 21 ottobre 2026, matrice accessi UAT e provisioning membership condizionato agli account Auth.
 **Regola:** ogni attività deve avere ID stabile, stato, prova oggettiva, dipendenza e prossimo passo. Non confondere preparato, committato, in DB, verificato, rilasciato.
 Stati: [x] provato sul sistema di destinazione; [~] parziale; [ ] da fare; [!] bloccato.
 Le fonti business canoniche sono `01_DECISIONI.md`; questioni aperte `02_APERTI.md`.
@@ -18,8 +18,8 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - [x] M1-02 Tabelle reali nel progetto Supabase: profiles, platform_memberships, agencies, agency_members, memorials, family_members, family_invites, agency_legal_documents, agency_registration_acceptances.
 - [~] M1-03 Frontend autenticazione e verifica delle membership disponibili su PR #2; non collaudati con utenti reali.
 - [ ] M1-04 Creare/abilitare **account SuperAdmin reale**, senza credenziali in chat/repository e senza autoassegnazione pubblica. **BLOCCANTE per collaudo UI SuperAdmin.**
-- [ ] M1-05 Creare gli 8 utenti demo Auth previsti in `11_DUMMY_GUIDA.md`; devono essere account separati da quelli reali, senza password nel codice.
-- [ ] M1-06 Collegare utenti demo a membership e permessi corrette (agenzia, famiglia, ruoli), mantenendo `is_demo` coerente.
+- [~] M1-05 Matrice UAT dei 9 account predisposta in `docs/milestones/M2/UAT_ACCESS_MATRIX.md`; gli 8 Auth demo NON sono creati. La creazione via Auth Admin/Dashboard e consegna sicura password sono ancora necessarie.
+- [~] M1-06 Script SQL versionato `supabase/seeds/20261021_m2_bind_demo_auth_users.sql` per assegnazione atomica delle membership dopo creazione Auth; NON eseguito, poiché mancano le identità.
 - [ ] M1-07 Eseguire test autorizzazioni cross-tenant con utenti veri e controlli RLS negativi.
 - [ ] M1-08 Concludere onboarding agenzia e inviti famiglia E2E.
 
