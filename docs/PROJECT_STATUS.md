@@ -1,6 +1,6 @@
 # MEMORIAL — Registro operativo unico (fonte di avanzamento)
 
-Aggiornato: 21 ottobre 2026.
+Aggiornato: 21 ottobre 2026, dopo implementazione delle schermate DB-backed per SuperAdmin, Agenzia e Famiglia.
 **Regola:** ogni attività deve avere ID stabile, stato, prova oggettiva, dipendenza e prossimo passo. Non confondere preparato, committato, in DB, verificato, rilasciato.
 Stati: [x] provato sul sistema di destinazione; [~] parziale; [ ] da fare; [!] bloccato.
 Le fonti business canoniche sono `01_DECISIONI.md`; questioni aperte `02_APERTI.md`.
@@ -27,8 +27,8 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - [x] M2-01 Migrazione catalogo demo applicata su Supabase: `is_demo` e vincoli coerenza agenzia/memoriale, campi tier/stato/visibilità.
 - [x] M2-02 Seed persistente: 3 agenzie demo e 12 memoriali demo. Conteggi SQL verificati: 3/12; 0 mismatch, 0 record reali coinvolti al momento del test.
 - [x] M2-03 Migrazione e seed versionati nel branch `m2-persisted-demo`.
-- [~] M2-04 Console SuperAdmin catalogo DB-backed (codice nel branch). Build/CI e accesso reale da verificare.
-- [ ] M2-05 Schermate Agenzia e Famiglia realmente operative sui record Supabase del rispettivo tenant.
+- [~] M2-04 Console SuperAdmin: catalogo DB-backed, filtri e contatori committati; build CI e accesso OWNER ancora da verificare.
+- [~] M2-05 Schermate Agenzia e Famiglia collegati alle membership Supabase e alle relative righe; codice committato, verifica login end-to-end mancante perché Auth non ha utenti.
 - [ ] M2-06 Contenuti demo: biografie, ricordi, pensieri, moderazione, messaggi, ordini/test payment, conservazioni, notifiche e ticket come da `11_DUMMY_GUIDA.md`. Lo schema attuale è insufficiente; migrazioni da fare.
 - [ ] M2-07 Escludere tutti i dati `is_demo=true` da KPI/billing reali in query/servizi e verificarlo.
 - [ ] M2-08 Reset Dummy Data riservato SuperAdmin: atomico, ID stabili, tocca solo dataset demo e dipendenze demo; non implementato e non eseguibile.
@@ -51,7 +51,7 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - P-03: il ramo `m2-interactive-demo` contiene esclusivamente un branch senza commit di dati hardcoded: non utilizzarlo come sorgente; mantenere **solo** `m2-persisted-demo`.
 - P-04: le fonti chiedono reset permanente anche in produzione; la sicurezza del reset è ancora da verificare e il vecchio script non è applicabile ciecamente.
 - P-05: l'app è divisa in PR stacked. Non dire che il codice è in produzione prima di un merge/release.
-- P-06: per completare creazione Auth e bootstrap SuperAdmin servono flussi autorizzati e segreti gestiti dalla piattaforma, mai riportati in chat.
+- P-06: per completare creazione Auth e bootstrap SuperAdmin servono flussi autorizzati e segreti gestiti dalla piattaforma, mai riportati in chat. Non creare utenti direttamente in auth.users via SQL; il master richiede Auth Admin/Dashboard.
 - P-07: schema prodotto incompleto; evitare di simulare workflow nel solo React.
 
 ## Prossima sequenza vincolante
