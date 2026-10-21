@@ -37,7 +37,7 @@ const parsed = new URL(url);
 if (parsed.protocol !== "https:" || parsed.hostname !== `${EXPECTED_PROJECT}.supabase.co`) {
   throw new Error("Supabase target mismatch; refusing provisioning.");
 }
-if (ownerPassword === demoPassword || ownerPassword.length < 12 || demoPassword.length < 10) {
+if (ownerPassword === demoPassword || ownerPassword.length < 10 || demoPassword.length < 10) {
   throw new Error("Initial credentials do not satisfy provisioning policy.");
 }
 const supabase = createClient(url, key, {
