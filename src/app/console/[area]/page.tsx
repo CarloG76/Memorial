@@ -1,36 +1,51 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { WorkspaceShell } from "@/components/workspace-shell";
-import { requireWorkspaceAccess } from "@/lib/authz/server";
+import { DemoCatalog } from "@/components/demo-catalog";
+import { readIdentityAndMemberships, requireWorkspaceAccess } from "@/lib/authz/server";
 import { isWorkspaceArea } from "@/lib/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function WorkspacePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ area: string }>;
+  searchParams: Promise<{ sezione?: string; q?: string }>;
 }) {
   const { area } = await params;
   if (!isWorkspaceArea(area)) notFound();
-  await requireWorkspaceAccess(area);
 
-  // M1 verifies workspace membership. It still renders NO cross-tenant data,
-  // payments, personal contacts, private messages or privileged mutations.
+  if (area === "piattaforma") {
+    const identity = await readIdentityAndMemberships();
+    if (!identity) redirect("/accedi");
+    // Only the canonical SuperAdmin role may use this cross-agency demo view.
+    if (!identity.workspaces.platformRoles.includes("OWNER")) {
+      redirect("/console?errore=non-autorizzato");
+    }
+    const queryParams = await searchParams;
+    const view = queryParams.sezione === "agenzie" || queryParams.sezione === "memoriali"
+      ? queryParams.sezione
+      : "dashboard";
+    const q = typeof queryParams.q === "string" ? queryParams.q.slice(0,120) : "";
+    return <WorkspaceShell area={area}>
+      <DemoCatalog view={view} query={q} />
+    </WorkspaceShell>;
+  }
+
+  await requireWorkspaceAccess(area);
   return (
     <WorkspaceShell area={area}>
-      <span className="workspace-label">Milestone M1 · accesso verificato</span>
+      <span className="workspace-label">Area autenticata · funzioni in sviluppo</span>
       <h1>Il tuo ambiente Memorial</h1>
       <p className="muted">
-        Il tuo account dispone di un&apos;abilitazione attiva per questo ambiente.
-        Le operazioni sui contenuti saranno disponibili solo dopo i controlli
-        specifici per agenzia, memoriale, ruolo e stato della risorsa.
+        L&apos;accesso è verificato attraverso le membership. Le operazioni sui
+        contenuti richiedono autorizzazioni per memoriale e ruoli specifici.
       </p>
-      <section className="workspace-panel" aria-label="Stato della console">
-        <strong>Accesso limitato e tracciabile</strong>
-        <p>
-          Questa schermata non mostra dati operativi. Per ora non sono disponibili
-          acquisti, pubblicazione, gestione privata o accessi trasversali ai tenant.
-        </p>
+      <section className="workspace-panel">
+        <strong>Nessun dato trasversale esposto</strong>
+        <p>Le aree Agenzia e Famiglia verranno collegate alle proprie risorse
+          dopo la verifica dei relativi permessi.</p>
       </section>
     </WorkspaceShell>
   );
