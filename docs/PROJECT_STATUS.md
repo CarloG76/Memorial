@@ -118,3 +118,12 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - [~] Playwright aggiunto formato tablet da 834 px e spec `e2e/responsive-contract.spec.ts` per verifiche responsive. CI ed E2E autenticati ancora da completare.
 - [ ] Test su browser reale di menu, filtri, responsive delle pagine Agenzia/Famiglia e assenza overflow a 360, 390, 768, 834, 1024, 1440 px.
 - [ ] Ogni prossima PR deve superare il gate mobile/tablet/desktop **prima** di chiudere la funzionalità.
+
+## UX — Audit e contratto componenti obbligatorio (22/10/2026)
+- [x] Analisi cross-role documentata in `docs/COMPONENT_USAGE_AUDIT.md`: 18 classi di componenti, matrice 7 schermate SuperAdmin, 5 Agenzia, 7 Famiglia, contesto Visitatore, specifiche desktop/tablet/mobile, ACL/dati/empty/error/action/test.
+- [x] Dalla verifica codice individuati: search topbar fittizia, simboli e badge incoerenti, etichette 12px, KPI scalati da query `select all`, duplicazione rendering tabelle/cards, alcune sezioni solo placeholder.
+- [x] Prima correzione eseguita: link toolbar ora esplicita “Apri elenco agenzie” o “Vai alla panoramica”, senza simulare ricerca globale. Commit `48b840bf`.
+- [x] PR template `.github/PULL_REQUEST_TEMPLATE.md` con gate componenti, dati, ruoli, Desktop/Tablet/Smartphone, accessibilità, screenshot e UAT.
+- [ ] Refactoring UI verso `RecordList`, `StatusBadge`, `KpiStat`, `SearchFilter`, `StateBoundary` condivisi.
+- [ ] Audit e correzione tipi e contrasti su tutti i breakpoint, WCAG AA e screen reader.
+- [ ] Esecuzione E2E autenticato e screenshot diff per ciascun ruolo; design gate non ancora chiuso.
