@@ -97,3 +97,9 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - [ ] Grafici ricavi, continuità economica, attività recenti e pagamento: non esistono ancora le necessarie tabelle/eventi. NON usare dati inventati; da implementare con schema e feed reali.
 - [ ] Modifica agenzia e stati con audit: prossima milestone operativa.
 - [ ] Login UAT e confronto browser desktop/mobile ai mockup prima della chiusura.
+
+## M2.5 — Fix familiare e scheda Memoriale (22/10/2026)
+- [x] DB verificato: M01 ha 2 family_members, 1 memoria, 2 pensieri; M02 ha 2 membri, 1 ricordo. Associazioni già presenti: bug era RLS read.
+- [x] Migrazione `superadmin_family_content_read` applicata: accesso SELECT ai tre ambiti per solo OWNER della piattaforma; nessun UPDATE o accesso anon.
+- [~] UI dettaglio: familiari per nome da profiles, card icone colorate, date localizzate, ricordi e pensieri. Pubblicata sul branch M2, attende verifica reale sessione e build.
+- [ ] Sezioni Economia, Statistiche e Assistenza secondo i mockup necessitano ancora sorgenti dati e flussi effettivi, non inventare KPI.
