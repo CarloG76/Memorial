@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Brand } from "./brand";
+import { UiIcon } from "./ui-icon";
 import { WORKSPACE_NAV, type WorkspaceArea } from "@/lib/navigation";
 
-const SIDEBAR_ICONS: Record<string,string> = {dashboard:"▦",agenzie:"▤",memoriali:"▣",economia:"◈",statistiche:"▥",assistenza:"◉",impostazioni:"⚙"};
 const ACTIVE_PLATFORM_SECTIONS = new Set(["dashboard", "agenzie", "memoriali"]);
 
 const workspaceTitle: Record<WorkspaceArea, string> = {
@@ -28,10 +28,10 @@ export function WorkspaceShell({
             area === "piattaforma" && ACTIVE_PLATFORM_SECTIONS.has(item.slug) ? (
               <Link
                 key={item.slug}
-                className={index === 0 ? "side-item side-item-selected" : "side-item"}
+                className={"side-item"}
                 href={`/console/piattaforma?sezione=${item.slug}`}
               >
-                <span className="sidebar-icon" aria-hidden="true">{SIDEBAR_ICONS[item.slug]??"·"}</span>
+                <span className="sidebar-icon"><UiIcon name={item.slug as "dashboard"|"agenzie"|"memoriali"}/></span>
                 {item.label}
               </Link>
             ) : (
@@ -41,7 +41,7 @@ export function WorkspaceShell({
                 aria-disabled="true"
                 title="Attivazione prevista nelle milestone successive"
               >
-                <span className="side-item-dot" aria-hidden="true" />
+                <span className="sidebar-icon"><UiIcon name={item.slug as "economia"|"statistiche"|"assistenza"|"impostazioni"}/></span>
                 {item.label}
               </span>
             )
@@ -51,8 +51,8 @@ export function WorkspaceShell({
       </aside>
       <div className="workspace-main">
         <header className="workspace-topbar">
-          <span className="workspace-search"><span aria-hidden="true">⌕</span><span>Cerca agenzie, memoriali, stati…</span></span>
-          <div className="workspace-account"><span aria-label="Notifiche non ancora attive">♢</span><span className="workspace-avatar">SA</span><span className="workspace-account-label">{workspaceTitle[area]}</span><Link href="/account/password" aria-label="Cambia password" title="Cambia password">⚿</Link><Link href="/" aria-label="Sito pubblico" title="Sito pubblico">↗</Link></div>
+          <Link href="/console/piattaforma?sezione=agenzie" className="workspace-search"><UiIcon name="search"/><span>Cerca agenzie e memoriali…</span></Link>
+          <div className="workspace-account"><span className="workspace-notifications" title="Notifiche: prossima milestone"><UiIcon name="bell" size={19}/></span><span className="workspace-avatar">SA</span><span className="workspace-account-label">{workspaceTitle[area]}</span><Link href="/account/password" aria-label="Cambia password" title="Cambia password"><UiIcon name="shield" size={17}/></Link><Link href="/" aria-label="Sito pubblico" title="Sito pubblico"><UiIcon name="external" size={17}/></Link></div>
         </header>
         <main className="workspace-content" id="contenuto">
           {children}
