@@ -26,7 +26,7 @@ function NavItems({ area, selected, onNavigate }: {
 }) {
   return <nav className="workspace-nav" aria-label={`Sezioni ${areaLabel[area]}`}>
     {WORKSPACE_NAV[area].map((item) => {
-      const available = area === "piattaforma" && platformActive.has(item.slug);
+      const available = area==="piattaforma" ? platformActive.has(item.slug) : area==="agenzia" ? item.slug==="dashboard" : item.slug==="panoramica";
       const active = selected === item.slug;
       return available ? (
         <Link key={item.slug} href={workspaceUrl(area,item.slug)}
