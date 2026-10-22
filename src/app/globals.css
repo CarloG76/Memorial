@@ -246,3 +246,45 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid 
 .detail-icon-blue{background:#e7f0fc;color:#3b74a9}
 .detail-icon-rose{background:#ffeded;color:#c25665}
 .detail-status{display:inline-block;border:1px solid #e5d8bc;background:#fff9e9;color:#866329;padding:3px 9px;border-radius:8px}
+
+
+/* M2.6 — Modern Premium SaaS: functional UI, based on approved Memorial mockups. */
+.workspace {--admin-surface:#fff;--admin-bg:#f6f8fb;--admin-stroke:#e8edf3;background:var(--admin-bg)}
+.workspace-sidebar {background:#0b2035;box-shadow:3px 0 24px #0b20351a}
+.workspace-sidebar::after{display:none}
+.workspace-sidebar .brand{justify-content:flex-start;margin:3px 13px 19px}
+.workspace-sidebar nav{gap:5px}
+.workspace-sidebar .side-item{font:500 14px/1.4 Arial,Helvetica,sans-serif;padding:12px 14px;min-height:44px;transition:background .14s ease,color .14s ease}
+.workspace-sidebar .side-item[href]:hover{background:#ffffff14}
+.workspace-sidebar .side-item[href]:focus-visible{outline:2px solid #e1b86c}
+.sidebar-icon{width:21px;height:21px;flex:none;font-size:unset}
+.workspace-topbar{height:69px;border-color:var(--admin-stroke)}
+.workspace-search{min-width:min(420px,52vw);text-decoration:none;background:#f7f9fb}
+.workspace-search>span:first-child{font-size:13px}
+.workspace-account{gap:16px}
+.workspace-notifications{display:flex;align-items:center;color:#536d83}
+.workspace-content{padding:31px 35px 62px;max-width:1540px}
+.catalog-header h1,.workspace-content h1{font-family:Arial,Helvetica,sans-serif;font-size:clamp(29px,2.5vw,36px);font-weight:750;letter-spacing:-1.15px}
+.catalog-header p{color:#728093}
+.catalog-metric,.workspace-panel{border:1px solid #e8edf3;box-shadow:0 8px 28px #12294108;background:#fff}
+.catalog-metric{border-radius:13px;min-height:113px;padding:19px}
+.catalog-metric::before{border-radius:10px;width:36px;height:36px}
+.catalog-metric b{font-family:Arial,Helvetica,sans-serif;font-size:31px;font-weight:750;letter-spacing:-.8px}
+.catalog-metric small{font-size:13px}
+.workspace-panel{border-radius:13px}
+.catalog-section-head h2,.workspace-panel>h2{font-family:Arial,Helvetica,sans-serif;font-size:18px;font-weight:750;letter-spacing:-.3px}
+.catalog-tabs{gap:8px}
+.catalog-tab{border-radius:8px 8px 0 0}
+.catalog-filters{box-shadow:0 3px 20px #132d4305}
+.catalog-filters button{background:#102940;border-radius:8px}
+.catalog-filters button:hover{background:#235271}
+.catalog-table th{font:700 12px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.2px;text-transform:none}
+.catalog-table td{font-size:13px}
+.catalog-table tr:hover td{background:#f8fafc}
+.catalog-table td a{font-weight:700}
+.catalog-demo-tag{border-radius:6px}
+.catalog-details dt{font:600 12px/1.4 Arial,Helvetica,sans-serif;color:#6a7a8c}
+.catalog-details dd{font-size:14px}
+.admin-attention-grid a{border-radius:10px;transition:transform .15s,box-shadow .15s}
+.admin-attention-grid a:hover{transform:translateY(-2px);box-shadow:0 6px 20px #12294110}
+@media(max-width:800px){.workspace-content{padding:22px 15px 35px}.workspace-sidebar .side-item{min-height:40px}.workspace-search{min-width:0}}
