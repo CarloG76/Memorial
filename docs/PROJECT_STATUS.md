@@ -90,3 +90,10 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - [~] Applicati sidebar navy, marchio, tab crema, cards KPI con accenti cromatici, toolbar, tavole dati chiare, tipografia editoriale, responsive; modifiche su `m2-persisted-demo`.
 - [ ] Verifica rendering visivo reale desktop/mobile e test con login; non ancora svolti. Alcuni numeri/grafici dei mockup sono illustrativi e non vengono inventati nei KPI.
 - [ ] Completare schermate mockup delle altre sezioni con dati effettivi e funzioni reali.
+
+## M2.4 — Dashboard e Agenzie visibili dai mockup (22/10/2026)
+- [~] Dashboard OWNER: KPI agenzie attive, memoriali pubblicati, Pro attive, conservati; pannelli panoramica agenzie, situazione memoriali, elementi che richiedono attenzione. Tutti i conteggi provengono dalle righe Supabase autorizzate e rispettano il filtro demo salvato.
+- [~] Pagina Agenzie: KPI Totali, Pro attive, Free attive, inattive; elenco unico e accesso scheda con filtro demo. Nessun numero di crescita mensile inventato.
+- [ ] Grafici ricavi, continuità economica, attività recenti e pagamento: non esistono ancora le necessarie tabelle/eventi. NON usare dati inventati; da implementare con schema e feed reali.
+- [ ] Modifica agenzia e stati con audit: prossima milestone operativa.
+- [ ] Login UAT e confronto browser desktop/mobile ai mockup prima della chiusura.
