@@ -84,3 +84,9 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - [ ] Provare con login reale la persistenza del filtro dopo logout/login e l'apertura dei dettagli di M01 e A01.
 - [ ] Azioni di modifica nelle schede: non implementate, quindi non mostrarle come operative.
 - [ ] Contenuti privati famiglie: gli accessi rimangono filtrati da RLS; le schede mostrano solamente ciò che è effettivamente autorizzato, da verificare.
+
+## M2.3 — Allineamento mockup approvati (22/10/2026)
+- [x] Confrontati `18_SUPERADMIN_A.jpg`, `19_SUPERADMIN_B.jpg` e `06_UI_DESIGN.md` con la UI reale.
+- [~] Applicati sidebar navy, marchio, tab crema, cards KPI con accenti cromatici, toolbar, tavole dati chiare, tipografia editoriale, responsive; modifiche su `m2-persisted-demo`.
+- [ ] Verifica rendering visivo reale desktop/mobile e test con login; non ancora svolti. Alcuni numeri/grafici dei mockup sono illustrativi e non vengono inventati nei KPI.
+- [ ] Completare schermate mockup delle altre sezioni con dati effettivi e funzioni reali.
