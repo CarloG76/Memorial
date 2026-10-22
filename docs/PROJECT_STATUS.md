@@ -103,3 +103,9 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - [x] Migrazione `superadmin_family_content_read` applicata: accesso SELECT ai tre ambiti per solo OWNER della piattaforma; nessun UPDATE o accesso anon.
 - [~] UI dettaglio: familiari per nome da profiles, card icone colorate, date localizzate, ricordi e pensieri. Pubblicata sul branch M2, attende verifica reale sessione e build.
 - [ ] Sezioni Economia, Statistiche e Assistenza secondo i mockup necessitano ancora sorgenti dati e flussi effettivi, non inventare KPI.
+
+## M2.6 — Modern Premium SaaS (22/10/2026)
+- [x] Introdotto componente SVG riusabile `src/components/ui-icon.tsx` con icone vettoriali coerenti senza font esterni o pacchetti non versionati.
+- [~] Sidebar, toolbar, KPI, filtri, tabelle, card e responsive adattati al linguaggio moderno dei riferimenti utente, preservando navy/gold e gerarchia dei mockup Memorial. Commit `89b01dc3`.
+- [ ] Preview visuale desktop/mobile da collaudare effettivamente. Nessuna feature di ricerca globale, notifiche o grafici economici viene dichiarata completata sulla sola base dell'aspetto.
+- [ ] Flussi operativi SuperAdmin Agenzie e altre sezioni da sviluppare con persistenza DB e audit.
