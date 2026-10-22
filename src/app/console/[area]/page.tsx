@@ -30,7 +30,7 @@ export default async function WorkspacePage({
       : "dashboard";
     const q = typeof queryParams.q === "string" ? queryParams.q.slice(0,120) : "";
     return <WorkspaceShell area={area}>
-      <DemoCatalog view={view} query={q} />
+      <DemoCatalog view={view} query={q} userId={identity.userId} />
     </WorkspaceShell>;
   }
 
