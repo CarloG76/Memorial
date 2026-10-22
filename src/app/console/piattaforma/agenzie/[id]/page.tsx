@@ -38,14 +38,14 @@ export default async function AgencyDetail({params}:{params:Promise<{id:string}>
   <div className="catalog-table-wrap"><table className="catalog-table">
    <thead><tr><th>Persona</th><th>Tipologia</th><th>Stato</th><th>Demo</th><th>Apri</th></tr></thead>
    <tbody>{m.data?.map(row=><tr key={row.id}>
-    <td>{row.deceased_name??"In preparazione"}</td><td>{row.tier??"—"}</td><td>{row.status}</td>
-    <td>{row.is_demo?"Sì":"No"}</td>
-    <td><Link href={`/console/piattaforma/memoriali/${row.id}`}>Dettaglio →</Link></td>
+    <td data-label="Persona">{row.deceased_name??"In preparazione"}</td><td data-label="Tipologia">{row.tier??"—"}</td><td data-label="Stato">{row.status}</td>
+    <td data-label="Demo">{row.is_demo?"Sì":"No"}</td>
+    <td data-label="Azioni"><Link href={`/console/piattaforma/memoriali/${row.id}`}>Dettaglio →</Link></td>
    </tr>)}</tbody></table></div></section>
   <section className="workspace-panel"><h2>Accessi agenzia</h2><p>{staff.data?.length??0} membri registrati</p>
    <div className="catalog-table-wrap"><table className="catalog-table">
     <thead><tr><th>ID utente</th><th>Ruolo</th><th>Attivo</th></tr></thead>
-    <tbody>{staff.data?.map(u=><tr key={u.user_id}><td>{u.user_id}</td><td>{u.role}</td><td>{u.active?"Sì":"No"}</td></tr>)}</tbody>
+    <tbody>{staff.data?.map(u=><tr key={u.user_id}><td data-label="ID utente">{u.user_id}</td><td data-label="Ruolo">{u.role}</td><td data-label="Attivo">{u.active?"Sì":"No"}</td></tr>)}</tbody>
    </table></div></section>
   <p className="catalog-footnote">Scheda in consultazione. Modifiche e azioni operative saranno disponibili quando i relativi flussi saranno implementati e autorizzati.</p>
  </WorkspaceShell>;
