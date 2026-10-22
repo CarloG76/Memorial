@@ -236,3 +236,13 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid 
 .admin-attention-grid a>span:last-child{font-size:13px;color:#516a7e;}
 .admin-attention-icon {display:grid;place-items:center;flex-shrink:0;border-radius:8px;width:36px;height:36px;background:#fcf0db;color:#a77327;font-size:21px;font-weight:700;}
 @media(max-width:900px){.admin-overview-grid{grid-template-columns:1fr;gap:0}.admin-attention-grid{grid-template-columns:1fr;}}
+
+
+/* Memorial detail — colored iconography matching the SuperAdmin design system. */
+.workspace-panel>h2 {display:flex;align-items:center;gap:11px;color:#123253;font-size:22px;font-weight:600;}
+.detail-icon {height:35px;width:35px;flex:none;display:inline-grid;place-items:center;border-radius:9px;font:700 23px/1 Arial,sans-serif;}
+.detail-icon-gold{background:#fff1d8;color:#b07823}
+.detail-icon-green{background:#e4f5ed;color:#118561}
+.detail-icon-blue{background:#e7f0fc;color:#3b74a9}
+.detail-icon-rose{background:#ffeded;color:#c25665}
+.detail-status{display:inline-block;border:1px solid #e5d8bc;background:#fff9e9;color:#866329;padding:3px 9px;border-radius:8px}
