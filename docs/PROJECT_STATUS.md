@@ -76,3 +76,11 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - [x] Aggiornato `scripts/provision-uat.mjs` per consentire unicamente l'esecuzione Actions approvata (oltre a host locale).
 - [ ] Esecuzione manuale di `Memorial — crea account UAT (manuale)` via GitHub Actions. **Non ancora avviata** (il connettore GitHub disponibile non supporta workflow_dispatch).
 - [ ] Conferma Supabase Auth: 9 utenti, 4 agency_members, 10 family_members, 1 platform OWNER.
+
+## M2.2 — Cataloghi unificati e navigazione (22/10/2026)
+- [x] DB: `profiles.catalog_demo_filter` con valori `ALL / ONLY_DEMO / NO_DEMO`, predefinito ALL e permesso UPDATE limitato alla colonna preferenza. Migrazione `unified_superadmin_catalog` applicata.
+- [x] DB: RLS SELECT memoriali per OWNER piattaforma, senza aprire a tutti i ruoli.
+- [~] UI: SuperAdmin elenchi unici Agenzie/Memoriali; colonna Demo per ogni record, filtro preferenza persistente in Supabase, ricerca, pagine dettaglio agenzia e memoriale. Implementati nel branch, collaudo UI ancora da effettuare.
+- [ ] Provare con login reale la persistenza del filtro dopo logout/login e l'apertura dei dettagli di M01 e A01.
+- [ ] Azioni di modifica nelle schede: non implementate, quindi non mostrarle come operative.
+- [ ] Contenuti privati famiglie: gli accessi rimangono filtrati da RLS; le schede mostrano solamente ciò che è effettivamente autorizzato, da verificare.
