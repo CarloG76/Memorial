@@ -46,7 +46,7 @@ export default async function MemorialDetail({params}:{params:Promise<{id:string
   </dl></section>
   <section className="workspace-panel"><h2><span className="detail-icon detail-icon-green">♧</span> Famiglia ({family.data?.length??0})</h2><div className="catalog-table-wrap">
    <table className="catalog-table"><thead><tr><th>Nome</th><th>Ruolo</th><th>Attivo</th><th>Moderazione</th></tr></thead>
-   <tbody>{family.data?.map(u=><tr key={u.user_id}><td><strong>{familyNames.get(u.user_id)??"Profilo non disponibile"}</strong></td><td>{u.role}</td><td>{u.active?"Sì":"No"}</td><td>{u.can_moderate?"Sì":"No"}</td></tr>)}</tbody></table></div></section>
+   <tbody>{family.data?.map(u=><tr key={u.user_id}><td data-label="Familiare"><strong>{familyNames.get(u.user_id)??"Profilo non disponibile"}</strong></td><td data-label="Ruolo">{u.role}</td><td data-label="Attivo">{u.active?"Sì":"No"}</td><td data-label="Moderazione">{u.can_moderate?"Sì":"No"}</td></tr>)}</tbody></table></div></section>
   <section className="workspace-panel"><h2><span className="detail-icon detail-icon-blue">▤</span> Ricordi ({memories.data?.length??0})</h2>
    {memories.data?.map(x=><article key={x.id} className="catalog-content"><strong>{x.title}</strong><p>{x.body}</p><small className="detail-status">Stato: {x.moderation_status}</small></article>)}
    {!memories.data?.length&&<p>Nessun ricordo.</p>}</section>
