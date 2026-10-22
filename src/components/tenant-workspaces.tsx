@@ -19,11 +19,11 @@ export async function AgencyWorkspace({userId}:{userId:string}) {
  <div className="catalog-metric"><small>In preparazione</small><b>{memorials.filter(m=>["DRAFT","SKELETON_ACTIVE","FAMILY_PREPARING"].includes(m.status)).length}</b></div>
  </div>
  <section className="workspace-panel"><h2>Agenzie</h2><div className="catalog-table-wrap">
- <table className="catalog-table"><thead><tr><th>Nome</th><th>Città</th><th>Piano</th><th>Stato</th></tr></thead><tbody>{agencies.map(a=><tr key={a.id}><td>{a.legal_name}</td><td>{a.city??"—"}</td><td>{a.plan}</td><td>{a.status}</td></tr>)}</tbody></table></div>
+ <table className="catalog-table"><thead><tr><th>Nome</th><th>Città</th><th>Piano</th><th>Stato</th></tr></thead><tbody>{agencies.map(a=><tr key={a.id}><td data-label="Agenzia">{a.legal_name}</td><td data-label="Città">{a.city??"—"}</td><td data-label="Piano">{a.plan}</td><td data-label="Stato">{a.status}</td></tr>)}</tbody></table></div>
  {agencies.length===0&&<p>Nessuna agenzia assegnata.</p>}</section>
  <section className="workspace-panel"><h2>Memoriali</h2><div className="catalog-table-wrap">
  <table className="catalog-table"><thead><tr><th>Persona</th><th>Codice</th><th>Tipo</th><th>Stato</th><th>Demo</th></tr></thead>
- <tbody>{memorials.map(m=><tr key={m.id}><td>{m.deceased_name??"In preparazione"}</td><td>{m.demo_code??"—"}</td><td>{m.tier??"—"}</td><td>{statusLabels[m.status]??m.status}</td><td>{m.is_demo?"Sì":"No"}</td></tr>)}</tbody></table></div>
+ <tbody>{memorials.map(m=><tr key={m.id}><td data-label="Persona">{m.deceased_name??"In preparazione"}</td><td data-label="Codice">{m.demo_code??"—"}</td><td data-label="Tipo">{m.tier??"—"}</td><td data-label="Stato">{statusLabels[m.status]??m.status}</td><td data-label="Demo">{m.is_demo?"Sì":"No"}</td></tr>)}</tbody></table></div>
  {memorials.length===0&&<p>Nessun memoriale assegnato.</p>}</section>
  </div>;
 }
@@ -34,7 +34,7 @@ export async function FamilyWorkspace({userId}:{userId:string}) {
  <h1>I memoriali della tua famiglia</h1><p className="muted">Sono visibili soltanto i memoriali per cui disponi di un ruolo attivo.</p>
  <section className="workspace-panel"><div className="catalog-section-head"><h2>Memoriali associati</h2><span>{memorials.length}</span></div>
  <div className="catalog-table-wrap"><table className="catalog-table"><thead><tr><th>Persona</th><th>Stato</th><th>Ruolo</th><th>Modera</th><th>Modifica</th></tr></thead>
- <tbody>{memorials.map(m=>{const role=membershipMap.get(m.id);return <tr key={m.id}><td><strong>{m.deceased_name??"In preparazione"}</strong></td><td>{statusLabels[m.status]??m.status}</td><td>{role?.role??"—"}</td><td>{role?.can_moderate?"Sì":"No"}</td><td>{role?.can_edit_content?"Sì":"No"}</td></tr>})}</tbody>
+ <tbody>{memorials.map(m=>{const role=membershipMap.get(m.id);return <tr key={m.id}><td data-label="Persona"><strong>{m.deceased_name??"In preparazione"}</strong></td><td data-label="Stato">{statusLabels[m.status]??m.status}</td><td data-label="Ruolo">{role?.role??"—"}</td><td data-label="Modera">{role?.can_moderate?"Sì":"No"}</td><td data-label="Modifica">{role?.can_edit_content?"Sì":"No"}</td></tr>})}</tbody>
  </table></div>{memorials.length===0&&<p>Nessun memoriale assegnato al tuo account.</p>}</section>
  <section className="workspace-panel">
    <div className="catalog-section-head"><h2>Ricordi</h2><span>{memories.length} registrati</span></div>
