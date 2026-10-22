@@ -30,8 +30,8 @@ const demoPassword = required("MEMORIAL_DEMO_INITIAL_PASSWORD");
 if (env.MEMORIAL_PROVISION_APPROVED !== "YES") {
   throw new Error("Set MEMORIAL_PROVISION_APPROVED=YES to run administrative provisioning.");
 }
-if (env.CI || env.VERCEL || env.NEXT_RUNTIME) {
-  throw new Error("Do not provision identities from CI, a deployed app, or a runtime request.");
+if ((env.CI && env.GITHUB_ACTIONS !== "true") || env.VERCEL || env.NEXT_RUNTIME) {
+  throw new Error("Provisioning is allowed only from a local administrative host or explicitly approved GitHub Actions workflow.");
 }
 const parsed = new URL(url);
 if (parsed.protocol !== "https:" || parsed.hostname !== `${EXPECTED_PROJECT}.supabase.co`) {
