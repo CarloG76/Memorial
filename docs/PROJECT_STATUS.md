@@ -70,3 +70,9 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - [x] Pagina `/account/password` e server action autenticata per cambio password.
 - [ ] Esecuzione reale: necessita `SUPABASE_SECRET_KEY` da ambiente amministrativo, NON disponibile tramite connettore ChatGPT.
 - [ ] Collaudo login U00–U08 e matrice ruoli cross-tenant: non possibile finché Auth ha 0 utenti.
+
+## UAT 22/10/2026 — workflow operativo
+- [x] Aggiunto al branch **main** `.github/workflows/provision-uat.yml` (commit `e15880a9`): workflow_dispatch con conferma esplicita, GitHub Secrets, checkout codice pin `cdb35944`, senza pubblicare password.
+- [x] Aggiornato `scripts/provision-uat.mjs` per consentire unicamente l'esecuzione Actions approvata (oltre a host locale).
+- [ ] Esecuzione manuale di `Memorial — crea account UAT (manuale)` via GitHub Actions. **Non ancora avviata** (il connettore GitHub disponibile non supporta workflow_dispatch).
+- [ ] Conferma Supabase Auth: 9 utenti, 4 agency_members, 10 family_members, 1 platform OWNER.
