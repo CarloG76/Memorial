@@ -105,9 +105,9 @@ export async function DemoCatalog({view,query,userId}:{view:View;query:string;us
     <div className="catalog-table-wrap"><table className="catalog-table"><thead>
       <tr><th>Nome</th><th>Città</th><th>Piano</th><th>Stato</th><th>Demo</th><th>Dettagli</th></tr>
     </thead><tbody>{shownAgencies.map(a=><tr key={a.id}>
-      <td><Link href={`/console/piattaforma/agenzie/${a.id}`}><strong>{a.legal_name}</strong></Link></td>
-      <td>{a.city??"—"}</td><td>{a.plan}</td><td>{a.status}</td><td><DemoCell demo={a.is_demo}/></td>
-      <td><Link href={`/console/piattaforma/agenzie/${a.id}`}>Apri →</Link></td>
+      <td data-label="Agenzia"><Link href={`/console/piattaforma/agenzie/${a.id}`}><strong>{a.legal_name}</strong></Link></td>
+      <td data-label="Città">{a.city??"—"}</td><td data-label="Piano"><span className={a.plan==="PRO"?"admin-pill admin-pill-gold":"admin-pill admin-pill-green"}>{a.plan}</span></td><td data-label="Stato"><span className={a.status==="ACTIVE"?"admin-pill admin-pill-green":"admin-pill admin-pill-slate"}>{a.status}</span></td><td data-label="Demo"><DemoCell demo={a.is_demo}/></td>
+      <td data-label="Azioni"><Link className="admin-open-link" href={`/console/piattaforma/agenzie/${a.id}`}>Apri dettagli →</Link></td>
     </tr>)}</tbody></table></div>{shownAgencies.length===0&&<p>Nessuna agenzia trovata.</p>}
   </section>}
   {(view==="memoriali")&&<section className="workspace-panel" aria-labelledby="memorials-head">
@@ -115,10 +115,10 @@ export async function DemoCatalog({view,query,userId}:{view:View;query:string;us
     <div className="catalog-table-wrap"><table className="catalog-table"><thead>
       <tr><th>Persona</th><th>Agenzia</th><th>Tipologia</th><th>Stato</th><th>Demo</th><th>Dettagli</th></tr>
     </thead><tbody>{shownMemorials.map(m=><tr key={m.id}>
-      <td><Link href={`/console/piattaforma/memoriali/${m.id}`}><strong>{m.deceased_name??"In preparazione"}</strong></Link></td>
-      <td>{agencyById.get(m.agency_id)??"—"}</td><td>{m.tier??"—"}</td>
-      <td>{statuses[m.status]??m.status}</td><td><DemoCell demo={m.is_demo}/></td>
-      <td><Link href={`/console/piattaforma/memoriali/${m.id}`}>Apri →</Link></td>
+      <td data-label="Persona"><Link href={`/console/piattaforma/memoriali/${m.id}`}><strong>{m.deceased_name??"In preparazione"}</strong></Link></td>
+      <td data-label="Agenzia">{agencyById.get(m.agency_id)??"—"}</td><td data-label="Tipologia"><span className={m.tier==="PREMIUM"?"admin-pill admin-pill-gold":"admin-pill admin-pill-slate"}>{m.tier??"—"}</span></td>
+      <td data-label="Stato"><span className={m.status==="PUBLISHED_ACTIVE"?"admin-pill admin-pill-green":m.status==="EXPIRED"||m.status==="SUSPENDED"?"admin-pill admin-pill-red":"admin-pill admin-pill-gold"}>{statuses[m.status]??m.status}</span></td><td data-label="Demo"><DemoCell demo={m.is_demo}/></td>
+      <td data-label="Azioni"><Link className="admin-open-link" href={`/console/piattaforma/memoriali/${m.id}`}>Apri dettagli →</Link></td>
     </tr>)}</tbody></table></div>{shownMemorials.length===0&&<p>Nessun memoriale trovato.</p>}
   </section>}
  </>;
