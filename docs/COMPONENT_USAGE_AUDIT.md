@@ -5,6 +5,8 @@
 
 ## 1. Gerarchia e natura delle indicazioni
 
+**Tracciabilità fonti:** i documenti master \`01_DECISIONI.md\`, \`03_PRODOTTO.md\`, \`05_RUOLI_PERMESSI.md\`, \`06_UI_DESIGN.md\`, \`07_WORKFLOW.md\`, \`12_TEST_ROADMAP.md\` sono file forniti nel progetto ChatGPT e non risultano presenti nella root di questo repository GitHub pubblico; non vanno pubblicati automaticamente. Questa analisi è una sintesi operativa delle rispettive regole, non ne sostituisce il testo.
+
 **Specifiche approvate:** `01_DECISIONI.md` prevale; `03_PRODOTTO.md`, `05_RUOLI_PERMESSI.md`, `06_UI_DESIGN.md`, `07_WORKFLOW.md`, `12_TEST_ROADMAP.md` sono la base per i flussi; i mockup forniti sono riferimenti di *struttura visiva*, non simulazioni da importare come schermate funzionanti.
 
 **Decisioni vincolanti:**
