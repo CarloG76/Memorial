@@ -109,7 +109,11 @@ export function WorkspaceChrome({ area, children }: { area: WorkspaceArea; child
           <span className="workspace-mobile-monogram">✦</span> Memorial
         </Link>
         <Link href={area==="piattaforma"?"/console/piattaforma?sezione=agenzie":"/console"}
-          className="workspace-search"><UiIcon name="search"/><span>Esplora i contenuti…</span></Link>
+          className="workspace-search"
+          aria-label={area==="piattaforma"?"Apri elenco agenzie":"Vai alla panoramica"}>
+          <UiIcon name={area==="piattaforma"?"agenzie":"dashboard"}/>
+          <span>{area==="piattaforma"?"Apri elenco agenzie":"Vai alla panoramica"}</span>
+        </Link>
         <div className="workspace-account">
           <span className="workspace-avatar">{area==="piattaforma"?"SA":area==="agenzia"?"AG":"FA"}</span>
           <span className="workspace-account-label">{areaLabel[area]}</span>
