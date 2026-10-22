@@ -1,13 +1,8 @@
 import Link from "next/link";
-import { LayoutDashboard, Building2, BookOpen, Wallet, ChartNoAxesCombined, LifeBuoy, Settings, Search, Bell, UserRound, KeyRound, ArrowUpRight } from "lucide-react";
 import { Brand } from "./brand";
 import { WORKSPACE_NAV, type WorkspaceArea } from "@/lib/navigation";
 
-const SIDEBAR_ICONS: Record<string, React.ComponentType<{size?:number;strokeWidth?:number}>> = {
-  dashboard:LayoutDashboard, agenzie:Building2, memoriali:BookOpen,
-  economia:Wallet, statistiche:ChartNoAxesCombined, assistenza:LifeBuoy,
-  impostazioni:Settings
-};
+const SIDEBAR_ICONS: Record<string,string> = {dashboard:"▦",agenzie:"▤",memoriali:"▣",economia:"◈",statistiche:"▥",assistenza:"◉",impostazioni:"⚙"};
 const ACTIVE_PLATFORM_SECTIONS = new Set(["dashboard", "agenzie", "memoriali"]);
 
 const workspaceTitle: Record<WorkspaceArea, string> = {
@@ -36,7 +31,7 @@ export function WorkspaceShell({
                 className={index === 0 ? "side-item side-item-selected" : "side-item"}
                 href={`/console/piattaforma?sezione=${item.slug}`}
               >
-                {SIDEBAR_ICONS[item.slug] ? (()=>{const Icon=SIDEBAR_ICONS[item.slug];return <Icon size={17} strokeWidth={1.7}/>})() : <span className="side-item-dot" aria-hidden="true"/>}
+                <span className="sidebar-icon" aria-hidden="true">{SIDEBAR_ICONS[item.slug]??"·"}</span>
                 {item.label}
               </Link>
             ) : (
@@ -56,8 +51,8 @@ export function WorkspaceShell({
       </aside>
       <div className="workspace-main">
         <header className="workspace-topbar">
-          <span className="workspace-search"><Search size={17}/><span>Cerca agenzie, memoriali, stati…</span></span>
-          <div className="workspace-account"><Bell size={18} aria-label="Notifiche non ancora attive"/><span className="workspace-avatar"><UserRound size={16}/></span><span className="workspace-account-label">{workspaceTitle[area]}</span><Link href="/account/password" aria-label="Cambia password" title="Cambia password"><KeyRound size={17}/></Link><Link href="/" aria-label="Sito pubblico" title="Sito pubblico"><ArrowUpRight size={18}/></Link></div>
+          <span className="workspace-search"><span aria-hidden="true">⌕</span><span>Cerca agenzie, memoriali, stati…</span></span>
+          <div className="workspace-account"><span aria-label="Notifiche non ancora attive">♢</span><span className="workspace-avatar">SA</span><span className="workspace-account-label">{workspaceTitle[area]}</span><Link href="/account/password" aria-label="Cambia password" title="Cambia password">⚿</Link><Link href="/" aria-label="Sito pubblico" title="Sito pubblico">↗</Link></div>
         </header>
         <main className="workspace-content" id="contenuto">
           {children}
