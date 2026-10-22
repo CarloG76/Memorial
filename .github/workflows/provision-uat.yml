@@ -1,0 +1,52 @@
+name: Memorial — crea account UAT (manuale)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Digita PROVISION_MEMORIAL per creare gli account nel Supabase approvato"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: memorial-uat-provisioning
+  cancel-in-progress: false
+
+jobs:
+  provision:
+    if: ${{ inputs.confirmation == 'PROVISION_MEMORIAL' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout codice revisionato M2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: cdb35944886f4cbba7f997bfe26eed54d6a6081a
+          persist-credentials: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.3
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Installa dipendenze bloccate
+        run: pnpm install --frozen-lockfile
+      - name: Provisioning utenti Supabase Auth e membership
+        env:
+          SUPABASE_URL: https://ojzkikhtcrqcpsvhepbp.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          MEMORIAL_OWNER_INITIAL_PASSWORD: ${{ secrets.MEMORIAL_OWNER_INITIAL_PASSWORD }}
+          MEMORIAL_DEMO_INITIAL_PASSWORD: ${{ secrets.MEMORIAL_DEMO_INITIAL_PASSWORD }}
+          MEMORIAL_PROVISION_APPROVED: "YES"
+        run: |
+          if [ -z "$SUPABASE_SECRET_KEY" ] || [ -z "$MEMORIAL_OWNER_INITIAL_PASSWORD" ] || [ -z "$MEMORIAL_DEMO_INITIAL_PASSWORD" ]; then
+            echo 'Mancano uno o più GitHub Actions repository secrets.' >&2
+            exit 1
+          fi
+          node scripts/provision-uat.mjs
