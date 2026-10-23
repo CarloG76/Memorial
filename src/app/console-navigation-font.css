@@ -1,0 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap");
+.workspace .workspace-sidebar .workspace-nav .side-item,
+.workspace .workspace-sidebar .workspace-nav .side-item span,
+.workspace .workspace-mobile-drawer .workspace-nav .side-item,
+.workspace .workspace-mobile-drawer .workspace-nav .side-item span,
+.workspace .workspace-sidebar .workspace-context,
+.workspace .workspace-mobile-drawer-context,
+.workspace .workspace-sidebar .brand-text strong,
+.workspace .workspace-sidebar .brand-text small,
+.workspace .workspace-mobile-brand,
+.workspace .workspace-topbar .workspace-account,
+.workspace .workspace-topbar .workspace-account span {
+ font-family:"Montserrat",Arial,Helvetica,sans-serif!important;
+}
+.workspace .workspace-sidebar .workspace-nav .side-item,
+.workspace .workspace-mobile-drawer .workspace-nav .side-item {
+ font-size:14px!important;font-weight:500!important;letter-spacing:0!important;
+}
+.workspace .workspace-sidebar .workspace-nav .side-item-selected,
+.workspace .workspace-mobile-drawer .workspace-nav .side-item-selected {font-weight:700!important}
+.workspace .workspace-sidebar .brand-text strong{font-weight:700!important}
