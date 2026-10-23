@@ -26,6 +26,12 @@ export async function DemoCatalog({view,query,userId}:{view:View;query:string;us
    (!needle || `${a.legal_name} ${a.city??""} ${a.demo_code??""}`.toLocaleLowerCase("it").includes(needle)));
  const shownMemorials=memorials.filter(m=>matches(m.is_demo,preference) &&
    (!needle || `${m.deceased_name??""} ${m.demo_code??""} ${agencyById.get(m.agency_id)??""}`.toLocaleLowerCase("it").includes(needle)));
+ const activeAgencies=shownAgencies.filter(a=>a.status==="ACTIVE");
+ const agencyCounts=shownAgencies.map(a=>({...a,count:memorials.filter(m=>m.agency_id===a.id&&matches(m.is_demo,preference)).length}));
+ const published=shownMemorials.filter(m=>m.status==="PUBLISHED_ACTIVE").length;
+ const preserved=shownMemorials.filter(m=>m.status==="PRESERVED_STATIC").length;
+ const preparing=shownMemorials.filter(m=>["DRAFT","SKELETON_ACTIVE","FAMILY_PREPARING","READY_FOR_PUBLICATION"].includes(m.status)).length;
+ const maxAgencyMemorials=Math.max(1,...agencyCounts.map(a=>a.count));
  const tabs:readonly {key:View;name:string}[]=[
   {key:"dashboard",name:"Panoramica"},{key:"agenzie",name:"Agenzie"},{key:"memoriali",name:"Memoriali"}
  ];
@@ -81,4 +87,5 @@ export async function DemoCatalog({view,query,userId}:{view:View;query:string;us
    </section>
    <section className="workspace-panel"><div className="catalog-section-head"><h2>Pagamenti anomali</h2><span>Integrazione prevista</span></div><div className="sa-empty-state"><span className="sa-list-icon sa-list-amber"><UiIcon name="shield" size={19}/></span><strong>Monitoraggio non ancora attivo</strong><p>Le transazioni di pagamento non sono ancora collegate a questa dashboard.</p></div></section>
   </div>}
+
 
