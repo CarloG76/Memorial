@@ -7,7 +7,7 @@ import { Brand } from "./brand";
 import { UiIcon } from "./ui-icon";
 import { WORKSPACE_NAV, type WorkspaceArea } from "@/lib/navigation";
 
-const platformActive = new Set(["dashboard", "agenzie", "memoriali"]);
+
 const icons = ["dashboard", "agenzie", "memoriali", "economia", "statistiche", "assistenza", "impostazioni"] as const;
 type IconName = (typeof icons)[number];
 const areaLabel: Record<WorkspaceArea, string> = {
@@ -18,7 +18,7 @@ function iconFor(slug: string): IconName {
 }
 function workspaceUrl(area: WorkspaceArea, slug: string) {
   if (area === "piattaforma") return `/console/piattaforma?sezione=${slug}`;
-  return `/console/${area}`;
+  return `/console/${area}?sezione=${slug}`;
 }
 
 function NavItems({ area, selected, onNavigate }: {
@@ -26,7 +26,7 @@ function NavItems({ area, selected, onNavigate }: {
 }) {
   return <nav className="workspace-nav" aria-label={`Sezioni ${areaLabel[area]}`}>
     {WORKSPACE_NAV[area].map((item) => {
-      const available = area==="piattaforma" ? platformActive.has(item.slug) : area==="agenzia" ? item.slug==="dashboard" : item.slug==="panoramica";
+      const available = true;
       const active = selected === item.slug;
       return available ? (
         <Link key={item.slug} href={workspaceUrl(area,item.slug)}
@@ -57,8 +57,8 @@ export function WorkspaceChrome({ area, children }: { area: WorkspaceArea; child
   const selected = area==="piattaforma"
     ? pathname.includes("/agenzie/") ? "agenzie"
       : pathname.includes("/memoriali/") ? "memoriali"
-      : section==="agenzie" || section==="memoriali" ? section : "dashboard"
-    : area==="agenzia" ? "dashboard" : "panoramica";
+      : WORKSPACE_NAV.piattaforma.some(item=>item.slug===section) ? section! : "dashboard"
+    : area==="agenzia" ? (WORKSPACE_NAV.agenzia.some(item=>item.slug===section)?section!:"dashboard") : (WORKSPACE_NAV.famiglia.some(item=>item.slug===section)?section!:"panoramica");
 
   useEffect(() => {
     if(!open) return;
