@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./console-navigation-font.css";
 
 export const metadata: Metadata = {
   title: { default: "Memorial — I ricordi continuano a vivere", template: "%s | Memorial" },
