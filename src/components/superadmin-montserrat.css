@@ -1,0 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap");
+.workspace:has(.memorial-admin),.workspace:has(.memorial-admin) .workspace-sidebar,.workspace:has(.memorial-admin) .workspace-topbar,.workspace:has(.memorial-admin) .workspace-content,.workspace:has(.memorial-admin) .memorial-admin,.workspace:has(.memorial-admin) .memorial-admin *{font-family:"Montserrat",Arial,sans-serif!important}
+.workspace:has(.memorial-admin) .memorial-admin h1{font-weight:750;letter-spacing:-1px}
+.workspace:has(.memorial-admin) .memorial-admin h2{font-weight:700;letter-spacing:-.35px}
+.workspace:has(.memorial-admin) .memorial-admin .ma-metric-copy strong{font-weight:750;letter-spacing:-.8px}
