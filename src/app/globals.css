@@ -397,3 +397,66 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid 
 @media(prefers-reduced-motion:reduce){
   .workspace-mobile-drawer,.workspace-menu-trigger,.workspace .side-item{transition:none}
 }
+
+
+/* M2.7 — actual mockup-first composition: charts, compact table, operational cards. */
+.workspace .sa-heading{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:2px 0 19px}
+.workspace .sa-eyebrow{font:750 11px/1.3 Arial,sans-serif;letter-spacing:1.2px;color:#a47732}
+.workspace .sa-eyebrow span{color:#b3bbc4;padding:0 6px}
+.workspace .sa-heading h1{font:750 clamp(31px,2.5vw,37px)/1.12 Arial,sans-serif;letter-spacing:-1.1px;color:#102940;margin:8px 0 5px}
+.workspace .sa-heading p{color:#6a7c8f;font:400 14px/1.5 Arial,sans-serif;margin:0}
+.sa-live{display:flex;align-items:center;gap:7px;color:#66806e;background:#eff8f2;border:1px solid #d9eddf;border-radius:99px;padding:7px 12px;font-size:12px;white-space:nowrap}
+.sa-live span{width:7px;height:7px;background:#1d9563;border-radius:50%}
+.workspace .sa-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 15px;border:1px solid #e9edf1;background:#fff;border-radius:10px;margin:0 0 15px}
+.sa-toolbar-heading{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#4a667b;margin-right:8px}
+.sa-select-label{font-size:12px;color:#667b8d}
+.sa-toolbar select{border:1px solid #dfe5e9;border-radius:7px;background:#fff;min-height:36px;padding:0 34px 0 12px;color:#102940}
+.sa-toolbar button{border:0;border-radius:7px;background:#102940;color:#fff;padding:10px 14px;font-weight:650;cursor:pointer}
+.sa-toolbar-note{color:#87929e;font-size:11px;margin-left:auto}
+.workspace .catalog-stats{gap:12px}
+.workspace .catalog-metric{position:relative;min-height:105px;padding:16px 17px 13px;border-radius:10px}
+.workspace .catalog-metric small{display:block;padding-right:37px;font-size:12px;font-weight:650;color:#63758b}
+.workspace .catalog-metric b{font-size:29px;margin-top:3px;display:block}
+.workspace .catalog-metric:nth-child(1)::before{background:#fbefd9;color:#b77b19}
+.workspace .catalog-metric:nth-child(2)::before{background:#e5f6ef;color:#178358}
+.workspace .catalog-metric:nth-child(3)::before{background:#e8edfb;color:#5274b8}
+.workspace .catalog-metric:nth-child(4)::before{background:#fff0ed;color:#d15b54}
+.workspace .sa-analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:15px}
+.workspace .sa-chart-panel{margin-top:0;min-width:0;padding:20px 21px}
+.workspace .sa-chart-panel .catalog-section-head{margin-bottom:12px}
+.workspace .sa-chart-panel .catalog-section-head p{font-size:12px;color:#8995a4;margin:4px 0 0}
+.sa-chart-body{display:flex;align-items:center;justify-content:space-around;gap:24px;min-height:210px}
+.sa-donut{width:175px;height:175px;flex:none;display:grid;place-items:center;border-radius:50%}
+.sa-donut>span{width:114px;height:114px;display:flex;flex-direction:column;justify-content:center;align-items:center;border-radius:50%;background:white;box-shadow:inset 0 0 0 1px #edf0f4}
+.sa-donut strong{font:750 31px Arial,sans-serif;color:#102940}
+.sa-donut small{font:12px Arial,sans-serif;color:#748399}
+.sa-chart-legend{min-width:130px;flex:1;max-width:270px}
+.sa-chart-legend>div{display:flex;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid #edf0f4;font-size:12px;color:#53697d}
+.sa-chart-legend strong{margin-left:auto;font-size:15px;color:#102940}
+.sa-dot{width:9px;height:9px;border-radius:3px;display:inline-block;flex:none}
+.sa-navy{background:#102940}.sa-gold{background:#b48a46}.sa-green{background:#23a47b}.sa-gray{background:#e4eaf1}
+.sa-bars{display:flex;flex-direction:column;gap:19px;padding:12px 0}
+.sa-bar-row{display:grid;grid-template-columns:minmax(95px,1.25fr) minmax(60px,2fr) 26px;gap:12px;align-items:center;font-size:12px;color:#536b80}
+.sa-bar-row>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sa-bar-row strong{text-align:right;color:#102940}
+.sa-track{height:11px;background:#eef2f6;border-radius:7px;overflow:hidden}
+.sa-track>div{height:100%;background:linear-gradient(90deg,#c9a05c,#a97528);border-radius:7px}
+.sa-agency-filters{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:12px 0;color:#65788b}
+.sa-filter-pills{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:12px}
+.sa-filter-pills>strong{font-size:13px;color:#102940;margin-right:10px}
+.sa-subtle{font-size:12px;color:#8492a1}
+.workspace .sa-agency-bottom{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-top:15px}
+.workspace .sa-agency-bottom .workspace-panel{margin-top:0;padding:18px 16px}
+.sa-mini-list>a{display:flex;align-items:center;gap:11px;padding:11px 1px;text-decoration:none;border-top:1px solid #edf1f4}
+.sa-mini-list>a:hover{background:#f8fafc}
+.sa-mini-list>a>span:last-child{margin-left:auto;color:#668099}
+.sa-list-icon{display:grid;place-items:center;flex:none;width:34px;height:34px;background:#edf3fa;color:#24527e;border-radius:9px}
+.sa-list-amber{background:#fff1e3;color:#bb7833}
+.sa-list-copy{display:flex;flex-direction:column;gap:4px;min-width:0}
+.sa-list-copy strong{font-size:12px;color:#12314c;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.sa-list-copy small{font-size:11px;color:#8997a5}
+.sa-empty-state{min-height:135px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:8px}
+.sa-empty-state strong{font-size:12px;color:#16354a}
+.sa-empty-state p,.sa-empty{font-size:12px;color:#718396;line-height:1.5;margin:0}
+@media(max-width:1000px){.workspace .sa-agency-bottom{grid-template-columns:1fr 1fr}.workspace .sa-analytics-grid{grid-template-columns:1fr}.sa-toolbar-note{display:none}}
+@media(max-width:660px){.workspace .sa-agency-bottom{grid-template-columns:1fr}.workspace .sa-heading-actions{display:none}.workspace .sa-toolbar{flex-direction:row;gap:8px}.sa-toolbar-heading{width:100%}.sa-chart-body{flex-direction:column;padding-top:16px}.sa-chart-legend{width:100%;max-width:none}.sa-donut{width:150px;height:150px}.sa-donut>span{width:98px;height:98px}}
