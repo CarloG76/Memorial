@@ -1,9 +1,10 @@
 import { notFound, redirect } from "next/navigation";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import { DemoCatalog } from "@/components/demo-catalog";
+import { WorkspaceSkeleton } from "@/components/workspace-skeleton";
 import { AgencyWorkspace, FamilyWorkspace } from "@/components/tenant-workspaces";
 import { readIdentityAndMemberships, requireWorkspaceAccess } from "@/lib/authz/server";
-import { isWorkspaceArea } from "@/lib/navigation";
+import { isWorkspaceArea, WORKSPACE_NAV } from "@/lib/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -29,14 +30,17 @@ export default async function WorkspacePage({
       ? queryParams.sezione
       : "dashboard";
     const q = typeof queryParams.q === "string" ? queryParams.q.slice(0,120) : "";
+    const section = typeof queryParams.sezione==="string" && WORKSPACE_NAV.piattaforma.some(item=>item.slug===queryParams.sezione) ? queryParams.sezione : "dashboard";
     return <WorkspaceShell area={area}>
-      <DemoCatalog view={view} query={q} userId={identity.userId} />
+      {section==="dashboard"||section==="agenzie"||section==="memoriali" ? <DemoCatalog view={view} query={q} userId={identity.userId} /> : <WorkspaceSkeleton area={area} section={section}/>}
     </WorkspaceShell>;
   }
 
   const identity=await requireWorkspaceAccess(area);
-  if (area==="agenzia") return <WorkspaceShell area={area}><AgencyWorkspace userId={identity.userId}/></WorkspaceShell>;
-  if (area==="famiglia") return <WorkspaceShell area={area}><FamilyWorkspace userId={identity.userId}/></WorkspaceShell>;
+  const qp=await searchParams;
+  const section=typeof qp.sezione==="string" && WORKSPACE_NAV[area].some(item=>item.slug===qp.sezione) ? qp.sezione : area==="agenzia"?"dashboard":"panoramica";
+  if (area==="agenzia") return <WorkspaceShell area={area}>{section==="dashboard"?<AgencyWorkspace userId={identity.userId}/>:<WorkspaceSkeleton area={area} section={section}/>}</WorkspaceShell>;
+  if (area==="famiglia") return <WorkspaceShell area={area}>{section==="panoramica"?<FamilyWorkspace userId={identity.userId}/>:<WorkspaceSkeleton area={area} section={section}/>}</WorkspaceShell>;
   return (
     <WorkspaceShell area={area}>
       <span className="workspace-label">Area autenticata · funzioni in sviluppo</span>
