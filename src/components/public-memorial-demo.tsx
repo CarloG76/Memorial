@@ -28,7 +28,7 @@ function Symbol({name,size=23}:{name:SymbolName;size?:number}){
  };
  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }
-const portrait="/images/memorial-demo-portrait.jpg";
+const portrait="/images/giovanni-portrait-v2.jpg";
 type Scenery="montagna"|"mare"|"personalizzato";
 const sceneUrls:Record<Exclude<Scenery,"personalizzato">,string>={
  montagna:"https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1800&q=85",
