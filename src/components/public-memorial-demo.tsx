@@ -2,16 +2,32 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import "./public-memorial-demo.css";
+import "./public-memorial-fidelity.css";
 
 type Memory={title:string;body:string};
+type GalleryPhoto={title:string;subtitle:string;image_url:string};
 type Thought={author:string;body:string};
 type Milestone={year:string;title:string;detail:string};
 export type DemoMemorial={
  name:string;birth_date:string|null;death_date:string|null;tier:string;
- dedication:string;biography:string;highlights:Milestone[];memories:Memory[];thoughts:Thought[];is_demo:true;
+ dedication:string;biography:string;highlights:Milestone[];memories:Memory[];thoughts:Thought[];photos:GalleryPhoto[];is_demo:true;
 };
 type Dialog="contact"|"thought"|"private"|"share"|"propose"|null;
 function date(value:string|null){if(!value)return "—";return new Intl.DateTimeFormat("it-IT",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}).format(new Date(value+"T12:00:00Z"));}
+type SymbolName="heart"|"camera"|"mail"|"users"|"share"|"mountain"|"waves"|"arrow";
+function Symbol({name,size=23}:{name:SymbolName;size?:number}){
+ const paths={
+ heart:<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>,
+ camera:<><rect x="3" y="6" width="18" height="15" rx="2"/><path d="m8 6 2-3h4l2 3"/><circle cx="12" cy="13" r="4"/></>,
+ mail:<><rect x="2.5" y="4" width="19" height="16" rx="2"/><path d="m3 6 9 7 9-7"/></>,
+ users:<><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 5"/></>,
+ share:<><circle cx="18" cy="5" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="18" cy="19" r="2"/><path d="m7 11 9-5M7 13l9 5"/></>,
+ mountain:<path d="m2 20 7-13 5 8 3-5 5 10H2Z"/>,
+ waves:<path d="M2 8c3 0 3 2 6 2s3-2 6-2 3 2 6 2M2 14c3 0 3 2 6 2s3-2 6-2 3 2 6 2"/>,
+ arrow:<path d="M5 12h14m-6-6 6 6-6 6"/>
+ };
+ return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
+}
 const portrait="/images/memorial-demo-portrait.jpg";
 const choices=[{id:"reminders",label:"Desidero ricevere promemoria per le ricorrenze."},{id:"family",label:"Autorizzo i familiari abilitati a contattarmi via email."},{id:"replies",label:"Desidero ricevere eventuali risposte ai miei contributi."}] as const;
 export function PublicMemorialDemo({data}:{data:DemoMemorial}){
@@ -25,28 +41,33 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
  const open=(next:Dialog)=>{setDialog(next);setNotice("");setBody("");setDisplayName("");setEmail("");setConsents({});};
  function demoSubmit(e:FormEvent<HTMLFormElement>){e.preventDefault();setNotice("Questa è un'anteprima: nessun dato è stato inviato, salvato o inoltrato.");setEmail("");setConsents({});setDisplayName("");setBody("");}
  async function copyLink(){try{await navigator.clipboard.writeText(window.location.href);setNotice("Collegamento copiato.");}catch{setNotice("Copia l’indirizzo dalla barra del browser.");}}
- return <div className="pm-site">
+ return <div className="pm-site pm-v2">
   <div className="pm-demo-ribbon">Anteprima dimostrativa · dati sintetici · nessun invio effettivo</div>
   <header className="pm-header"><Link href="/" className="pm-brand"><span>✦</span> Memorial</Link>
    <nav aria-label="Sezioni del memoriale"><a href="#home">Home</a><a href="#storia">La sua storia</a>{data.tier==="PREMIUM"&&<a href="#ricordi">Ricordi</a>}<a href="#pensieri">Pensieri</a></nav>
-   <button className="pm-header-share" type="button" onClick={()=>open("share")}>Condividi <span aria-hidden>↗</span></button>
+   <button className="pm-header-share" type="button" onClick={()=>open("share")}><Symbol name="share" size={16}/> Condividi</button>
   </header>
   <main id="contenuto">
    <section className="pm-hero" id="home">
     <div className="pm-hero-portrait" style={{backgroundImage:"linear-gradient(0deg,rgba(6,25,40,.35),transparent 65%),url("+portrait+")"}} role="img" aria-label="Ritratto illustrativo generato artificialmente, non una fotografia reale"/>
     <div className="pm-hero-copy"><span className="pm-overline">IN RICORDO DI</span><h1>{data.name}</h1><p className="pm-life-dates">{date(data.birth_date)} <span>—</span> {date(data.death_date)}</p><span className="pm-gold-stroke"/><blockquote>“{data.dedication}”</blockquote><span className="pm-portrait-note">Ritratto virtuale a scopo dimostrativo</span></div>
-    <div className="pm-hero-actions"><button onClick={()=>open("thought")} type="button"><span>♡</span> Lascia un pensiero <b>›</b></button>{data.tier==="PREMIUM"&&<button onClick={()=>open("propose")} type="button"><span>▣</span> Proponi un ricordo <b>›</b></button>}<button onClick={()=>open("private")} type="button"><span>✉</span> Scrivi ai suoi cari <b>›</b></button><button onClick={()=>open("contact")} type="button"><span>♧</span> Rimani in contatto <b>›</b></button></div>
+    <div className="pm-hero-actions"><button onClick={()=>open("thought")} type="button"><Symbol name="heart"/> Lascia un pensiero <b>›</b></button>{data.tier==="PREMIUM"&&<button onClick={()=>open("propose")} type="button"><Symbol name="camera"/> Proponi un ricordo <b>›</b></button>}<button onClick={()=>open("private")} type="button"><Symbol name="mail"/> Scrivi ai suoi cari <b>›</b></button><button onClick={()=>open("contact")} type="button"><Symbol name="users"/> Rimani in contatto <b>›</b></button></div>
    </section>
    <div className="pm-content">
-    <section className="pm-intro"><div><span className="pm-kicker">UNA STORIA DA CUSTODIRE</span><h2>Un ricordo che continua</h2><p>{data.biography}</p></div><div className="pm-intro-symbol">❦<span>Ogni vita lascia tracce di bellezza.</span></div></section>
+    <section className="pm-intro"><div><span className="pm-kicker">UNA STORIA DA CUSTODIRE</span><h2>Un ricordo che continua</h2><p>{data.biography}</p></div><div className="pm-intro-symbol"><Symbol name="mountain" size={45}/><span>La montagna</span><small>Una passione da condividere</small></div></section>
     <div className="pm-grid"><section id="storia" className="pm-section pm-story"><div className="pm-section-heading"><div><span className="pm-kicker">IL SUO PERCORSO</span><h2>La sua storia</h2></div></div>
       <p>{data.biography}</p><div className="pm-timeline">{data.highlights.map((x,i)=><div key={i}><span>{x.year}</span><div><h3>{x.title}</h3><p>{x.detail}</p></div></div>)}</div>
      </section>
      <div className="pm-right">
-      {data.tier==="PREMIUM"&&<section id="ricordi" className="pm-section"><div className="pm-section-heading"><div><span className="pm-kicker">MOMENTI CHE RESTANO</span><h2>Ricordi</h2></div><button onClick={()=>open("propose")} type="button">Proponi un ricordo →</button></div><div className="pm-memory-grid">{data.memories.length?data.memories.map((m,i)=><article className="pm-memory" key={i}><div className={"pm-memory-art pm-art-"+i} aria-hidden><span>✦</span></div><div><h3>{m.title}</h3><p>{m.body}</p></div></article>):<p>Non ci sono ancora ricordi pubblicati.</p>}</div></section>}
-      <section id="pensieri" className="pm-section"><div className="pm-section-heading"><div><span className="pm-kicker">PAROLE CHE RESTANO</span><h2>Pensieri e condoglianze</h2></div><button onClick={()=>open("thought")} type="button">Lascia un pensiero →</button></div><p>Un messaggio, un ricordo o un pensiero per chi resta. I contributi sono pubblicati soltanto dopo l'approvazione della famiglia.</p><div className="pm-thought-list">{data.thoughts.length?data.thoughts.map((t,i)=><article className="pm-thought" key={i}><span className="pm-thought-avatar">{t.author.slice(0,1)}</span><div><h3>{t.author}</h3><p>{t.body}</p></div></article>):<p>Non ci sono ancora pensieri pubblicati.</p>}</div></section>
+      {data.tier==="PREMIUM"&&<section id="ricordi" className="pm-section"><div className="pm-section-heading"><div><span className="pm-kicker">MOMENTI CHE RESTANO</span><h2>Ricordi</h2></div><button onClick={()=>open("propose")} type="button">Proponi un ricordo →</button></div><div className="pm-photo-intro">Un album di momenti condivisi <span>· Fotografie illustrative della demo</span></div>
+      <div className="pm-photo-grid">{data.photos.map((photo,i)=><article key={photo.title+"-"+i} className="pm-photo-card">
+       <div className="pm-photo-image" role="img" aria-label={photo.title+", immagine illustrativa"} style={{backgroundImage:"url("+photo.image_url+")"}}/>
+       <div className="pm-photo-overlay"><span className="pm-photo-type"><Symbol name="camera" size={13}/> Foto</span><h3>{photo.title}</h3><p>{photo.subtitle}</p></div>
+      </article>)}</div>
+      {data.memories.length>0&&<div className="pm-memory-stories"><span>RACCONTI CONDIVISI</span>{data.memories.map((m,i)=><article key={i}><h3>{m.title}</h3><p>{m.body}</p></article>)}</div>}</section>}
+      <section id="pensieri" className="pm-section"><div className="pm-section-heading"><div><span className="pm-kicker">PAROLE CHE RESTANO</span><h2>Pensieri e condoglianze</h2></div><button onClick={()=>open("thought")} type="button">Lascia un pensiero →</button></div><p>Un messaggio, un ricordo o un pensiero per chi resta. I contributi sono pubblicati soltanto dopo l'approvazione della famiglia.</p><div className="pm-thought-list">{data.thoughts.length?data.thoughts.map((t,i)=><article className="pm-thought" key={i}><div className="pm-thought-top"><span className="pm-thought-avatar">{t.author.slice(0,1)}</span><div><h3>{t.author}</h3><span>Un pensiero condiviso</span></div><Symbol name="heart" size={17}/></div><p>{t.body}</p></article>):<p>Non ci sono ancora pensieri pubblicati.</p>}</div></section>
      </div></div>
-    <section className="pm-bottom-cta"><div className="pm-cta pm-cta-blue"><span>✉</span><div><h2>Scrivi ai suoi cari</h2><p>Un messaggio privato alla famiglia, sottoposto a moderazione.</p><button type="button" onClick={()=>open("private")}>Scrivi un messaggio →</button></div></div><div className="pm-cta pm-cta-sand"><span>♧</span><div><h2>Rimani in contatto</h2><p>Lascia un recapito solo se lo desideri e scegli per quali finalità.</p><button type="button" onClick={()=>open("contact")}>Gestisci i recapiti →</button></div></div></section>
+    <section className="pm-bottom-cta"><div className="pm-cta pm-cta-blue"><span><Symbol name="mail" size={27}/></span><div><h2>Scrivi ai suoi cari</h2><p>Un messaggio privato alla famiglia, sottoposto a moderazione.</p><button type="button" onClick={()=>open("private")}>Scrivi un messaggio →</button></div></div><div className="pm-cta pm-cta-sand"><span><Symbol name="users" size={28}/></span><div><h2>Rimani in contatto</h2><p>Lascia un recapito solo se lo desideri e scegli per quali finalità.</p><button type="button" onClick={()=>open("contact")}>Gestisci i recapiti →</button></div></div><div className="pm-cta pm-cta-green"><span><Symbol name="heart" size={27}/></span><div><h2>Opere di bene</h2><p>In suo ricordo, un gesto per chi ne ha bisogno.</p><span className="pm-unavailable">Nessuna raccolta attiva</span></div></div></section>
    </div>
   </main>
   <footer className="pm-footer"><Link href="/" className="pm-brand"><span>✦</span> Memorial</Link><span>Uno spazio per ricordare, condividere, continuare.</span><span>Memoriale dimostrativo · Non indicizzato</span></footer>
