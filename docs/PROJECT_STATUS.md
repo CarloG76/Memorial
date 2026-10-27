@@ -127,3 +127,11 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - [ ] Refactoring UI verso `RecordList`, `StatusBadge`, `KpiStat`, `SearchFilter`, `StateBoundary` condivisi.
 - [ ] Audit e correzione tipi e contrasti su tutti i breakpoint, WCAG AA e screen reader.
 - [ ] Esecuzione E2E autenticato e screenshot diff per ciascun ruolo; design gate non ancora chiuso.
+
+## M3.1 — Demo pubblica Premium per visitatori (27/10/2026)
+- [x] Pagina pubblica `/memoriale/demo` pubblicata su `main`, con layout desktop/mobile, ritratto illustrativo generato, biografia, timeline, ricordi Premium e pensieri approvati.
+- [x] RPC `get_public_memorial_demo()` con SELECT anon verificata: M01 sintetico PUBLIC/PUBLISHED_ACTIVE soltanto; 1 ricordo e 1 pensiero APPROVED; contenuto PENDING escluso; nessun ID, token, recapito o messaggio privato restituito. Tabella del racconto demo senza GRANT anon SELECT.
+- [x] CTA visive: Lascia un pensiero, Proponi un ricordo, Scrivi ai suoi cari, Rimani in contatto e Condividi. In questa fase tutte le submission sono demo senza chiamate API né persistenza.
+- [x] Contatti demo: email facoltativa, tre opt-in indipendenti e non preselezionati, nota verifica email e revoca; non salvataggio di email, consensi, pensieri o messaggi.
+- [ ] Collegamento funzionale/moderazione/recapiti cifrati/OTP e PIN non ancora sviluppato. Niente fondi finché provider non approvato.
+- [ ] Collaudo visivo reale su browser e verifica del JPEG nell'ambiente di produzione da completare: build READY non è test end-to-end.
