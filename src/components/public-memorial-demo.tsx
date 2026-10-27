@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, useRef, useState, type FormEvent, type ChangeEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import { memorialBackgroundUrl } from "@/lib/memorial-backgrounds";
 import "./public-memorial-demo.css";
 import "./public-memorial-fidelity.css";
 
@@ -10,7 +11,7 @@ type Thought={author:string;body:string};
 type Milestone={year:string;title:string;detail:string};
 export type DemoMemorial={
  name:string;birth_date:string|null;death_date:string|null;tier:string;
- dedication:string;biography:string;highlights:Milestone[];memories:Memory[];thoughts:Thought[];photos:GalleryPhoto[];is_demo:true;
+ dedication:string;biography:string;highlights:Milestone[];memories:Memory[];thoughts:Thought[];photos:GalleryPhoto[];background_preset:string;is_demo:true;
 };
 type Dialog="contact"|"thought"|"private"|"share"|"propose"|null;
 function date(value:string|null){if(!value)return "—";return new Intl.DateTimeFormat("it-IT",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}).format(new Date(value+"T12:00:00Z"));}
@@ -29,11 +30,6 @@ function Symbol({name,size=23}:{name:SymbolName;size?:number}){
  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }
 const portrait="/images/giovanni-portrait-v2.jpg";
-type Scenery="montagna"|"mare"|"personalizzato";
-const sceneUrls:Record<Exclude<Scenery,"personalizzato">,string>={
- montagna:"https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1800&q=85",
- mare:"https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=1800&q=85"
-};
 const choices=[{id:"reminders",label:"Desidero ricevere promemoria per le ricorrenze."},{id:"family",label:"Autorizzo i familiari abilitati a contattarmi via email."},{id:"replies",label:"Desidero ricevere eventuali risposte ai miei contributi."}] as const;
 export function PublicMemorialDemo({data}:{data:DemoMemorial}){
  const [dialog,setDialog]=useState<Dialog>(null);
@@ -42,43 +38,12 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
  const [notice,setNotice]=useState("");
  const [displayName,setDisplayName]=useState("");
  const [body,setBody]=useState("");
- const [scene,setScene]=useState<Scenery>("montagna");
- const [sceneEditor,setSceneEditor]=useState(false);
- const [uploadedBackground,setUploadedBackground]=useState<string|null>(null);
- const [sceneMessage,setSceneMessage]=useState("");
- const uploadRef=useRef<string|null>(null);
- useEffect(()=>()=>{if(uploadRef.current)URL.revokeObjectURL(uploadRef.current);},[]);
- const sceneImage=scene==="personalizzato"?(uploadedBackground??sceneUrls.montagna):sceneUrls[scene];
- function chooseScene(next:Scenery){if(next==="personalizzato"&&!uploadedBackground){setSceneMessage("Scegli prima una fotografia dal tuo dispositivo.");return;}setScene(next);setSceneMessage("");}
- function previewUpload(event:ChangeEvent<HTMLInputElement>){
-  const file=event.target.files?.[0];
-  if(!file)return;
-  if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>6*1024*1024){
-    setSceneMessage("Usa un'immagine JPG, PNG o WebP fino a 6 MB.");
-    event.target.value="";
-    return;
-  }
-  const url=URL.createObjectURL(file);
-  if(uploadRef.current)URL.revokeObjectURL(uploadRef.current);
-  uploadRef.current=url;
-  setUploadedBackground(url);
-  setScene("personalizzato");
-  setSceneMessage("Anteprima aggiornata. La foto non è stata caricata sul server.");
- }
+ const sceneImage=memorialBackgroundUrl(data.background_preset);
  const open=(next:Dialog)=>{setDialog(next);setNotice("");setBody("");setDisplayName("");setEmail("");setConsents({});};
  function demoSubmit(e:FormEvent<HTMLFormElement>){e.preventDefault();setNotice("Questa è un'anteprima: nessun dato è stato inviato, salvato o inoltrato.");setEmail("");setConsents({});setDisplayName("");setBody("");}
  async function copyLink(){try{await navigator.clipboard.writeText(window.location.href);setNotice("Collegamento copiato.");}catch{setNotice("Copia l’indirizzo dalla barra del browser.");}}
  return <div className="pm-site pm-v2">
-  <div className="pm-demo-ribbon"><span>Anteprima dimostrativa · dati sintetici · nessun invio effettivo</span><button type="button" className="pm-demo-customize" onClick={()=>setSceneEditor(v=>!v)} aria-expanded={sceneEditor}>{sceneEditor?"Chiudi personalizzazione":"Personalizza lo sfondo (demo)"}</button></div>
-  {sceneEditor&&<aside className="pm-scene-editor" aria-label="Anteprima scelta sfondo memoriale">
-   <div><strong>Personalizzazione per la famiglia</strong><p>Scegli il paesaggio dietro al ritratto. L'immagine del defunto resta sempre in primo piano, con sfumatura.</p></div>
-   <div className="pm-scene-options">
-    <button type="button" className={scene==="montagna"?"pm-scene-choice is-current":"pm-scene-choice"} onClick={()=>chooseScene("montagna")} aria-pressed={scene==="montagna"}><Symbol name="mountain" size={19}/> Montagna / tramonto</button>
-    <button type="button" className={scene==="mare"?"pm-scene-choice is-current":"pm-scene-choice"} onClick={()=>chooseScene("mare")} aria-pressed={scene==="mare"}><Symbol name="waves" size={19}/> Mare / tramonto</button>
-    <label className={scene==="personalizzato"?"pm-scene-choice is-current":"pm-scene-choice"}><Symbol name="camera" size={19}/> Immagine personale<input type="file" accept="image/jpeg,image/png,image/webp" onChange={previewUpload} aria-label="Carica immagine di sfondo per anteprima" /></label>
-   </div>
-   <span className="pm-scene-hint" role="status">{sceneMessage||"La scelta è solo un'anteprima locale. La pubblicazione e il salvataggio richiederanno l'autorizzazione della famiglia."}</span>
-  </aside>}
+  <div className="pm-demo-ribbon">Anteprima dimostrativa · dati sintetici · nessun invio effettivo</div>
   <header className="pm-header"><Link href="/" className="pm-brand"><span>✦</span> Memorial</Link>
    <nav aria-label="Sezioni del memoriale"><a href="#home">Home</a><a href="#storia">La sua storia</a>{data.tier==="PREMIUM"&&<a href="#ricordi">Ricordi</a>}<a href="#pensieri">Pensieri</a></nav>
    <button className="pm-header-share" type="button" onClick={()=>open("share")}><Symbol name="share" size={16}/> Condividi</button>
