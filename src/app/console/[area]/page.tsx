@@ -3,6 +3,7 @@ import { WorkspaceShell } from "@/components/workspace-shell";
 import { DemoCatalog } from "@/components/demo-catalog";
 import { WorkspaceSkeleton } from "@/components/workspace-skeleton";
 import { AgencyWorkspace, FamilyWorkspace } from "@/components/tenant-workspaces";
+import { FamilyProfileAppearance } from "@/components/family-profile-appearance";
 import { readIdentityAndMemberships, requireWorkspaceAccess } from "@/lib/authz/server";
 import { isWorkspaceArea, WORKSPACE_NAV } from "@/lib/navigation";
 
@@ -40,7 +41,7 @@ export default async function WorkspacePage({
   const qp=await searchParams;
   const section=typeof qp.sezione==="string" && WORKSPACE_NAV[area].some(item=>item.slug===qp.sezione) ? qp.sezione : area==="agenzia"?"dashboard":"panoramica";
   if (area==="agenzia") return <WorkspaceShell area={area}>{section==="dashboard"?<AgencyWorkspace userId={identity.userId}/>:<WorkspaceSkeleton area={area} section={section}/>}</WorkspaceShell>;
-  if (area==="famiglia") return <WorkspaceShell area={area}>{section==="panoramica"?<FamilyWorkspace userId={identity.userId}/>:<WorkspaceSkeleton area={area} section={section}/>}</WorkspaceShell>;
+  if (area==="famiglia") return <WorkspaceShell area={area}>{section==="panoramica"?<FamilyWorkspace userId={identity.userId}/>:section==="profilo-e-storia"?<FamilyProfileAppearance userId={identity.userId}/>:<WorkspaceSkeleton area={area} section={section}/>}</WorkspaceShell>;
   return (
     <WorkspaceShell area={area}>
       <span className="workspace-label">Area autenticata · funzioni in sviluppo</span>
