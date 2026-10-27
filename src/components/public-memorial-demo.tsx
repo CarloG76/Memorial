@@ -29,7 +29,7 @@ function Symbol({name,size=23}:{name:SymbolName;size?:number}){
  };
  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }
-const portrait="/images/giovanni-portrait-v2.jpg";
+const portrait="/images/memorial-demo-portrait.webp";
 const choices=[{id:"reminders",label:"Desidero ricevere promemoria per le ricorrenze."},{id:"family",label:"Autorizzo i familiari abilitati a contattarmi via email."},{id:"replies",label:"Desidero ricevere eventuali risposte ai miei contributi."}] as const;
 export function PublicMemorialDemo({data}:{data:DemoMemorial}){
  const [dialog,setDialog]=useState<Dialog>(null);
