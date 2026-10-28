@@ -1,7 +1,6 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
-import { memorialBackgroundUrl } from "@/lib/memorial-backgrounds";
 import "./public-memorial-demo.css";
 import "./public-memorial-fidelity.css";
 
@@ -11,7 +10,7 @@ type Thought={author:string;body:string};
 type Milestone={year:string;title:string;detail:string};
 export type DemoMemorial={
  name:string;birth_date:string|null;death_date:string|null;tier:string;
- dedication:string;biography:string;highlights:Milestone[];memories:Memory[];thoughts:Thought[];photos:GalleryPhoto[];background_preset:string;is_demo:true;
+ dedication:string;biography:string;highlights:Milestone[];memories:Memory[];thoughts:Thought[];photos:GalleryPhoto[];background_preset:string;background_url:string|null;portrait_url:string|null;portrait_focus_x:number;is_demo:true;
 };
 type Dialog="contact"|"thought"|"private"|"share"|"propose"|null;
 function date(value:string|null){if(!value)return "—";return new Intl.DateTimeFormat("it-IT",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}).format(new Date(value+"T12:00:00Z"));}
@@ -29,7 +28,6 @@ function Symbol({name,size=23}:{name:SymbolName;size?:number}){
  };
  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }
-const portrait="/images/memorial-demo-portrait.webp";
 const choices=[{id:"reminders",label:"Desidero ricevere promemoria per le ricorrenze."},{id:"family",label:"Autorizzo i familiari abilitati a contattarmi via email."},{id:"replies",label:"Desidero ricevere eventuali risposte ai miei contributi."}] as const;
 export function PublicMemorialDemo({data}:{data:DemoMemorial}){
  const [dialog,setDialog]=useState<Dialog>(null);
@@ -38,7 +36,8 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
  const [notice,setNotice]=useState("");
  const [displayName,setDisplayName]=useState("");
  const [body,setBody]=useState("");
- const sceneImage=memorialBackgroundUrl(data.background_preset);
+ const sceneImage=data.background_url??"";
+ const portrait=data.portrait_url??"";
  const open=(next:Dialog)=>{setDialog(next);setNotice("");setBody("");setDisplayName("");setEmail("");setConsents({});};
  function demoSubmit(e:FormEvent<HTMLFormElement>){e.preventDefault();setNotice("Questa è un'anteprima: nessun dato è stato inviato, salvato o inoltrato.");setEmail("");setConsents({});setDisplayName("");setBody("");}
  async function copyLink(){try{await navigator.clipboard.writeText(window.location.href);setNotice("Collegamento copiato.");}catch{setNotice("Copia l’indirizzo dalla barra del browser.");}}
@@ -51,8 +50,8 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
   <main id="contenuto">
    <section className="pm-hero" id="home">
     <div className="pm-hero-scene" style={{backgroundImage:"linear-gradient(90deg,rgba(13,30,49,.18),rgba(12,26,40,.24)),url("+sceneImage+")"}} aria-hidden="true"/>
-    <div className="pm-hero-portrait" style={{backgroundImage:"url("+portrait+")"}} role="img" aria-label="Ritratto virtuale di Giovanni, sfumato sul paesaggio al tramonto"/>
-    <div className="pm-hero-copy"><span className="pm-overline">IN RICORDO DI</span><h1>{data.name}</h1><p className="pm-life-dates">{date(data.birth_date)} <span>—</span> {date(data.death_date)}</p><span className="pm-gold-stroke"/><blockquote>“{data.dedication}”</blockquote><span className="pm-portrait-note">Ritratto virtuale a scopo dimostrativo</span></div>
+    {portrait&&<div className="pm-hero-portrait" style={{backgroundImage:"url("+portrait+")",backgroundPosition:`${data.portrait_focus_x??42}% 43%`}} role="img" aria-label="Ritratto commemorativo sfumato sul paesaggio"/>}
+    <div className="pm-hero-copy"><span className="pm-overline">IN RICORDO DI</span><h1>{data.name}</h1><p className="pm-life-dates">{date(data.birth_date)} <span>—</span> {date(data.death_date)}</p><span className="pm-gold-stroke"/><blockquote>“{data.dedication}”</blockquote><span className="pm-portrait-note">Memoriale dimostrativo</span></div>
     <div className="pm-hero-actions"><button onClick={()=>open("thought")} type="button"><Symbol name="heart"/> Lascia un pensiero <b>›</b></button>{data.tier==="PREMIUM"&&<button onClick={()=>open("propose")} type="button"><Symbol name="camera"/> Proponi un ricordo <b>›</b></button>}<button onClick={()=>open("private")} type="button"><Symbol name="mail"/> Scrivi ai suoi cari <b>›</b></button><button onClick={()=>open("contact")} type="button"><Symbol name="users"/> Rimani in contatto <b>›</b></button></div>
    </section>
    <div className="pm-content">
