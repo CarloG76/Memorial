@@ -5,7 +5,7 @@ import { PublicMemorialDemo, type DemoMemorial } from "@/components/public-memor
 
 export const dynamic="force-dynamic";
 export const metadata:Metadata={
- title:"Giovanni Rossi — Memoriale dimostrativo",
+ title:"Memoriale dimostrativo",
  description:"Anteprima pubblica di un memoriale Premium sintetico. Nessuna registrazione richiesta.",
  robots:{index:false,follow:false,nocache:true}
 };
