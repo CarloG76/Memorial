@@ -83,6 +83,6 @@ export function FamilyBackgroundEditor({memorials,presets}:{memorials:FamilyHero
      {current?.portraitUrl?<div className="fb-preview-portrait" style={{backgroundImage:"url("+current.portraitUrl+")"}} aria-label="Ritratto commemorativo"/>:<div className="fb-preview-placeholder">Foto della persona da caricare</div>}
      <div className="fb-preview-name"><span>IN RICORDO DI</span><strong>{current?.name}</strong></div>
     </div>
-    <div className="fb-preview-help">Il ritratto è sempre in primo piano. L'immagine di sfondo può essere modificata dalla famiglia, non dai visitatori.</div></div>
+    <div className="fb-preview-help">Il ritratto è sempre in primo piano. L&apos;immagine di sfondo può essere modificata dalla famiglia, non dai visitatori.</div></div>
   </div>}</div>;
 }
