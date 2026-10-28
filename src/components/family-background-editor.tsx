@@ -2,15 +2,16 @@
 import { useEffect,useMemo,useRef,useState,type ChangeEvent } from "react";
 import Link from "next/link";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
-import { MEMORIAL_BACKGROUNDS,memorialBackgroundUrl,type MemorialBackgroundPreset } from "@/lib/memorial-backgrounds";
+import type { MemorialBackgroundPreset } from "@/lib/memorial-backgrounds";
 import "./family-background-editor.css";
 
 export type FamilyHeroMemorial={
  id:string;name:string;status:string;tier:string;
  draft:MemorialBackgroundPreset;published:MemorialBackgroundPreset;
- canEdit:boolean;canPublish:boolean;isSampleGiovanni:boolean;
+ canEdit:boolean;canPublish:boolean;portraitUrl:string|null;
 };
-export function FamilyBackgroundEditor({memorials}:{memorials:FamilyHeroMemorial[]}){
+export type FamilyBackgroundOption={id:MemorialBackgroundPreset;label:string;image_url:string};
+export function FamilyBackgroundEditor({memorials,presets}:{memorials:FamilyHeroMemorial[];presets:FamilyBackgroundOption[]}){
  const [records,setRecords]=useState(memorials);
  const [currentId,setCurrentId]=useState(memorials[0]?.id??"");
  const [selected,setSelected]=useState<MemorialBackgroundPreset|"custom">(memorials[0]?.draft??"montagna");
@@ -21,7 +22,8 @@ export function FamilyBackgroundEditor({memorials}:{memorials:FamilyHeroMemorial
  const current=records.find(x=>x.id===currentId);
  const client=useMemo(()=>createBrowserSupabaseClient(),[]);
  useEffect(()=>()=>{if(uploadRef.current)URL.revokeObjectURL(uploadRef.current);},[]);
- const background=selected==="custom"?(upload??memorialBackgroundUrl("montagna")):memorialBackgroundUrl(selected);
+ const fallback=presets[0]?.image_url??"";
+ const background=selected==="custom"?(upload??fallback):(presets.find(p=>p.id===selected)?.image_url??fallback);
  function switchMemorial(id:string){
   const rec=records.find(x=>x.id===id);if(!rec)return;
   setCurrentId(id);setSelected(rec.draft);setMessage("");
@@ -68,8 +70,8 @@ export function FamilyBackgroundEditor({memorials}:{memorials:FamilyHeroMemorial
     </select>
     <h2>Paesaggio di sfondo</h2>
     <p>La foto del defunto resta separata dallo sfondo e sfuma verso il paesaggio.</p>
-    <div className="fb-options">{MEMORIAL_BACKGROUNDS.map(item=><button type="button" key={item.id} className={selected===item.id?"fb-tile fb-active":"fb-tile"} onClick={()=>selectPreset(item.id)} disabled={!current?.canEdit} aria-pressed={selected===item.id}>
-      <span className="fb-tile-img" style={{backgroundImage:"url("+item.image+")"}}/><span>{item.label}</span>{selected===item.id&&<b aria-hidden="true">✓</b>}</button>)}</div>
+    <div className="fb-options">{presets.map(item=><button type="button" key={item.id} className={selected===item.id?"fb-tile fb-active":"fb-tile"} onClick={()=>selectPreset(item.id)} disabled={!current?.canEdit} aria-pressed={selected===item.id}>
+      <span className="fb-tile-img" style={{backgroundImage:"url("+item.image_url+")"}}/><span>{item.label}</span>{selected===item.id&&<b aria-hidden="true">✓</b>}</button>)}</div>
     <div className="fb-custom"><label htmlFor="fb-upload">Oppure carica un tuo sfondo</label><input id="fb-upload" type="file" accept="image/jpeg,image/png,image/webp" onChange={chooseFile} disabled={!current?.canEdit}/><p>Immagine personale: disponibile in anteprima locale. Il caricamento definitivo sarà attivato con la gestione media protetta della Famiglia.</p></div>
     <div className="fb-current"><span>Bozza salvata: <strong>{current?.draft}</strong></span><span>Pubblicato: <strong>{current?.published}</strong></span></div>
     <div className="fb-buttons"><button type="button" className="fb-primary" disabled={!current?.canEdit||saving||selected==="custom"} onClick={saveDraft}>{saving?"Salvataggio…":"Salva bozza"}</button>
@@ -78,7 +80,7 @@ export function FamilyBackgroundEditor({memorials}:{memorials:FamilyHeroMemorial
     {current?.status!=="PUBLISHED_ACTIVE"&&<p className="fb-note">La pubblicazione dello sfondo sarà possibile dopo la pubblicazione del memoriale.</p>}
    </section>
    <div className="fb-preview-wrap"><div className="fb-preview-label">ANTEPRIMA PRIVATA · SOLO FAMIGLIA</div><div className="fb-preview" style={{backgroundImage:"linear-gradient(90deg,transparent,#061e32bd),url("+background+")"}}>
-     {current?.isSampleGiovanni?<div className="fb-preview-portrait" aria-label="Ritratto virtuale di Giovanni"/>:<div className="fb-preview-placeholder">Foto della persona</div>}
+     {current?.portraitUrl?<div className="fb-preview-portrait" style={{backgroundImage:"url("+current.portraitUrl+")"}} aria-label="Ritratto commemorativo"/>:<div className="fb-preview-placeholder">Foto della persona da caricare</div>}
      <div className="fb-preview-name"><span>IN RICORDO DI</span><strong>{current?.name}</strong></div>
     </div>
     <div className="fb-preview-help">Il ritratto è sempre in primo piano. L'immagine di sfondo può essere modificata dalla famiglia, non dai visitatori.</div></div>
