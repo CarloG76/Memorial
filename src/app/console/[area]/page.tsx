@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import { DemoCatalog } from "@/components/demo-catalog";
 import { WorkspaceSkeleton } from "@/components/workspace-skeleton";
+import { SuperadminAuditLog } from "@/components/superadmin-audit-log";
 import { AgencyWorkspace, FamilyWorkspace } from "@/components/tenant-workspaces";
 import { FamilyProfileAppearance } from "@/components/family-profile-appearance";
 import { readIdentityAndMemberships, requireWorkspaceAccess } from "@/lib/authz/server";
@@ -33,7 +34,7 @@ export default async function WorkspacePage({
     const q = typeof queryParams.q === "string" ? queryParams.q.slice(0,120) : "";
     const section = typeof queryParams.sezione==="string" && WORKSPACE_NAV.piattaforma.some(item=>item.slug===queryParams.sezione) ? queryParams.sezione : "dashboard";
     return <WorkspaceShell area={area}>
-      {section==="dashboard"||section==="agenzie"||section==="memoriali" ? <DemoCatalog view={view} query={q} userId={identity.userId} /> : <WorkspaceSkeleton area={area} section={section}/>}
+      {section==="dashboard"||section==="agenzie"||section==="memoriali" ? <DemoCatalog view={view} query={q} userId={identity.userId} /> : section==="impostazioni" ? <><WorkspaceSkeleton area={area} section={section}/><SuperadminAuditLog/></> : <WorkspaceSkeleton area={area} section={section}/>}
     </WorkspaceShell>;
   }
 
