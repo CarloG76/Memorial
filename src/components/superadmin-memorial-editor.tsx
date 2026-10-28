@@ -2,13 +2,14 @@
 import {useMemo,useState,type FormEvent} from "react";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import Link from "next/link";
+import {SuperadminMemorialMedia} from "./superadmin-memorial-media";
 import "./superadmin-memorial-editor.css";
 
 export type EditorialHistory={actor:string|null;action:string;before:Record<string,unknown>;after:Record<string,unknown>;at:string};
 export type MemorialPresentation={
  memorial_id:string;name:string;tier:string;status:string;is_demo:boolean;
  dedication:string;biography:string;portrait_url:string;portrait_focus_x:number;
- background:string;history:EditorialHistory[];
+ background:string;photos:{id:string;title:string;subtitle:string;image_url:string;position:number}[];presets:{id:string;label:string;image_url:string}[];history:EditorialHistory[];
 };
 export function SuperadminMemorialEditor({initial}:{initial:MemorialPresentation}){
  const db=useMemo(()=>createBrowserSupabaseClient(),[]);
@@ -53,6 +54,7 @@ export function SuperadminMemorialEditor({initial}:{initial:MemorialPresentation
     {data.is_demo&&<Link href="/memoriale/demo" target="_blank" rel="noopener noreferrer">Apri il memoriale pubblico →</Link>}
    </section>
   </div>
+  <SuperadminMemorialMedia data={data} onUpdate={next=>setData(next)}/>
   <section className="me-card me-history"><h2>Registro delle modifiche</h2>
    {data.history.length===0?<p>Non ci sono ancora modifiche amministrative registrate per questa presentazione.</p>:(
     <div className="me-events">{data.history.map((h,i)=><article key={i}>
