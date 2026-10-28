@@ -41,7 +41,7 @@ export function SuperadminMemorialEditor({initial}:{initial:MemorialPresentation
     <label htmlFor="me-name">Nome e cognome</label><input id="me-name" value={name} onChange={e=>setName(e.target.value)} maxLength={180} required/>
     <label htmlFor="me-dedication">Dedica</label><textarea id="me-dedication" value={dedication} onChange={e=>setDedication(e.target.value)} rows={3} maxLength={500}/>
     <label htmlFor="me-bio">Biografia</label><textarea id="me-bio" value={biography} onChange={e=>setBiography(e.target.value)} rows={8} maxLength={8000}/>
-    <label htmlFor="me-portrait">Percorso dell'immagine ritratto</label><input id="me-portrait" value={portraitUrl} onChange={e=>setPortraitUrl(e.target.value)} placeholder="/images/ritratto.webp"/>
+    <label htmlFor="me-portrait">Percorso dell&apos;immagine ritratto</label><input id="me-portrait" value={portraitUrl} onChange={e=>setPortraitUrl(e.target.value)} placeholder="/images/ritratto.webp"/>
     <label htmlFor="me-focus">Posizione orizzontale del ritratto: {focus}%</label><input type="range" id="me-focus" min={0} max={100} value={focus} onChange={e=>setFocus(Number(e.target.value))}/>
     <label htmlFor="me-reason">Motivazione della modifica (obbligatoria)</label>
     <textarea id="me-reason" value={reason} onChange={e=>setReason(e.target.value)} minLength={8} maxLength={500} rows={2} required placeholder="Descrivi perché modifichi questo memoriale"/>
