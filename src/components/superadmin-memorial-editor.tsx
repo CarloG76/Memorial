@@ -4,7 +4,7 @@ import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import Link from "next/link";
 import "./superadmin-memorial-editor.css";
 
-export type EditorialHistory={actor:string;action:string;before:Record<string,unknown>;after:Record<string,unknown>;at:string};
+export type EditorialHistory={actor:string|null;action:string;before:Record<string,unknown>;after:Record<string,unknown>;at:string};
 export type MemorialPresentation={
  memorial_id:string;name:string;tier:string;status:string;is_demo:boolean;
  dedication:string;biography:string;portrait_url:string;portrait_focus_x:number;
@@ -57,7 +57,7 @@ export function SuperadminMemorialEditor({initial}:{initial:MemorialPresentation
    {data.history.length===0?<p>Non ci sono ancora modifiche amministrative registrate per questa presentazione.</p>:(
     <div className="me-events">{data.history.map((h,i)=><article key={i}>
      <div><strong>{h.action}</strong><span>{new Date(h.at).toLocaleString("it-IT")}</span></div>
-     <p>Autore: <code>{h.actor}</code></p>
+     <p>Autore: <code>{h.actor??"Sistema · importazione autorizzata"}</code></p>
      <details><summary>Valori prima e dopo</summary><pre>{JSON.stringify({prima:h.before,dopo:h.after},null,2)}</pre></details>
     </article>)}</div>
    )}
