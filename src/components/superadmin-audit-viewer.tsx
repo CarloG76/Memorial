@@ -1,12 +1,13 @@
 "use client";
 import {useMemo,useState} from "react";
+import Link from "next/link";
 import "./superadmin-platform-audit.css";
 export type AuditEvent={
  id:number;at:string;table:string;action:string;record:string;
  agency_id:string|null;memorial_id:string|null;is_demo:boolean|null;
  actor:string|null;source:string;before:Record<string,unknown>|null;after:Record<string,unknown>|null;
 };
-export function SuperadminAuditViewer({events}:{events:AuditEvent[]}){
+export function SuperadminAuditViewer({events,page,total,pageSize}:{events:AuditEvent[];page:number;total:number;pageSize:number}){
  const [filter,setFilter]=useState("");
  const [onlyDemo,setOnlyDemo]=useState(false);
  const shown=useMemo(()=>events.filter(e=>{
@@ -16,7 +17,7 @@ export function SuperadminAuditViewer({events}:{events:AuditEvent[]}){
  }),[events,filter,onlyDemo]);
  return <section className="sa-audit">
   <header><div><span className="workspace-label">SUPERADMIN · DATI REALI SUPABASE</span><h2>Registro modifiche della piattaforma</h2>
-   <p>Operazioni INSERT, UPDATE e DELETE dei registri principali, incluse agenzie, famiglie, memoriali e record DEMO. I dettagli prima/dopo sono disponibili al solo proprietario della piattaforma.</p></div><strong>{shown.length} eventi</strong></header>
+   <p>Operazioni INSERT, UPDATE e DELETE dei registri principali, incluse agenzie, famiglie, memoriali e record DEMO. I dettagli prima/dopo sono disponibili al solo proprietario della piattaforma.</p></div><strong>{total} eventi totali</strong></header>
   <div className="sa-audit-controls"><label>Filtra eventi<input type="search" placeholder="Tabella, ID, attore…" value={filter} onChange={e=>setFilter(e.target.value)}/></label>
    <label className="sa-audit-demo"><input type="checkbox" checked={onlyDemo} onChange={e=>setOnlyDemo(e.target.checked)}/> Solo dati DEMO</label></div>
   {shown.length===0?<p>Nessun evento corrisponde ai filtri. Il registro raccoglie le modifiche dal momento della sua attivazione.</p>:
@@ -26,6 +27,6 @@ export function SuperadminAuditViewer({events}:{events:AuditEvent[]}){
     <p>Record: <code>{item.record}</code> · Attore: <code>{item.actor??"Sistema / migrazione"}</code></p>
     <details><summary>Esamina la modifica</summary><div className="sa-audit-diffs"><div><strong>Prima</strong><pre>{JSON.stringify(item.before,null,2)}</pre></div><div><strong>Dopo</strong><pre>{JSON.stringify(item.after,null,2)}</pre></div></div></details>
    </article>)}</div>}
-  <p className="sa-audit-footer">Mostrati gli ultimi {events.length} eventi. I record conservati non sono modificabili attraverso il registro.</p>
+  <div className="sa-audit-footer"><span>Pagina {page+1} di {Math.max(1,Math.ceil(total/pageSize))} · Mostrati {events.length} eventi. Il registro conserva anche le pagine precedenti.</span><div className="sa-audit-pagination">{page>0&&<Link href={`/console/piattaforma?sezione=impostazioni&audit_page=${page-1}`}>← Precedenti</Link>}{(page+1)*pageSize<total&&<Link href={`/console/piattaforma?sezione=impostazioni&audit_page=${page+1}`}>Successivi →</Link>}</div></div>
  </section>;
 }
