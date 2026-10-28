@@ -17,7 +17,7 @@ function Metric({label,value,icon,tone,detail}:{label:string;value:string|number
  return <div className="ma-metric"><IconBadge name={icon} tone={tone}/><div className="ma-metric-copy"><span>{label}</span><strong>{value}</strong>{detail&&<small>{detail}</small>}</div></div>;
 }
 function Pill({value,kind}:{value:string;kind?:"plan"|"state"}){
- let tone=kind==="plan"?(value==="PRO"?"gold":"green"):(value==="ACTIVE"||value==="PUBLISHED_ACTIVE"?"green":value==="SUSPENDED"||value==="EXPIRED"?"red":"muted");
+ const tone=kind==="plan"?(value==="PRO"?"gold":"green"):(value==="ACTIVE"||value==="PUBLISHED_ACTIVE"?"green":value==="SUSPENDED"||value==="EXPIRED"?"red":"muted");
  const label:Record<string,string>={PRO:"Pro",FREE:"Free",ACTIVE:"Attiva",SUSPENDED:"Sospesa",CLOSED:"Chiusa",PUBLISHED_ACTIVE:"Pubblicato",PRESERVED_STATIC:"Conservato",EXPIRED:"Scaduto",FAMILY_PREPARING:"In preparazione",DRAFT:"Bozza",PAYMENT_PENDING:"In attesa pagamento"};
  return <span className={"ma-pill ma-pill-"+tone}>{label[value]??value.replaceAll("_"," ").toLowerCase()}</span>;
 }
