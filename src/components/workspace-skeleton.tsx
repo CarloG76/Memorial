@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { WORKSPACE_NAV, type WorkspaceArea } from "@/lib/navigation";
 import { UiIcon } from "./ui-icon";
 import "./workspace-skeleton.css";
