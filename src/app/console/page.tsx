@@ -30,7 +30,7 @@ export default async function WorkspaceChooser() {
           {areas.length === 0 ? (
             <div role="status">
               <p>Non risultano ruoli attivi. Nessun dato riservato è accessibile.</p>
-              <p>Se rappresenti un'agenzia, <Link className="text-link" href="/console/onboarding">completa la registrazione Free</Link>.</p>
+              <p>Se rappresenti un&apos;agenzia, <Link className="text-link" href="/console/onboarding">completa la registrazione Free</Link>.</p>
             </div>
           ) : (
             <>
