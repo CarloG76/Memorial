@@ -135,3 +135,15 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - [x] Contatti demo: email facoltativa, tre opt-in indipendenti e non preselezionati, nota verifica email e revoca; non salvataggio di email, consensi, pensieri o messaggi.
 - [ ] Collegamento funzionale/moderazione/recapiti cifrati/OTP e PIN non ancora sviluppato. Niente fondi finché provider non approvato.
 - [ ] Collaudo visivo reale su browser e verifica del JPEG nell'ambiente di produzione da completare: build READY non è test end-to-end.
+
+## M3.2 — Memoriale pubblico e SuperAdmin: asset, database, audit (28/10/2026)
+- [x] Nuovo ritratto virtuale di Giovanni, generato e ottimizzato, salvato come file binario Git su `main`: `public/images/giovanni-hero-2026.webp` (SHA blob verificato `2e4c70e9acce80ecd05f84db33029b72b061eec1`).
+- [x] Ritratto, fuoco orizzontale e sfondo pubblico caricati dalla proiezione **Supabase**, non codificati nel componente visitatore. Media importati nel DB con evento distinto dalla sessione di un operatore.
+- [x] Sfondi Montagna, Prato, Mare, Lago, Bosco, Collina, Cielo in `memorial_background_presets` con dati e URL modificabili da database; area Famiglia legge catalogo e ritratto del proprio memoriale con permesso RLS.
+- [x] Memoriale demo identificato tramite `memorial_demo_slots`, proiezione pubblica resa solo per memoriale PUBLIC/PUBLISHED_ACTIVE, esclude pensieri/ricordi non APPROVED e dati privati.
+- [x] SuperAdmin → Memoriali → dettaglio → **Modifica memoriale**: nome, dedica, biografia, foto e fuoco, override sfondo pubblicato, CRUD foto galleria, CRUD e moderazione di ricordi e pensieri. Tutte queste operazioni richiedono ruolo OWNER e motivazione, con audit prima/dopo; modifica DEMO consentita.
+- [x] Registro piattaforma `platform_change_log`: trigger sui 12 registri principali, actor, DEMO, prima/dopo, timestamp, consultazione SuperAdmin con paginazione in `Impostazioni`. **Cattura solo i cambiamenti successivi all'installazione**, non retroattivi.
+- [x] Test SQL in transazione con rollback: owner può modificare pubblicazione, galleria e contributi; il pubblico vede solo approvati; test senza mutare il dataset.
+- [x] GitHub CI, inclusi lint/typecheck/test/build e job RLS, **SUCCESS** sul commit `e3ddae70`. Vercel Git → `main` produce deploy production.
+
+**Ancora da implementare:** upload privato persistente e pubblicazione dei media personalizzati dalla Famiglia (attualmente solo anteprima locale); verifica email e invio reale degli interventi visitatore; CRUD SuperAdmin per tutte le altre feature oltre ai memoriali; permessi per STAFF Admin/Customer Care; percorso Standard/Premium completo e E2E autenticati; collaudo visivo browser reale.
