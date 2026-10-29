@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { readIdentityAndMemberships } from "@/lib/authz/server";
 import { WorkspaceShell } from "@/components/workspace-shell";
+import { OpenAsButton } from "@/components/superadmin-open-as-button";
 
 export const dynamic="force-dynamic";
 export default async function AgencyDetail({params}:{params:Promise<{id:string}>}){
@@ -22,7 +23,7 @@ export default async function AgencyDetail({params}:{params:Promise<{id:string}>
  return <WorkspaceShell area="piattaforma">
   <Link href="/console/piattaforma?sezione=agenzie">← Tutte le agenzie</Link>
   <div className="catalog-header"><div><span className="workspace-label">Scheda agenzia</span><h1>{agency.legal_name}</h1></div>
-  <span className="catalog-demo-tag">{agency.is_demo?"Demo":"Reale"}</span></div>
+  <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}><OpenAsButton kind="AGENCY" targetId={agency.id}/><span className="catalog-demo-tag">{agency.is_demo?"Demo":"Reale"}</span></div></div>
   <section className="workspace-panel"><h2>Anagrafica e contratto</h2>
    <dl className="catalog-details">
    <div><dt>Identificativo</dt><dd>{agency.id}</dd></div>
