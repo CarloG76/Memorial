@@ -47,3 +47,15 @@ Il SuperAdmin dispone di un'azione contestuale **«Apri come → Agenzia / Famig
 **UX target:** dalla scheda SuperAdmin di un'agenzia o memoriale, menu «Apri come» con «Agenzia» e/o «Famiglia» a seconda del contesto; breadcrumb, banner di contesto, pulsante per uscire dalla vista. La modalità deve essere chiaramente distinguibile da una vera sessione Agenzia/Famiglia.
 
 **Stato:** decisione approvata e documentata; UI contestuale, backend dei comandi delegati e test autorizzativi sono **da implementare**, non considerati esistenti solo perché registrati in ADR.
+
+## Implementazione iniziale «Apri come» — 29/10/2026
+**Rilasciata su `main`:** `/console/piattaforma/apri-come/[contextId]`, accessibile esclusivamente dopo apertura esplicita del SuperAdmin dalle schede Agenzia o Memoriale (anche DEMO). La modalità di default è visualizzazione, l'intervento è un passaggio esplicito separato.
+
+- Database: `platform_operator_contexts` e `platform_operator_context_events`, contesto legato a `auth.uid()`, ruolo OWNER verificato in ogni RPC, ambito AGENCY o FAMILY su ID verificato, scadenza 2 ore e chiusura immediata.
+- Ogni sessione registra apertura/chiusura; le azioni registrano target, motivo e, quando disponibili, dati prima/dopo. Eventi append-only con trigger anche sul registro globale `platform_change_log`.
+- Contesto Agenzia: dashboard con numeri veri, memoriali dell'agenzia con possibilità di aprire il corrispondente contesto Famiglia, operatori associati, anagrafica leggibile e modifica tracciata di ragione sociale, città, email.
+- Contesto Famiglia: panoramica, storia e biografia, membri con ruoli e permessi, ricordi, pensieri, sfondo, alcune viste skeleton esplicitamente segnalate. In modalità intervento: modifica nome/dedica/biografia/ritratto, sfondo e moderazione/modifica/cancellazione di pensieri e ricordi mediante funzioni autorizzate. Tutte le mutazioni rimangono attribuite al vero attore SuperAdmin.
+- Pulsante «Esci e torna a SuperAdmin» chiude il contesto con RPC e ritorna alla scheda originale.
+- Test SQL con `ROLLBACK`: lettura e modifica contesto Agenzia/Famiglia, cambio paesaggio, moderazione, audit, invalidazione dopo chiusura e rifiuto di una sessione tentata da utente non OWNER; nessuna modifica di test persistita.
+
+**Perimetro ancora aperto:** le sezioni di Agenzia e Famiglia non ancora realizzate (billing, inviti, contatti Consumer, notifiche, rinnovi ecc.) non sono magicamente operative nella vista contestuale. Non è ancora disponibile la matrice di permessi per ADMIN/CUSTOMER CARE. L'assenza di una funzione backend non autorizza a simularne il successo. In futuro ogni nuova funzione di dominio avrà la corrispondente operazione owner-scoped e audit nel contesto.
