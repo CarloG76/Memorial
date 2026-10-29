@@ -1,0 +1,46 @@
+.oa-workspace{font-family:Montserrat,Arial,sans-serif;color:#142f49;max-width:1480px}
+.oa-banner{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:17px 20px;border:1px solid #c9a976;border-left:5px solid #ac8044;border-radius:12px;background:#fcf3e5}
+.oa-banner strong{font-size:14px}.oa-banner p{font-size:12px;color:#655441;line-height:1.6;margin-top:4px}.oa-banner button{border:1px solid #c3ac85;border-radius:8px;background:#fff;color:#17324b;padding:11px 13px;font:700 12px Montserrat,Arial,sans-serif;cursor:pointer}
+.oa-heading{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:24px 0}.oa-heading h1{font:700 clamp(24px,3vw,32px) Montserrat,Arial,sans-serif;margin:7px 0}.oa-heading p{font-size:12px;color:#758596}
+.oa-heading-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.oa-heading-buttons button,.oa-heading-buttons a,.oa-panel button,.oa-audit button{border:1px solid #d0dae2;background:white;border-radius:8px;padding:11px 13px;color:#173951;font:700 12px Montserrat,Arial,sans-serif;text-decoration:none;cursor:pointer}
+.oa-heading-buttons .oa-primary,.oa-panel .oa-primary{background:#193b56;color:white;border-color:#193b56}
+.oa-section-nav{display:flex;align-items:center;gap:5px;overflow-x:auto;background:#fff;border:1px solid #e4e8eb;border-radius:10px;padding:8px;margin:12px 0 18px}
+.oa-tab{border:0;border-radius:6px;background:transparent;white-space:nowrap;font:600 12px Montserrat,Arial,sans-serif;color:#62798c;padding:11px 13px;cursor:pointer}
+.oa-tab.is-active{background:#f6e8d1;color:#2c394a;font-weight:700}
+.oa-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:15px 0}
+.oa-summary>div{background:#fff;border:1px solid #e8ebee;border-radius:10px;display:flex;flex-direction:column;gap:11px;padding:20px}
+.oa-summary span{color:#6e8497;font-size:12px}.oa-summary strong{font-size:20px}
+.oa-panel{background:white;border:1px solid #e5eaee;border-radius:12px;margin:14px 0;padding:22px}
+.oa-panel h2,.oa-audit h2{font:700 19px Montserrat,Arial,sans-serif;margin:0 0 16px}.oa-panel h3{font-size:14px;font-weight:700;margin:20px 0 12px}
+.oa-panel>p,.oa-note{font-size:12px;color:#688092;line-height:1.75}
+.oa-record{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 4px;border-top:1px solid #edf0f2}
+.oa-record strong{font-size:13px}.oa-record p{font-size:12px;color:#60778b;line-height:1.6;margin-top:5px}
+.oa-record>div:first-child{min-width:0}.oa-record>div:nth-child(2){flex:none}
+.oa-dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.oa-dl>div{padding-bottom:8px;border-bottom:1px solid #eef0f2}
+.oa-dl dt{font-size:11px;color:#71879a}.oa-dl dd{font-size:14px;font-weight:600;margin:5px 0;overflow-wrap:anywhere}
+.oa-status{font-size:10px;color:#7b5c2d;background:#f9eedb;font-weight:700;border-radius:5px;padding:6px 9px;white-space:nowrap}
+.oa-members{display:grid;gap:6px}.oa-members>div{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f3f5;font-size:11px}
+.oa-members>div span:first-child{overflow-wrap:anywhere;flex:1}.oa-members small{font-size:11px}
+.oa-form{max-width:800px;display:grid;gap:13px}.oa-form label,.oa-reason label,.oa-contribution label{display:grid;gap:6px;font-size:12px;font-weight:700}
+.oa-form input,.oa-form textarea,.oa-reason textarea,.oa-contribution input,.oa-contribution textarea{width:100%;font:400 13px/1.5 Montserrat,Arial,sans-serif;color:#193951;border:1px solid #ccd8e2;border-radius:8px;background:white;padding:11px;resize:vertical}
+.oa-form button{justify-self:start;background:#193b56;color:white;border:0;padding:12px 17px}
+.oa-reason{border:1px solid #d9c3a2;background:#faf3e8;border-radius:10px;padding:14px;margin:14px 0}.oa-reason textarea{max-width:800px}
+.oa-notice{background:#e9f3ed;border:1px solid #c9e4d3;color:#246243;padding:12px 14px;border-radius:8px;font-size:12px}
+.oa-portrait{height:220px;width:min(300px,100%);background-size:cover;background-position:45% 45%;border-radius:10px;margin-top:15px}
+.oa-profile>p{line-height:1.75;margin:16px 0;font-size:13px}
+.oa-contribution{padding:14px;background:#fbfcfd;border:1px solid #e6ebef;border-radius:10px;margin-bottom:12px;display:grid;gap:11px}
+.oa-flex{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.oa-contribution strong{font-size:13px}.oa-row-actions{display:flex;gap:7px;flex-wrap:wrap}.oa-panel button:disabled{opacity:.42;cursor:not-allowed}
+.oa-panel .oa-danger{background:#fce9e7;color:#ad3b36;border-color:#efcccc}
+.oa-presets{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:14px 0 20px}
+.oa-panel .oa-preset{padding:5px;background:#fff;display:flex;flex-direction:column;align-items:stretch;gap:8px;border:2px solid #e4e9ed;border-radius:9px;text-align:left}
+.oa-panel .oa-preset.selected{border-color:#aa824e;background:#fcf6eb}.oa-preset span{display:block;background-size:cover;background-position:center;height:73px;border-radius:5px}
+.oa-preset strong{font-size:11px;padding:0 3px 4px}
+.oa-audit{border:1px solid #e2e8ed;background:#fff;border-radius:10px;padding:22px;margin:20px 0}
+.oa-audit article{border-top:1px solid #edf1f4;padding:12px 0}.oa-audit article strong{font-size:12px}.oa-audit article small{font-size:11px;color:#8294a1}
+.oa-audit article p,.oa-audit>p{font-size:12px;color:#647a8a;line-height:1.7}
+.oa-audit summary{cursor:pointer;color:#286082;font-size:12px}
+.oa-audit pre{overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#f0f4f7;padding:10px;font-size:11px}
+.oa-footer{font-size:11px;color:#718697;margin:16px 0}
+@media(max-width:850px){.oa-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.oa-heading{align-items:flex-start;flex-direction:column}}
+@media(max-width:600px){.oa-banner{flex-direction:column;align-items:stretch;padding:14px}.oa-panel{padding:15px}.oa-dl{grid-template-columns:1fr}.oa-record{flex-direction:column;align-items:flex-start}.oa-record>div:nth-child(2){width:100%}.oa-summary>div{padding:15px}.oa-audit{padding:15px}}
