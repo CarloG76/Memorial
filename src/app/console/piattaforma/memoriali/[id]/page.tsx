@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { readIdentityAndMemberships } from "@/lib/authz/server";
 import { WorkspaceShell } from "@/components/workspace-shell";
+import { OpenAsButton } from "@/components/superadmin-open-as-button";
 
 export const dynamic="force-dynamic";
 export default async function MemorialDetail({params}:{params:Promise<{id:string}>}){
@@ -35,7 +36,7 @@ export default async function MemorialDetail({params}:{params:Promise<{id:string
   <div className="catalog-header"><div><span className="workspace-label">Scheda memoriale</span>
    <h1>{m.deceased_name??"Memoriale in preparazione"}</h1>
    <p><Link href={`/console/piattaforma/agenzie/${m.agency_id}`}>{agency.data.legal_name}</Link></p></div>
-   <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}><Link href={`/console/piattaforma/memoriali/${m.id}/modifica`} style={{background:"#17364f",color:"#fff",padding:"11px 14px",borderRadius:8,fontWeight:700,fontSize:13}}>Modifica memoriale</Link><span className="catalog-demo-tag">{m.is_demo?"Demo":"Reale"}</span></div></div>
+   <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}><OpenAsButton kind="FAMILY" targetId={m.id}/><Link href={`/console/piattaforma/memoriali/${m.id}/modifica`} style={{background:"#17364f",color:"#fff",padding:"11px 14px",borderRadius:8,fontWeight:700,fontSize:13}}>Modifica memoriale</Link><span className="catalog-demo-tag">{m.is_demo?"Demo":"Reale"}</span></div></div>
   <section className="workspace-panel"><h2><span className="detail-icon detail-icon-gold">◷</span> Dati e ciclo di vita</h2><dl className="catalog-details">
    <div><dt>ID</dt><dd>{m.id}</dd></div><div><dt>Codice demo</dt><dd>{m.demo_code??"—"}</dd></div>
    <div><dt>Prodotto</dt><dd>{m.tier??"—"}</dd></div><div><dt>Stato</dt><dd>{m.status}</dd></div>
