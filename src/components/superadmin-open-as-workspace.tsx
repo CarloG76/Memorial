@@ -109,10 +109,10 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  const memorials=snapshot.memorials??[];
  const thoughts=snapshot.thoughts??[];
  const memories=snapshot.memories??[];
- const commonReason=<div className="oa-reason"><label htmlFor="oa-reason">Motivazione dell'intervento (obbligatoria)</label><textarea id="oa-reason" minLength={8} maxLength={500} rows={2} value={reason} onChange={e=>setReason(e.target.value)} placeholder="Indica perché intervieni su questo account"/></div>;
+ const commonReason=<div className="oa-reason"><label htmlFor="oa-reason">Motivazione dell&apos;intervento (obbligatoria)</label><textarea id="oa-reason" minLength={8} maxLength={500} rows={2} value={reason} onChange={e=>setReason(e.target.value)} placeholder="Indica perché intervieni su questo account"/></div>;
  return <div className="oa-workspace">
   <div className="oa-banner" role="status"><div><strong>Modalità SuperAdmin · {family?"Vista Famiglia":"Vista Agenzia"}</strong>
-   <p>Stai operando con la tua identità, non con le credenziali dell'utente. Contesto: <b>{title}</b> · {snapshot.agency.is_demo||snapshot.memorial?.is_demo?"DEMO":"REALE"}</p>
+   <p>Stai operando con la tua identità, non con le credenziali dell&apos;utente. Contesto: <b>{title}</b> · {snapshot.agency.is_demo||snapshot.memorial?.is_demo?"DEMO":"REALE"}</p>
    </div><button type="button" onClick={exit} disabled={busy}>Esci e torna a SuperAdmin</button></div>
   <div className="oa-heading"><div><span className="workspace-label">APRI COME / {family?"FAMIGLIA":"AGENZIA"}</span><h1>{title}</h1>
     <p>{editable?"Modalità intervento: ogni modifica richiede conferma e motivazione.":"Modalità visualizzazione: nessuna modifica possibile."}</p></div>
