@@ -52,7 +52,6 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  const [bio,setBio]=useState(initial.presentation?.biography??"");
  const [portraitUrl,setPortraitUrl]=useState(initial.presentation?.portrait_url??"");
  const [portraitFocus,setPortraitFocus]=useState(initial.presentation?.portrait_focus_x??42);
- const [background,setBackground]=useState(initial.presentation?.background??"montagna");
  const area=initial.kind==="AGENCY"?"agenzia":"famiglia";
  const backUrl=initial.kind==="AGENCY"
   ?"/console/piattaforma/agenzie/"+initial.agency.id
