@@ -36,7 +36,7 @@ export default async function MemorialDetail({params}:{params:Promise<{id:string
   <div className="catalog-header"><div><span className="workspace-label">Scheda memoriale</span>
    <h1>{m.deceased_name??"Memoriale in preparazione"}</h1>
    <p><Link href={`/console/piattaforma/agenzie/${m.agency_id}`}>{agency.data.legal_name}</Link></p></div>
-   <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}><OpenAsButton kind="FAMILY" targetId={m.id}/><Link href={`/console/piattaforma/memoriali/${m.id}/modifica`} style={{background:"#17364f",color:"#fff",padding:"11px 14px",borderRadius:8,fontWeight:700,fontSize:13}}>Modifica memoriale</Link><span className="catalog-demo-tag">{m.is_demo?"Demo":"Reale"}</span></div></div>
+   <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}><OpenAsButton kind="FAMILY" targetId={m.id}/>{m.is_demo&&m.demo_code==="M01"&&<Link href="/memoriale/demo" target="_blank" rel="noopener noreferrer" style={{background:"#f8f1e5",color:"#17364f",padding:"11px 14px",borderRadius:8,fontWeight:700,fontSize:13,border:"1px solid #d6be90"}}>Visualizza pagina pubblica ↗</Link>}<Link href={`/console/piattaforma/memoriali/${m.id}/modifica`} style={{background:"#17364f",color:"#fff",padding:"11px 14px",borderRadius:8,fontWeight:700,fontSize:13}}>Modifica memoriale</Link><span className="catalog-demo-tag">{m.is_demo?"Demo":"Reale"}</span></div></div>
   <section className="workspace-panel"><h2><span className="detail-icon detail-icon-gold">◷</span> Dati e ciclo di vita</h2><dl className="catalog-details">
    <div><dt>ID</dt><dd>{m.id}</dd></div><div><dt>Codice demo</dt><dd>{m.demo_code??"—"}</dd></div>
    <div><dt>Prodotto</dt><dd>{m.tier??"—"}</dd></div><div><dt>Stato</dt><dd>{m.status}</dd></div>
@@ -54,6 +54,6 @@ export default async function MemorialDetail({params}:{params:Promise<{id:string
   <section className="workspace-panel"><h2><span className="detail-icon detail-icon-rose">♡</span> Pensieri ({thoughts.data?.length??0})</h2>
    {thoughts.data?.map(x=><article key={x.id} className="catalog-content"><strong>{x.author_name}</strong><p>{x.body}</p><small>Stato: {x.moderation_status}</small></article>)}
    {!thoughts.data?.length&&<p>Nessun pensiero.</p>}</section>
-  <p className="catalog-footnote">Consultazione SuperAdmin; operazioni di modifica non ancora disponibili.</p>
+  <p className="catalog-footnote">Le modifiche operate dal SuperAdmin sono soggette alle autorizzazioni e ai controlli di audit.</p>
  </WorkspaceShell>;
 }
