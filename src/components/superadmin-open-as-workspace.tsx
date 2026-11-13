@@ -40,7 +40,6 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  const [snapshot,setSnapshot]=useState(initial);
  const [tab,setTab]=useState(initial.kind==="AGENCY"?"dashboard":"panoramica");
  const [editable,setEditable]=useState(false);
- const [reason,setReason]=useState("");
  const [busy,setBusy]=useState(false);
  const [notice,setNotice]=useState("");
  const [events,setEvents]=useState<Event[]|null>(null);
@@ -58,7 +57,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
   :"/console/piattaforma/memoriali/"+initial.memorial?.id;
  const title=initial.kind==="AGENCY"?snapshot.agency.legal_name:snapshot.memorial?.name??"Famiglia";
  const currentItems=WORKSPACE_NAV[area];
- const canSave=editable&&reason.trim().length>=8&&!busy;
+ const canSave=editable&&!busy;
  const fail=(e:string)=>{setNotice(e);setBusy(false);};
  async function reload(){
   const result=await db.rpc("platform_get_operator_context",{context_key:snapshot.context_id});
@@ -67,30 +66,29 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  }
  async function write(action:()=>Promise<{error:{message:string}|null}>,success:string){
   if(!canSave)return;
-  if(!window.confirm("Confermi l'intervento come SuperAdmin? Verranno registrati identità, motivazione e modifica."))return;
   setBusy(true);setNotice("");
   const r=await action();
   if(r.error){fail("Operazione non riuscita: "+r.error.message);return;}
-  setNotice(success);setReason("");await reload();
+  setNotice(success);await reload();
  }
  async function saveAgency(e:FormEvent<HTMLFormElement>){
   e.preventDefault();
   await write(async()=>db.rpc("platform_context_update_agency",{
-   context_key:snapshot.context_id,changes:{legal_name:agencyName,city:agencyCity,contact_email:agencyEmail},reason
+   context_key:snapshot.context_id,changes:{legal_name:agencyName,city:agencyCity,contact_email:agencyEmail},reason:null
   }),"Anagrafica agenzia aggiornata e tracciata.");
  }
  async function saveFamily(e:FormEvent<HTMLFormElement>){
   e.preventDefault();
   await write(async()=>db.rpc("platform_context_update_family",{
-   context_key:snapshot.context_id,changes:{name:personName,dedication,biography:bio,portrait_url:portraitUrl,portrait_focus_x:portraitFocus},reason
+   context_key:snapshot.context_id,changes:{name:personName,dedication,biography:bio,portrait_url:portraitUrl,portrait_focus_x:portraitFocus},reason:null
   }),"Presentazione memoriale aggiornata e tracciata.");
  }
  async function saveBackground(){
-  await write(async()=>db.rpc("platform_context_set_background",{context_key:snapshot.context_id,preset,reason}),
+  await write(async()=>db.rpc("platform_context_set_background",{context_key:snapshot.context_id,preset,reason:null}),
    "Sfondo del memoriale aggiornato e tracciato.");
  }
  async function moderate(resource:"THOUGHT"|"MEMORY",operation:"EDIT"|"APPROVE"|"REJECT"|"DELETE",fields:Record<string,string>,item:Contribution){
-  await write(async()=>db.rpc("platform_context_moderate",{context_key:snapshot.context_id,resource,record_id:item.id,operation,fields,reason}),
+  await write(async()=>db.rpc("platform_context_moderate",{context_key:snapshot.context_id,resource,record_id:item.id,operation,fields,reason:null}),
    "Contributo aggiornato e registrato nel contesto.");
  }
  async function loadEvents(){
@@ -109,18 +107,16 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  const memorials=snapshot.memorials??[];
  const thoughts=snapshot.thoughts??[];
  const memories=snapshot.memories??[];
- const commonReason=<div className="oa-reason"><label htmlFor="oa-reason">Motivazione dell&apos;intervento (obbligatoria)</label><textarea id="oa-reason" minLength={8} maxLength={500} rows={2} value={reason} onChange={e=>setReason(e.target.value)} placeholder="Indica perché intervieni su questo account"/></div>;
  return <div className="oa-workspace">
   <div className="oa-banner" role="status"><div><strong>Modalità SuperAdmin · {family?"Vista Famiglia":"Vista Agenzia"}</strong>
    <p>Stai operando con la tua identità, non con le credenziali dell&apos;utente. Contesto: <b>{title}</b> · {snapshot.agency.is_demo||snapshot.memorial?.is_demo?"DEMO":"REALE"}</p>
    </div><button type="button" onClick={exit} disabled={busy}>Esci e torna a SuperAdmin</button></div>
   <div className="oa-heading"><div><span className="workspace-label">APRI COME / {family?"FAMIGLIA":"AGENZIA"}</span><h1>{title}</h1>
-    <p>{editable?"Modalità intervento: ogni modifica richiede conferma e motivazione.":"Modalità visualizzazione: nessuna modifica possibile."}</p></div>
-   <div className="oa-heading-buttons"><button type="button" className={editable?"oa-primary":"oa-secondary"} onClick={()=>{setEditable(v=>!v);setReason("");setNotice("");}}>{editable?"Termina intervento":"Intervieni come SuperAdmin"}</button>
+    <p>{editable?"Modalità intervento: modifica e salva direttamente.":"Modalità visualizzazione: nessuna modifica possibile."}</p></div>
+   <div className="oa-heading-buttons"><button type="button" className={editable?"oa-primary":"oa-secondary"} onClick={()=>{setEditable(v=>!v);setNotice("");}}>{editable?"Termina intervento":"Intervieni come SuperAdmin"}</button>
     <Link href={backUrl}>Scheda SuperAdmin</Link></div></div>
   <nav className="oa-section-nav" aria-label={"Sezioni "+area}>{currentItems.map(item=><button type="button" key={item.slug} className={tab===item.slug?"oa-tab is-active":"oa-tab"} onClick={()=>setTab(item.slug)} aria-current={tab===item.slug?"page":undefined}>{item.label}</button>)}</nav>
   {notice&&<p role="status" className="oa-notice">{notice}</p>}
-  {editable&&commonReason}
 
   {!family&&<>
    {tab==="dashboard"&&<div className="oa-summary"><div><span>Memoriali</span><strong>{memorials.length}</strong></div><div><span>Piano</span><strong>{snapshot.agency.plan}</strong></div><div><span>Stato</span><strong>{snapshot.agency.status}</strong></div><div><span>Operatori</span><strong>{members.length}</strong></div></div>}
@@ -170,7 +166,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
    {tab==="anniversari-e-solidarieta"&&<Panel title="Ricorrenze e solidarietà"><p>La gestione delle ricorrenze e delle raccolte non è ancora operativa. Nessuna modifica simulata.</p></Panel>}
   </>}
   <section className="oa-audit"><div className="oa-flex"><h2>Storico degli interventi in questo contesto</h2><button type="button" onClick={loadEvents} disabled={busy}>Aggiorna storico</button></div>
-   {events===null?<p>Apri lo storico per vedere identità, operazione, motivazione e dati prima/dopo.</p>:events.length?events.map((event,i)=><article key={i}><strong>{event.action}</strong> <small>{new Date(event.at).toLocaleString("it-IT")}</small>
+   {events===null?<p>Apri lo storico per vedere operazione, ora e dati prima/dopo.</p>:events.length?events.map((event,i)=><article key={i}><strong>{event.action}</strong> <small>{new Date(event.at).toLocaleString("it-IT")}</small>
      {event.reason&&<p>Motivazione: {event.reason}</p>}<details><summary>Dettaglio</summary><pre>{JSON.stringify({prima:event.before,dopo:event.after},null,2)}</pre></details></article>):<p>Nessuna operazione registrata.</p>}
   </section>
   <p className="oa-footer">Contesto valido fino alle {new Date(snapshot.expires_at).toLocaleString("it-IT")}. Alla scadenza o all’uscita, ulteriori azioni sono negate dal database.</p>
