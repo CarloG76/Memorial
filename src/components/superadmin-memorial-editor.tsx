@@ -19,17 +19,16 @@ export function SuperadminMemorialEditor({initial}:{initial:MemorialPresentation
  const [biography,setBiography]=useState(initial.biography??"");
  const [portraitUrl,setPortraitUrl]=useState(initial.portrait_url??"");
  const [focus,setFocus]=useState(initial.portrait_focus_x??42);
- const [reason,setReason]=useState("");
  const [saving,setSaving]=useState(false);
  const [message,setMessage]=useState("");
  async function save(event:FormEvent<HTMLFormElement>){
   event.preventDefault();setSaving(true);setMessage("");
   const changes={name,dedication,biography,portrait_url:portraitUrl,portrait_focus_x:focus};
-  const r=await db.rpc("platform_update_memorial_presentation",{target_memorial:data.memorial_id,changes,reason});
+  const r=await db.rpc("platform_update_memorial_presentation",{target_memorial:data.memorial_id,changes,reason:null});
   if(r.error){setMessage("Errore: "+r.error.message);setSaving(false);return;}
   const next=await db.rpc("platform_get_memorial_presentation",{target_memorial:data.memorial_id});
   if(next.error){setMessage("Salvato, ma non è stato possibile ricaricare lo storico.");}
-  else{setData(next.data as MemorialPresentation);setReason("");setMessage("Salvato in Supabase. Modifica tracciata nello storico.");}
+  else{setData(next.data as MemorialPresentation);setMessage("Salvato in Supabase. Modifica tracciata nello storico.");}
   setSaving(false);
  }
  return <div className="me-layout">
@@ -43,9 +42,7 @@ export function SuperadminMemorialEditor({initial}:{initial:MemorialPresentation
     <label htmlFor="me-bio">Biografia</label><textarea id="me-bio" value={biography} onChange={e=>setBiography(e.target.value)} rows={8} maxLength={8000}/>
     <label htmlFor="me-portrait">Percorso dell&apos;immagine ritratto</label><input id="me-portrait" value={portraitUrl} onChange={e=>setPortraitUrl(e.target.value)} placeholder="/images/ritratto.webp"/>
     <label htmlFor="me-focus">Posizione orizzontale del ritratto: {focus}%</label><input type="range" id="me-focus" min={0} max={100} value={focus} onChange={e=>setFocus(Number(e.target.value))}/>
-    <label htmlFor="me-reason">Motivazione della modifica (obbligatoria)</label>
-    <textarea id="me-reason" value={reason} onChange={e=>setReason(e.target.value)} minLength={8} maxLength={500} rows={2} required placeholder="Descrivi perché modifichi questo memoriale"/>
-    <button type="submit" disabled={saving||reason.trim().length<8}>{saving?"Salvataggio…":"Salva e registra modifica"}</button>
+    <button type="submit" disabled={saving}>{saving?"Salvataggio…":"Salva e registra modifica"}</button>
     {message&&<p className="me-message" role="status">{message}</p>}
    </form>
    <section className="me-card"><h2>Anteprima ritratto</h2>
