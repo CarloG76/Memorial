@@ -45,6 +45,7 @@ export function FamilyVisitorMemories({memorialId,contextKey=null,memorialName}:
    if(!res.ok||!json.ok)throw new Error(json.error??"Operazione non riuscita.");
    setNotice(action==="APPROVE"?"Ricordo approvato e pubblicato. Aggiorna il memoriale pubblico per vederlo.":"Ricordo rifiutato: non compare sul memoriale pubblico.");
    await refresh();
+   window.dispatchEvent(new Event("memorial:moderation-updated"));
   }catch(e){setError(e instanceof Error?e.message:"Operazione non riuscita.");}
   finally{setBusy(null);}
  }
@@ -65,7 +66,7 @@ export function FamilyVisitorMemories({memorialId,contextKey=null,memorialName}:
      <h3>{item.title}</h3><p>{item.body}</p>
      {item.photo_url&&<img src={item.photo_url} alt={"Fotografia proposta da "+(item.author??"un visitatore")} className="family-visitor-photo"/>}
      <div className="family-visitor-actions">
-      <button type="button" disabled={!!busy} onClick={()=>void moderate(item,"APPROVE")}>{busy===item.id?"Salvataggio…":"Approva e pubblica"}</button>
+      <button type="button" disabled={!!busy} onClick={()=>void moderate(item,"APPROVE")}>{busy===item.id?"Salvataggio…":"Approva tutto e pubblica"}</button>
       <button type="button" className="family-visitor-reject" disabled={!!busy} onClick={()=>void moderate(item,"REJECT")}>Rifiuta</button>
      </div>
     </article>)}
