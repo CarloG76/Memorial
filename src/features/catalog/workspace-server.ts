@@ -9,8 +9,8 @@ export async function getAgencyDashboard(userId: string) {
   const ids=(memberships.data??[]).map(m=>m.agency_id);
   if(!ids.length) return { agencies:[],memorials:[],membership:[] };
   const [agencies, memorials]=await Promise.all([
-    db.from("agencies").select("id,legal_name,city,status,plan,is_demo").in("id",ids).order("legal_name"),
-    db.from("memorials").select("id,agency_id,deceased_name,demo_code,status,tier,is_demo").in("agency_id",ids).order("created_at",{ascending:false})
+    db.from("agencies").select("id,legal_name,city,country_code,vat_number,contact_email,status,plan,is_demo").in("id",ids).order("legal_name"),
+    db.from("memorials").select("id,agency_id,deceased_name,demo_code,status,tier,is_demo,visibility,created_at,first_published_at,covered_until").in("agency_id",ids).order("created_at",{ascending:false})
   ]);
   if(agencies.error||memorials.error) throw new Error("Impossibile caricare i dati agenzia.");
   const allowed=new Set(ids);
