@@ -1,7 +1,5 @@
 "use client";
 import {useMemo,useState,type FormEvent} from "react";
-import Link from "next/link";
-import {useRouter} from "next/navigation";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import {WORKSPACE_NAV} from "@/lib/navigation";
 import {OpenAsButton} from "./superadmin-open-as-button";
@@ -52,7 +50,6 @@ function ContributionEditor({item,resource,busy,onAction}:{item:Contribution;res
 }
 export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  const db=useMemo(()=>createBrowserSupabaseClient(),[]);
- const router=useRouter();
  const [snapshot,setSnapshot]=useState(initial);
  const [tab,setTab]=useState(initial.kind==="AGENCY"?"dashboard":"panoramica");
  const [busy,setBusy]=useState(false);
@@ -68,9 +65,6 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  const [portraitUrl,setPortraitUrl]=useState(initial.presentation?.portrait_url??"");
  const [portraitFocus,setPortraitFocus]=useState(initial.presentation?.portrait_focus_x??42);
  const area=initial.kind==="AGENCY"?"agenzia":"famiglia";
- const backUrl=initial.kind==="AGENCY"
-  ?"/console/piattaforma/agenzie/"+initial.agency.id
-  :"/console/piattaforma/memoriali/"+initial.memorial?.id;
  const title=initial.kind==="AGENCY"?snapshot.agency.legal_name:snapshot.memorial?.name??"Famiglia";
  const currentItems=WORKSPACE_NAV[area];
  const canSave=!busy;
@@ -120,12 +114,6 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
   setBusy(true);const r=await db.rpc("platform_get_operator_context_events",{context_key:snapshot.context_id});
   if(r.error)fail(r.error.message);else{setEvents(r.data as Event[]);setBusy(false);}
  }
- async function exit(){
-  setBusy(true);
-  const r=await db.rpc("platform_close_operator_context",{context_key:snapshot.context_id});
-  if(r.error){fail(r.error.message);return;}
-  router.push(backUrl);
- }
  const [preset,setPreset]=useState(initial.presentation?.background??"montagna");
  const family=snapshot.kind==="FAMILY";
  const members=snapshot.members??[];
@@ -135,10 +123,12 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  return <div className="oa-workspace">
   <div className="oa-banner" role="status"><div><strong>SuperAdmin · Stai gestendo {family?"la Famiglia":"l’Agenzia"}: {title}</strong>
    <p>{snapshot.agency.is_demo||snapshot.memorial?.is_demo?"Ambiente DEMO":"Ambiente reale"} · Operazioni effettuate con la tua identità.</p>
-   </div><button type="button" onClick={exit} disabled={busy}>Esci e torna a SuperAdmin</button></div>
+   </div></div>
+
   <div className="oa-heading"><div><span className="workspace-label">APRI COME / {family?"FAMIGLIA":"AGENZIA"}</span><h1>{title}</h1>
     </div>
-   <div className="oa-heading-buttons"><Link href={backUrl}>Scheda SuperAdmin</Link></div></div>
+  </div>
+
   <nav className="oa-section-nav" aria-label={"Sezioni "+area}>{currentItems.map(item=><button type="button" key={item.slug} className={tab===item.slug?"oa-tab is-active":"oa-tab"} onClick={()=>setTab(item.slug)} aria-current={tab===item.slug?"page":undefined}>{item.label}</button>)}</nav>
   {notice&&<p role="status" className="oa-notice">{notice}</p>}
 
