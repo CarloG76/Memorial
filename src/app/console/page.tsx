@@ -16,6 +16,7 @@ export const dynamic = "force-dynamic";
 export default async function WorkspaceChooser() {
   const identity = await readIdentityAndMemberships();
   if (!identity) redirect("/accedi");
+  if (identity.workspaces.platformRoles.includes("OWNER")) redirect("/console/piattaforma?sezione=dashboard");
   const areas = visibleWorkspaces(identity.workspaces);
 
   return (
