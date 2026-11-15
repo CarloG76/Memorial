@@ -1,5 +1,6 @@
 import { getAgencyDashboard, getFamilyDashboard } from "@/features/catalog/workspace-server";
 import {AgencyTeamManager} from "./agency-team-manager";
+import {FamilyVisitorMemories} from "./family-visitor-memories";
 
 const statusLabels:Record<string,string>={
 DRAFT:"Bozza",PAYMENT_PENDING:"Pagamento in attesa",SKELETON_ACTIVE:"Skeleton attivo",
@@ -56,4 +57,15 @@ export async function FamilyWorkspace({userId}:{userId:string}) {
        <span className="workspace-label">Stato: {t.moderation_status}</span>
      </article>)}
  </section></div>;
+}
+
+export async function FamilyVisitorModerationSection({userId}:{userId:string}){
+ const {memorials,memberships}=await getFamilyDashboard(userId);
+ const allowed=new Set(memberships.filter(x=>x.active&&(x.role==="OWNER"||((x.role==="EDITOR")&&x.can_moderate))).map(x=>x.memorial_id));
+ const accessible=memorials.filter(m=>allowed.has(m.id));
+ return <div><span className="workspace-label">FAMIGLIA / RICORDI</span><h1>Proposte dei visitatori</h1>
+  <p className="muted">Gestisci i ricordi fotografici inviati dai visitatori. Nessun contenuto appare pubblicamente prima dell'approvazione.</p>
+  {accessible.length===0?<p>Non hai permessi di moderazione sui memoriali associati.</p>:
+  accessible.map(m=><FamilyVisitorMemories key={m.id} memorialId={m.id} memorialName={m.deceased_name??"Memoriale"}/>)}
+ </div>;
 }
