@@ -7,6 +7,7 @@ import {AgencyTeamManager} from "./agency-team-manager";
 import {AgencyAdministration} from "./agency-administration";
 import {FamilyVisitorMemories} from "./family-visitor-memories";
 import {ContextActionNotice} from "./context-action-notice";
+import {AgencyFreeMemorialCreator} from "./agency-free-memorial";
 import {MilestonesEditor,normalizeMilestones,validMilestoneDate,type MemorialMilestone} from "./memorial-milestones-editor";
 import "./superadmin-open-as-workspace.css";
 
@@ -139,6 +140,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
 
   {!family&&<>
    {tab==="dashboard"&&<div className="oa-summary"><div><span>Memoriali</span><strong>{memorials.length}</strong></div><div><span>Piano</span><strong>{snapshot.agency.plan}</strong></div><div><span>Stato</span><strong>{snapshot.agency.status}</strong></div><div><span>Operatori</span><strong>{members.length}</strong></div></div>}
+   {tab==="memoriali"&&<AgencyFreeMemorialCreator agencyId={snapshot.agency.id} contextKey={snapshot.context_id} agencyName={snapshot.agency.legal_name}/>}
    {(tab==="dashboard"||tab==="memoriali")&&<Panel title="Memoriali dell'agenzia">{memorials.length?memorials.map(m=><article key={m.id} className="oa-record">
      <div><strong>{m.name??"Memoriale in preparazione"}</strong><p>{m.tier} · {m.status} {m.is_demo?"· DEMO":""}</p></div>
      <OpenAsButton kind="FAMILY" targetId={m.id}/></article>):<p>Nessun memoriale associato.</p>}</Panel>}
