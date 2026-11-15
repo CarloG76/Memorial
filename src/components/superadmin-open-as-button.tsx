@@ -15,9 +15,9 @@ export function OpenAsButton({kind,targetId,full=false,compact=false}:{kind:Kind
   router.push("/console/piattaforma/apri-come/"+encodeURIComponent(result.data));
  }
  return <span style={{display:full?"block":"inline-flex",verticalAlign:"middle"}}>
-  <button type="button" onClick={open} disabled={busy} style={{
+  <button type="button" onClick={open} disabled={busy} className={compact?"ma-row-action ma-row-action-enter":undefined} style={compact?undefined:{
    background:"#f8edd9",color:"#29415b",border:"1px solid #dcc6a2",borderRadius:8,
-   padding:compact?"7px 10px":"11px 15px",fontFamily:"Montserrat,Arial,sans-serif",fontWeight:700,fontSize:compact?11:12,
+   padding:"11px 15px",fontFamily:"Montserrat,Arial,sans-serif",fontWeight:700,fontSize:12,
    cursor:busy?"progress":"pointer",width:full?"100%":undefined
   }}>{busy?"Apertura…":compact?"Entra come":kind==="AGENCY"?"Apri come Agenzia":"Apri come Famiglia"}</button>
   {error&&<small role="alert" style={{display:"block",color:"#a33434",maxWidth:350,marginLeft:8}}>{error}</small>}
