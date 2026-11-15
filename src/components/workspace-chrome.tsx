@@ -57,6 +57,7 @@ export function WorkspaceChrome({ area, children }: { area: WorkspaceArea; child
   const section = searchParams.get("sezione");
   const selected = area==="piattaforma"
     ? pathname.includes("/reset-demo") ? "reset-demo"
+      : pathname.includes("/forecast") ? "economia"
       : pathname.includes("/agenzie/") ? "agenzie"
       : pathname.includes("/memoriali/") ? "memoriali"
       : WORKSPACE_NAV.piattaforma.some(item=>item.slug===section) ? section! : "dashboard"
