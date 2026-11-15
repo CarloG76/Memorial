@@ -1,6 +1,4 @@
--- Life story is a timeline (highlights), not a second biography. The legacy story
--- text is kept only for backward compatibility and must not be rendered.
--- Existing highlights remain authoritative and continue to be restored by demo reset.
+-- Storia = ordered dated milestones, not a second biography. Legacy story retained but hidden.
 create or replace function public.platform_update_memorial_presentation(target_memorial uuid, changes jsonb, reason text)
 returns jsonb language plpgsql security definer set search_path=''
 as $$
@@ -27,7 +25,11 @@ for milestone in select value from jsonb_array_elements(milestones) loop
  if jsonb_typeof(milestone)<>'object' or exists (select 1 from jsonb_object_keys(milestone) k where k not in ('date','year','title','detail'))
  then raise exception 'INVALID_TIMELINE_ITEM' using errcode='22023'; end if;
  date_text:=coalesce(milestone->>'date',milestone->>'year','');
- if (date_text !~ '^[0-9]{4}
+ if (date_text !~ '^[0-9]{4}$' and date_text !~ '^(0[1-9]|1[0-2])-[0-9]{4}$' and date_text !~ '^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-[0-9]{4}$')
+ or right(date_text,4)='0000' or (length(date_text)=10 and to_char(to_date(date_text,'DD-MM-YYYY'),'DD-MM-YYYY')<>date_text)
+ or length(coalesce(milestone->>'title',''))>180 or length(btrim(coalesce(milestone->>'detail','')))<1 or length(milestone->>'detail')>2000
+ then raise exception 'INVALID_TIMELINE_ITEM' using errcode='22023';end if;
+end loop;
 img:=coalesce(changes->>'portrait_url',old_row->>'portrait_url','');
 focus_x:=coalesce((changes->>'portrait_focus_x')::integer,(old_row->>'portrait_focus_x')::integer,42);
 if length(btrim(nm))<3 or length(nm)>180 or length(ded)>500 or length(bio)>8000 or length(story_text)>16000 or focus_x not between 0 and 100
@@ -39,55 +41,6 @@ values(target_memorial,ded,bio,story_text,milestones,nullif(img,''),focus_x)
 on conflict(memorial_id) do update set dedication=excluded.dedication,biography=excluded.biography,story=excluded.story,highlights=excluded.highlights,
 portrait_url=excluded.portrait_url,portrait_focus_x=excluded.portrait_focus_x,updated_at=now();
 new_row:=jsonb_build_object('name',nm,'dedication',ded,'biography',bio,'story',story_text,'highlights',milestones,'portrait_url',nullif(img,''),'portrait_focus_x',focus_x);
-if old_row is distinct from new_row then insert into public.memorial_presentation_audit(memorial_id,actor_id,action,old_values,new_values)
-values(target_memorial,actor,'PRESENTATION_UPDATED: '||coalesce(left(reason,500),''),old_row,new_row); end if;
-return new_row;
-end $$; and date_text !~ '^(0[1-9]|1[0-2])-[0-9]{4}
-img:=coalesce(changes->>'portrait_url',old_row->>'portrait_url','');
-focus_x:=coalesce((changes->>'portrait_focus_x')::integer,(old_row->>'portrait_focus_x')::integer,42);
-if length(btrim(nm))<3 or length(nm)>180 or length(ded)>500 or length(bio)>8000 or length(story_text)>16000 or focus_x not between 0 and 100
-or (img<>'' and img !~ '^/images/[A-Za-z0-9._-]+[.]((png)|(jpg)|(jpeg)|(webp))$')
-then raise exception 'INVALID_PRESENTATION' using errcode='22023'; end if;
-update public.memorials set deceased_name=nm where id=target_memorial;
-insert into public.memorial_public_demo_profiles(memorial_id,dedication,biography,story,portrait_url,portrait_focus_x)
-values(target_memorial,ded,bio,story_text,nullif(img,''),focus_x)
-on conflict(memorial_id) do update set dedication=excluded.dedication,biography=excluded.biography,story=excluded.story,
-portrait_url=excluded.portrait_url,portrait_focus_x=excluded.portrait_focus_x,updated_at=now();
-new_row:=jsonb_build_object('name',nm,'dedication',ded,'biography',bio,'story',story_text,'portrait_url',nullif(img,''),'portrait_focus_x',focus_x);
-if old_row is distinct from new_row then insert into public.memorial_presentation_audit(memorial_id,actor_id,action,old_values,new_values)
-values(target_memorial,actor,'PRESENTATION_UPDATED: '||coalesce(left(reason,500),''),old_row,new_row); end if;
-return new_row;
-end $$; and date_text !~ '^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-[0-9]{4}
-img:=coalesce(changes->>'portrait_url',old_row->>'portrait_url','');
-focus_x:=coalesce((changes->>'portrait_focus_x')::integer,(old_row->>'portrait_focus_x')::integer,42);
-if length(btrim(nm))<3 or length(nm)>180 or length(ded)>500 or length(bio)>8000 or length(story_text)>16000 or focus_x not between 0 and 100
-or (img<>'' and img !~ '^/images/[A-Za-z0-9._-]+[.]((png)|(jpg)|(jpeg)|(webp))$')
-then raise exception 'INVALID_PRESENTATION' using errcode='22023'; end if;
-update public.memorials set deceased_name=nm where id=target_memorial;
-insert into public.memorial_public_demo_profiles(memorial_id,dedication,biography,story,portrait_url,portrait_focus_x)
-values(target_memorial,ded,bio,story_text,nullif(img,''),focus_x)
-on conflict(memorial_id) do update set dedication=excluded.dedication,biography=excluded.biography,story=excluded.story,
-portrait_url=excluded.portrait_url,portrait_focus_x=excluded.portrait_focus_x,updated_at=now();
-new_row:=jsonb_build_object('name',nm,'dedication',ded,'biography',bio,'story',story_text,'portrait_url',nullif(img,''),'portrait_focus_x',focus_x);
-if old_row is distinct from new_row then insert into public.memorial_presentation_audit(memorial_id,actor_id,action,old_values,new_values)
-values(target_memorial,actor,'PRESENTATION_UPDATED: '||coalesce(left(reason,500),''),old_row,new_row); end if;
-return new_row;
-end $$;)
- or right(date_text,4)='0000' or (length(date_text)=10 and to_char(to_date(date_text,'DD-MM-YYYY'),'DD-MM-YYYY')<>date_text)
- or length(coalesce(milestone->>'title',''))>180 or length(btrim(coalesce(milestone->>'detail','')))<1 or length(milestone->>'detail')>2000
- then raise exception 'INVALID_TIMELINE_ITEM' using errcode='22023';end if;
-end loop;
-img:=coalesce(changes->>'portrait_url',old_row->>'portrait_url','');
-focus_x:=coalesce((changes->>'portrait_focus_x')::integer,(old_row->>'portrait_focus_x')::integer,42);
-if length(btrim(nm))<3 or length(nm)>180 or length(ded)>500 or length(bio)>8000 or length(story_text)>16000 or focus_x not between 0 and 100
-or (img<>'' and img !~ '^/images/[A-Za-z0-9._-]+[.]((png)|(jpg)|(jpeg)|(webp))$')
-then raise exception 'INVALID_PRESENTATION' using errcode='22023'; end if;
-update public.memorials set deceased_name=nm where id=target_memorial;
-insert into public.memorial_public_demo_profiles(memorial_id,dedication,biography,story,portrait_url,portrait_focus_x)
-values(target_memorial,ded,bio,story_text,nullif(img,''),focus_x)
-on conflict(memorial_id) do update set dedication=excluded.dedication,biography=excluded.biography,story=excluded.story,
-portrait_url=excluded.portrait_url,portrait_focus_x=excluded.portrait_focus_x,updated_at=now();
-new_row:=jsonb_build_object('name',nm,'dedication',ded,'biography',bio,'story',story_text,'portrait_url',nullif(img,''),'portrait_focus_x',focus_x);
 if old_row is distinct from new_row then insert into public.memorial_presentation_audit(memorial_id,actor_id,action,old_values,new_values)
 values(target_memorial,actor,'PRESENTATION_UPDATED: '||coalesce(left(reason,500),''),old_row,new_row); end if;
 return new_row;
