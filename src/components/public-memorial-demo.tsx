@@ -1,5 +1,5 @@
 "use client";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import "./public-memorial-demo.css";
 import "./public-memorial-fidelity.css";
@@ -36,10 +36,37 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
  const [notice,setNotice]=useState("");
  const [displayName,setDisplayName]=useState("");
  const [body,setBody]=useState("");
+ const [photo,setPhoto]=useState<File|null>(null);
+ const [photoPreview,setPhotoPreview]=useState("");
+ const [photoError,setPhotoError]=useState("");
+ useEffect(()=>{
+  if(!photo){setPhotoPreview("");return;}
+  const url=URL.createObjectURL(photo);setPhotoPreview(url);
+  return ()=>URL.revokeObjectURL(url);
+ },[photo]);
+ function selectPhoto(file:File|null){
+  setPhotoError("");
+  if(!file){setPhoto(null);return;}
+  if(!["image/jpeg","image/png","image/webp"].includes(file.type)){
+   setPhoto(null);setPhotoError("Formato non supportato: scegli JPG, PNG o WebP.");return;
+  }
+  if(file.size>5*1024*1024){
+   setPhoto(null);setPhotoError("Fotografia troppo grande: massimo 5 MB.");return;
+  }
+  setPhoto(file);
+ }
  const sceneImage=data.background_url??"";
  const portrait=data.portrait_url??"";
- const open=(next:Dialog)=>{setDialog(next);setNotice("");setBody("");setDisplayName("");setEmail("");setConsents({});};
- function demoSubmit(e:FormEvent<HTMLFormElement>){e.preventDefault();setNotice("Questa è un'anteprima: nessun dato è stato inviato, salvato o inoltrato.");setEmail("");setConsents({});setDisplayName("");setBody("");}
+ const open=(next:Dialog)=>{setDialog(next);setNotice("");setBody("");setDisplayName("");setEmail("");setConsents({});setPhoto(null);setPhotoError("");};
+ function demoSubmit(e:FormEvent<HTMLFormElement>){
+  e.preventDefault();
+  if(dialog==="propose"){
+   setNotice("Anteprima pronta. Il ricordo e la fotografia NON sono stati caricati né inviati alla famiglia: questo memoriale è ancora dimostrativo.");
+   return;
+  }
+  setNotice("Questa è un'anteprima: nessun dato è stato inviato, salvato o inoltrato.");
+  setEmail("");setConsents({});setDisplayName("");setBody("");
+ }
  async function copyLink(){try{await navigator.clipboard.writeText(window.location.href);setNotice("Collegamento copiato.");}catch{setNotice("Copia l’indirizzo dalla barra del browser.");}}
  return <div className="pm-site pm-v2">
   <div className="pm-demo-ribbon">Anteprima dimostrativa · dati sintetici · nessun invio effettivo</div>
@@ -75,7 +102,15 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
   {dialog&&<div className="pm-modal-backdrop" onMouseDown={(e)=>{if(e.target===e.currentTarget)setDialog(null)}}><section className="pm-modal" role="dialog" aria-modal="true" aria-labelledby="pm-modal-heading"><div className="pm-modal-heading"><div><span className="pm-kicker">MEMORIAL · ANTEPRIMA</span><h2 id="pm-modal-heading">{dialog==="contact"?"Rimani in contatto":dialog==="thought"?"Lascia un pensiero":dialog==="private"?"Scrivi ai suoi cari":dialog==="propose"?"Proponi un ricordo":"Condividi questo memoriale"}</h2></div><button aria-label="Chiudi finestra" type="button" onClick={()=>setDialog(null)}>×</button></div>
     {dialog==="share"?<div className="pm-modal-content"><p>Puoi condividere questo memoriale dimostrativo tramite il suo collegamento.</p><button className="pm-primary" onClick={copyLink} type="button">Copia collegamento</button></div>:<form className="pm-modal-content" onSubmit={demoSubmit}>
      {dialog==="contact"?<><p>La tua email è facoltativa. Puoi scegliere separatamente quali comunicazioni desideri ricevere.</p><label htmlFor="pm-email">Indirizzo email (facoltativo)</label><input id="pm-email" type="email" placeholder="nome@esempio.it" autoComplete="off" value={email} onChange={e=>setEmail(e.target.value)}/><fieldset><legend>Le tue preferenze</legend>{choices.map(ch=><label key={ch.id} className="pm-check"><input type="checkbox" checked={!!consents[ch.id]} onChange={e=>setConsents(p=>({...p,[ch.id]:e.target.checked}))}/><span>{ch.label}</span></label>)}</fieldset><p className="pm-privacy">Nella versione operativa: verifica dell’email prima di attivare servizi, gestione autonoma e revoca dei consensi. Nessuna opzione è preselezionata. Questa demo non trasmette né memorizza recapiti.</p><button className="pm-primary" type="submit">Visualizza conferma demo</button></>:
-     <><p>{dialog==="thought"?"I pensieri vengono sottoposti all'approvazione della famiglia prima di apparire sul memoriale.":dialog==="private"?"I messaggi privati sono visibili soltanto ai familiari abilitati dopo la moderazione, mai nella pagina pubblica.":"Nella versione operativa potrai proporre fotografie, video e storie, soggetti all'approvazione familiare."}</p><label htmlFor="pm-name">Nome o firma</label><input id="pm-name" maxLength={100} required value={displayName} onChange={e=>setDisplayName(e.target.value)} placeholder="Il tuo nome"/><label htmlFor="pm-text">{dialog==="propose"?"Descrivi il ricordo":"Il tuo messaggio"}</label><textarea id="pm-text" maxLength={1000} rows={5} value={body} onChange={e=>setBody(e.target.value)} required placeholder="Scrivi qui…"/><p className="pm-privacy">Dimostrazione UX: nulla viene inviato o pubblicato.</p><button className="pm-primary" type="submit">Visualizza conferma demo</button></>}
+     <><p>{dialog==="thought"?"I pensieri vengono sottoposti all'approvazione della famiglia prima di apparire sul memoriale.":dialog==="private"?"I messaggi privati sono visibili soltanto ai familiari abilitati dopo la moderazione, mai nella pagina pubblica.":"Puoi selezionare una fotografia insieme al tuo ricordo. Questa demo mostra solo un'anteprima locale: la proposta non sarà ancora inviata alla famiglia."}</p><label htmlFor="pm-name">Nome o firma</label><input id="pm-name" maxLength={100} required value={displayName} onChange={e=>setDisplayName(e.target.value)} placeholder="Il tuo nome"/><label htmlFor="pm-text">{dialog==="propose"?"Descrivi il ricordo":"Il tuo messaggio"}</label><textarea id="pm-text" maxLength={1000} rows={5} value={body} onChange={e=>setBody(e.target.value)} required placeholder="Scrivi qui…"/>
+      {dialog==="propose"&&<div className="pm-photo-upload">
+       <label htmlFor="pm-memory-photo">Allega una fotografia (facoltativo)</label>
+       <input id="pm-memory-photo" type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>selectPhoto(e.target.files?.[0]??null)}/>
+       <small>JPG, PNG o WebP · max 5 MB. Nella versione operativa la famiglia approverà la foto prima della pubblicazione.</small>
+       {photoError&&<p role="alert" className="pm-photo-error">{photoError}</p>}
+       {photoPreview&&<figure className="pm-photo-preview"><img src={photoPreview} alt="Anteprima della fotografia selezionata"/><figcaption>{photo?.name} · anteprima locale, non inviata</figcaption><button type="button" onClick={()=>setPhoto(null)}>Rimuovi fotografia</button></figure>}
+      </div>}
+      <p className="pm-privacy">Dimostrazione UX: nulla viene inviato o pubblicato.</p><button className="pm-primary" type="submit">Visualizza conferma demo</button></>}
     </form>}
     {notice&&<div className="pm-notice" role="status">{notice}</div>}
    </section></div>}
