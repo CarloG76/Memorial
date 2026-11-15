@@ -9,6 +9,7 @@ import { FamilyProfileAppearance } from "@/components/family-profile-appearance"
 import { AgencyAdministration } from "@/components/agency-administration";
 import { AgencyMemorials, AgencyStatistics, AgencyContactProfile } from "@/components/agency-console-sections";
 import { AgencyTeamManager } from "@/components/agency-team-manager";
+import { AgencyFreeMemorialCreator } from "@/components/agency-free-memorial";
 import { getAgencyDashboard } from "@/features/catalog/workspace-server";
 import { readIdentityAndMemberships, requireWorkspaceAccess } from "@/lib/authz/server";
 import { isWorkspaceArea, WORKSPACE_NAV } from "@/lib/navigation";
@@ -59,7 +60,7 @@ export default async function WorkspacePage({
       const data=await getAgencyDashboard(identity.userId);
       const owners=new Set(data.membership.filter(m=>m.role==="OWNER"&&m.active).map(m=>m.agency_id));
       return <WorkspaceShell area={area}>
-       {section==="memoriali"?<AgencyMemorials agencies={data.agencies} memorials={data.memorials}/>:
+       {section==="memoriali"?<><AgencyMemorials agencies={data.agencies} memorials={data.memorials}/>{data.agencies.map(agency=><AgencyFreeMemorialCreator key={agency.id} agencyId={agency.id} agencyName={agency.legal_name}/>)}</>:
        section==="statistiche"?<AgencyStatistics agencies={data.agencies} memorials={data.memorials}/>:
        <div className="ac-section"><span className="workspace-label">AGENZIA / ORGANIZZAZIONE</span><h1>La mia agenzia</h1>
         <p>Anagrafica e persone autorizzate delle agenzie assegnate al tuo account.</p>
