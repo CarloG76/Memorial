@@ -24,7 +24,12 @@ const format=(value:string)=>statusLabels[value]??value.replaceAll("_"," ").toLo
 function metric(value:string|number,label:string,detail?:string){
  return <div className="agency-admin-metric"><strong>{value}</strong><span>{label}</span>{detail&&<small>{detail}</small>}</div>;
 }
-function csvCell(v:unknown){return '"'+String(v??"").replaceAll('"','""')+'"';}
+function csvCell(v:unknown){
+ const text=String(v??"");
+ // Prevent Excel/Sheets from evaluating agency-controlled text as a formula.
+ const safe=/^[\s]*[=+\-@]/.test(text)?"'"+text:text;
+ return '"'+safe.replaceAll('"','""')+'"';
+}
 export function AgencyAdministration({agency,memorials}:{agency:AdministrationAgency;memorials:AdministrationMemorial[]}){
  const [exportError,setExportError]=useState("");
  const ours=memorials.filter(m=>m.agency_id===undefined||m.agency_id===agency.id);
