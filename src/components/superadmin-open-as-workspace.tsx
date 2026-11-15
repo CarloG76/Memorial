@@ -5,6 +5,7 @@ import {WORKSPACE_NAV} from "@/lib/navigation";
 import {OpenAsButton} from "./superadmin-open-as-button";
 import {AgencyTeamManager} from "./agency-team-manager";
 import {AgencyAdministration} from "./agency-administration";
+import {FamilyVisitorMemories} from "./family-visitor-memories";
 import {MilestonesEditor,normalizeMilestones,validMilestoneDate,type MemorialMilestone} from "./memorial-milestones-editor";
 import "./superadmin-open-as-workspace.css";
 
@@ -164,6 +165,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
     <NewContribution resource="THOUGHT" busy={busy} onCreate={fields=>createContribution("THOUGHT",fields)}/>
     <p className="oa-note">I contenuti in attesa non sono visibili pubblicamente.</p>
    </Panel>}
+   {(tab==="panoramica"||tab==="ricordi")&&<FamilyVisitorMemories memorialId={snapshot.memorial.id} memorialName={snapshot.memorial.name} contextKey={snapshot.context_id}/>}
    {(tab==="panoramica"||tab==="ricordi")&&<Panel title="Ricordi">
     {memories.length?memories.map(m=><ContributionEditor key={m.id} item={m} resource="MEMORY" busy={busy} onAction={(op,fields,item)=>void moderate("MEMORY",op,fields,item)}/>):<p>Nessun ricordo registrato.</p>}
     <NewContribution resource="MEMORY" busy={busy} onCreate={fields=>createContribution("MEMORY",fields)}/>
