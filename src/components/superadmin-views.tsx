@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { getDemoCatalog } from "@/features/catalog/demo-server";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import type {WorkNotice,WorkNoticeSnapshot} from "./workspace-notifications";
 import { setCatalogDemoFilter } from "@/app/console/catalog-actions";
 import { UiIcon } from "./ui-icon";
 import { OpenAsButton } from "./superadmin-open-as-button";
@@ -25,6 +27,17 @@ function Pill({value,kind}:{value:string;kind?:"plan"|"state"}){
 }
 export async function DemoCatalog({view,query,userId}:{view:View;query:string;userId:string}){
  const {agencies,memorials,preference}=await getDemoCatalog(userId);
+ const db=await createServerSupabaseClient();
+ const {data:notifications,error:notificationsError}=await db.rpc("workspace_notifications_snapshot",{area_key:"piattaforma"});
+ const notices=(!notificationsError&&notifications&&Array.isArray((notifications as WorkNoticeSnapshot).items)?(notifications as WorkNoticeSnapshot).items:[]) as WorkNotice[];
+ const agencyAlerts=new Map<string,number>();
+ const familyAlerts=new Map<string,number>();
+ for(const n of notices){
+  agencyAlerts.set(n.agency_id,(agencyAlerts.get(n.agency_id)??0)+n.count);
+  if(n.memorial_id&&n.kind==="VISITOR_MEMORY_PENDING"){
+   familyAlerts.set(n.memorial_id,(familyAlerts.get(n.memorial_id)??0)+n.count);
+  }
+ }
  const matches=(d:boolean)=>preference==="ALL"||(preference==="ONLY_DEMO"?d:!d);
  const aa=agencies.filter(a=>matches(a.is_demo));
  const mm=memorials.filter(m=>matches(m.is_demo));
@@ -57,7 +70,7 @@ export async function DemoCatalog({view,query,userId}:{view:View;query:string;us
   ["Scaduti",expired,"shield","red"]
  ] as const;
  return <div className="memorial-admin">
-  <div className="ma-page-head"><div><span className="ma-page-kicker">CONSOLE SUPERADMIN</span><h1>{views[view].title}</h1><p>{views[view].subtitle}</p></div><span className="ma-source"><i/> Dati Supabase</span></div>
+  <div className="ma-page-head"><div><span className="ma-page-kicker">CONSOLE SUPERADMIN</span><h1>{views[view].title}</h1><p>{views[view].subtitle}</p></div><span className="ma-source"><i/> Dati Supabase{notices.length>0?" · "+notices.reduce((sum,n)=>sum+n.count,0)+" attività aperte":""}</span></div>
   <div className="ma-kpis">{kpis.map(([label,value,icon,tone])=><Metric key={label} label={label} value={value} icon={icon} tone={tone}/>)}</div>
   {view==="dashboard"&&<>
     <div className="ma-duo">
@@ -78,7 +91,7 @@ export async function DemoCatalog({view,query,userId}:{view:View;query:string;us
     <form action={setCatalogDemoFilter} className="ma-demo-filter"><input type="hidden" name="sezione" value={view}/><label htmlFor="ma-demo">Dati</label><select name="demo" id="ma-demo" defaultValue={preference}><option value="ALL">Tutti</option><option value="ONLY_DEMO">Solo demo</option><option value="NO_DEMO">Solo reali</option></select><button type="submit">Applica</button></form></div>
     <section className="ma-panel ma-table-panel"><div className="ma-panel-head"><div><h2>{view==="agenzie"?"Elenco agenzie":view==="famiglie"?"Elenco famiglie / memoriali":"Elenco memoriali"}</h2><p>{view==="agenzie"?shownAgencies.length:shownMemorials.length} risultati · seleziona una riga per i dettagli</p></div></div>
      <div className="ma-table-scroll"><table><thead>{view==="agenzie"?<tr><th>Agenzia</th><th>Città</th><th>Piano</th><th>Memoriali</th><th>Stato</th><th>Tipo dati</th><th aria-label="Azioni"/></tr>:<tr><th>Persona</th><th>Agenzia</th><th>Tipo</th><th>Stato</th><th>Visibilità</th><th>Tipo dati</th><th aria-label="Azioni"/></tr>}</thead><tbody>
-      {view==="agenzie"?shownAgencies.map(a=><tr key={a.id}><td><Link className="ma-entity" href={"/console/piattaforma/agenzie/"+a.id}><span className="ma-monogram">{a.legal_name.charAt(0)}</span><strong>{a.legal_name}</strong></Link></td><td>{a.city??"—"}</td><td><Pill value={a.plan} kind="plan"/></td><td>{mm.filter(m=>m.agency_id===a.id).length}</td><td><Pill value={a.status} kind="state"/></td><td>{a.is_demo?<span className="ma-demo">Demo</span>:"Reale"}</td><td><div style={{display:"flex",alignItems:"center",gap:10,whiteSpace:"nowrap"}}><Link className="ma-row-action ma-row-action-open" href={"/console/piattaforma/agenzie/"+a.id}>Apri</Link><OpenAsButton kind="AGENCY" targetId={a.id} compact/></div></td></tr>):shownMemorials.map(m=><tr key={m.id}><td><Link className="ma-entity" href={"/console/piattaforma/memoriali/"+m.id}><span className="ma-monogram ma-monogram-green"><UiIcon name="memoriali" size={17}/></span><strong>{m.deceased_name??"In preparazione"}</strong></Link></td><td>{byId.get(m.agency_id)??"—"}</td><td><Pill value={m.tier??"STANDARD"} kind="plan"/></td><td><Pill value={m.status} kind="state"/></td><td>{m.visibility==="PUBLIC"?"Pubblico":"Riservato"}</td><td>{m.is_demo?<span className="ma-demo">Demo</span>:"Reale"}</td><td><div style={{display:"flex",alignItems:"center",gap:10,whiteSpace:"nowrap"}}><Link className="ma-row-action ma-row-action-open" href={"/console/piattaforma/memoriali/"+m.id}>Apri</Link><OpenAsButton kind="FAMILY" targetId={m.id} compact/></div></td></tr>)}
+      {view==="agenzie"?shownAgencies.map(a=><tr key={a.id}><td><Link className="ma-entity" href={"/console/piattaforma/agenzie/"+a.id}><span className="ma-monogram">{a.legal_name.charAt(0)}</span><strong>{a.legal_name}</strong></Link></td><td>{a.city??"—"}</td><td><Pill value={a.plan} kind="plan"/></td><td>{mm.filter(m=>m.agency_id===a.id).length}</td><td><Pill value={a.status} kind="state"/></td><td>{a.is_demo?<span className="ma-demo">Demo</span>:"Reale"}</td><td><div style={{display:"flex",alignItems:"center",gap:10,whiteSpace:"nowrap"}}><Link className="ma-row-action ma-row-action-open" href={"/console/piattaforma/agenzie/"+a.id}>Apri</Link>{(agencyAlerts.get(a.id)??0)>0&&<span className="ma-pending-count" title="Attività che richiedono attenzione nell’agenzia">{agencyAlerts.get(a.id)} da gestire</span>}<OpenAsButton kind="AGENCY" targetId={a.id} compact/></div></td></tr>):shownMemorials.map(m=><tr key={m.id}><td><Link className="ma-entity" href={"/console/piattaforma/memoriali/"+m.id}><span className="ma-monogram ma-monogram-green"><UiIcon name="memoriali" size={17}/></span><strong>{m.deceased_name??"In preparazione"}</strong></Link></td><td>{byId.get(m.agency_id)??"—"}</td><td><Pill value={m.tier??"STANDARD"} kind="plan"/></td><td><Pill value={m.status} kind="state"/></td><td>{m.visibility==="PUBLIC"?"Pubblico":"Riservato"}</td><td>{m.is_demo?<span className="ma-demo">Demo</span>:"Reale"}</td><td><div style={{display:"flex",alignItems:"center",gap:10,whiteSpace:"nowrap"}}><Link className="ma-row-action ma-row-action-open" href={"/console/piattaforma/memoriali/"+m.id}>Apri</Link>{(familyAlerts.get(m.id)??0)>0&&<span className="ma-pending-count" title="Ricordi completi proposti dai visitatori in attesa di approvazione">{familyAlerts.get(m.id)} ricordi da approvare</span>}<OpenAsButton kind="FAMILY" targetId={m.id} compact/></div></td></tr>)}
      </tbody></table></div>{(view==="agenzie"?shownAgencies.length:shownMemorials.length)===0&&<p className="ma-empty">Nessun risultato per i filtri selezionati.</p>}</section>
    </>}
    {view==="agenzie"&&<div className="ma-triplet"><section className="ma-panel"><div className="ma-panel-head"><h2>Agenzie registrate</h2><span>Elenco corrente</span></div><div className="ma-mini">{shownAgencies.slice(0,4).map(a=><Link href={"/console/piattaforma/agenzie/"+a.id} key={a.id}><span className="ma-monogram">{a.legal_name.charAt(0)}</span><span><strong>{a.legal_name}</strong><small>{a.city??"—"}</small></span><span>›</span></Link>)}</div></section><section className="ma-panel"><div className="ma-panel-head"><h2>Da verificare</h2><span>Agenzie non attive</span></div><div className="ma-mini">{shownAgencies.filter(a=>a.status!=="ACTIVE").map(a=><Link href={"/console/piattaforma/agenzie/"+a.id} key={a.id}><IconBadge name="clock" tone="gold"/><span><strong>{a.legal_name}</strong><small>{a.status==="CLOSED"?"Chiusa":"Sospesa"}</small></span><span>›</span></Link>)}{shownAgencies.every(a=>a.status==="ACTIVE")&&<p className="ma-empty">Nessuna agenzia da verificare.</p>}</div></section><section className="ma-panel"><div className="ma-panel-head"><h2>Pagamenti anomali</h2><span>Non disponibile</span></div><div className="ma-unavailable"><IconBadge name="shield" tone="red"/><p>Le transazioni finanziarie non sono ancora collegate a questa sezione.</p></div></section></div>}
