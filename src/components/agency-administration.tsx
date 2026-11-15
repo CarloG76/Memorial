@@ -36,7 +36,7 @@ function csvCell(v:unknown){
  const safe=/^[\s]*[=+\-@]/.test(text)?"'"+text:text;
  return '"'+safe.replaceAll('"','""')+'"';
 }
-export function AgencyAdministration({agency,memorials}:{agency:AdministrationAgency;memorials:AdministrationMemorial[]}){
+export function AgencyAdministration({agency,memorials,contextKey=null}:{agency:AdministrationAgency;memorials:AdministrationMemorial[];contextKey?:string|null}){
  const [exportError,setExportError]=useState("");
  const ours=memorials.filter(m=>m.agency_id===undefined||m.agency_id===agency.id);
  const pro=agency.plan==="PRO";
@@ -70,7 +70,7 @@ export function AgencyAdministration({agency,memorials}:{agency:AdministrationAg
   <div className="agency-admin-columns">
    <section className="agency-admin-card">
     <h2>Memoriali gratuiti e prezzi</h2>
-    <AgencyFreeBalance agencyId={agency.id}/>
+    {!agency.is_demo&&<AgencyFreeBalance agencyId={agency.id}/>}
     <p className="agency-admin-muted">Il piano visualizzato è quello effettivamente assegnato all'agenzia. Non è indicativo di un pagamento verificato.</p>
     <dl className="agency-admin-terms">
      <div><dt>Primi due memoriali per nuova agenzia</dt><dd>Gratuiti una sola volta</dd></div>
@@ -84,7 +84,7 @@ export function AgencyAdministration({agency,memorials}:{agency:AdministrationAg
     <div className="agency-admin-note">
      <p>Ogni memoriale aggiuntivo si paga singolarmente, anche con Pro. <strong>Non esistono crediti mensili.</strong> I due memoriali gratuiti iniziali non si rinnovano.</p>
     </div>
-    <p className="agency-admin-muted">*Sovrapprezzo Premium di € 3 proposto, ancora da approvare. IVA da definire. Conteggio reale delle due attivazioni gratuite e periodicità dell'eventuale abbonamento Pro non ancora implementati: nessun saldo viene simulato.</p>
+    <p className="agency-admin-muted">*Sovrapprezzo Premium di € 3 proposto, ancora da approvare. IVA da definire. Le attivazioni e il piano demo vengono salvati nel database DEMO; gli importi demo non sono fatture.</p>
     <p className="agency-admin-muted">Attivazione abbonamento, checkout Stripe, rinnovo automatico, disdetta e fatture saranno disponibili soltanto dopo integrazione e verifiche.</p>
    </section>
    <section className="agency-admin-card">
@@ -100,7 +100,7 @@ export function AgencyAdministration({agency,memorials}:{agency:AdministrationAg
     <p className="agency-admin-muted">La chiusura o il downgrade dell'agenzia non terminano i periodi di conservazione già pagati.</p>
    </section>
   </div>
-  <AgencyDemoCheckout agencyId={agency.id} agencyName={agency.legal_name}/>
+  <AgencyDemoCheckout agencyId={agency.id} agencyName={agency.legal_name} isDemo={agency.is_demo} contextKey={contextKey}/>
   <section className="agency-admin-card">
    <div className="agency-admin-card-head"><div><h2>Memoriali e documentazione</h2><p>Inventario dell'agenzia, esportabile per controllo interno.</p></div>
     <button type="button" className="agency-admin-export" onClick={exportInventory}>Esporta CSV</button></div>
