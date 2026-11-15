@@ -1,4 +1,5 @@
 import {getFamilyDashboard} from "@/features/catalog/workspace-server";
+import {FamilyMemorialContentEditor} from "./family-memorial-content-editor";
 import {createServerSupabaseClient} from "@/lib/supabase/server";
 import {FamilyBackgroundEditor,type FamilyHeroMemorial,type FamilyBackgroundOption} from "./family-background-editor";
 import type {MemorialBackgroundPreset} from "@/lib/memorial-backgrounds";
@@ -31,5 +32,8 @@ export async function FamilyProfileAppearance({userId}:{userId:string}) {
    portraitUrl:portraitById.get(m.id)??null
   };
  });
- return <FamilyBackgroundEditor memorials={items} presets={presets}/>;
+ return <div>
+  {items.filter(x=>x.canEdit).map(x=><FamilyMemorialContentEditor key={x.id} memorialId={x.id} memorialName={x.name}/>)}
+  <FamilyBackgroundEditor memorials={items} presets={presets}/>
+ </div>;
 }
