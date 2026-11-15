@@ -3,7 +3,7 @@ import {useMemo,useState} from "react";
 import {useRouter} from "next/navigation";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 type Kind="AGENCY"|"FAMILY";
-export function OpenAsButton({kind,targetId,full=false}:{kind:Kind;targetId:string;full?:boolean}){
+export function OpenAsButton({kind,targetId,full=false,compact=false}:{kind:Kind;targetId:string;full?:boolean;compact?:boolean}){
  const db=useMemo(()=>createBrowserSupabaseClient(),[]);
  const router=useRouter();
  const [busy,setBusy]=useState(false);
@@ -17,9 +17,9 @@ export function OpenAsButton({kind,targetId,full=false}:{kind:Kind;targetId:stri
  return <span style={{display:full?"block":"inline-flex",verticalAlign:"middle"}}>
   <button type="button" onClick={open} disabled={busy} style={{
    background:"#f8edd9",color:"#29415b",border:"1px solid #dcc6a2",borderRadius:8,
-   padding:"11px 15px",fontFamily:"Montserrat,Arial,sans-serif",fontWeight:700,fontSize:12,
+   padding:compact?"7px 10px":"11px 15px",fontFamily:"Montserrat,Arial,sans-serif",fontWeight:700,fontSize:compact?11:12,
    cursor:busy?"progress":"pointer",width:full?"100%":undefined
-  }}>{busy?"Apertura…":kind==="AGENCY"?"Apri come Agenzia":"Apri come Famiglia"}</button>
+  }}>{busy?"Apertura…":compact?"Entra come":kind==="AGENCY"?"Apri come Agenzia":"Apri come Famiglia"}</button>
   {error&&<small role="alert" style={{display:"block",color:"#a33434",maxWidth:350,marginLeft:8}}>{error}</small>}
  </span>;
 }
