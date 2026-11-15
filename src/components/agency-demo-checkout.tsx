@@ -135,7 +135,7 @@ export function AgencyDemoCheckout({agencyId,agencyName,contextKey=null,isDemo=f
    <label className="adc-invite-label">Link di invito famiglia<input readOnly value={window.location.origin+"/invito-famiglia/"+last.family_invite_token} onFocus={e=>e.target.select()}/></label>
    <div className="adc-actions"><button type="button" onClick={()=>void copyInvite()}>Copia invito</button>
     {contextKey&&<OpenAsButton kind="FAMILY" targetId={last.memorial_id}/>}
-    <Link href={"/console/agenzia/memoriali/"+last.memorial_id}>Scheda memoriale</Link>
+    {!contextKey&&<Link href={"/console/agenzia/memoriali/"+last.memorial_id}>Scheda memoriale</Link>}
     <button type="button" onClick={()=>{setStage("SELECT");setLast(null);}}>Crea un altro memoriale</button></div>
   </div>:
   stage==="CONFIRM"?<div className="adc-confirm">
