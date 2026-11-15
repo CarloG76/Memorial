@@ -5,14 +5,15 @@ import { UiIcon } from "./ui-icon";
 import { OpenAsButton } from "./superadmin-open-as-button";
 import "./superadmin-views.css";
 
-type View="dashboard"|"agenzie"|"memoriali";
+type View="dashboard"|"agenzie"|"memoriali"|"famiglie";
 type Filter="ALL"|"ONLY_DEMO"|"NO_DEMO";
 type IconName="agenzie"|"memoriali"|"economia"|"heart"|"clock"|"shield"|"users"|"check";
 function IconBadge({name,tone="gold"}:{name:IconName;tone?:string}){return <span className={"ma-icon ma-icon-"+tone}><UiIcon name={name} size={21}/></span>}
 const views:Record<View,{title:string;subtitle:string}>={
  dashboard:{title:"Panoramica della piattaforma",subtitle:"Agenzie, memoriali e attività che richiedono attenzione."},
  agenzie:{title:"Agenzie",subtitle:"Gestisci i clienti agenzie, i piani attivi e i memoriali."},
- memoriali:{title:"Memoriali",subtitle:"Tutti i memoriali ospitati sulla piattaforma Memorial."}
+ memoriali:{title:"Memoriali",subtitle:"Tutti i memoriali ospitati sulla piattaforma Memorial."},
+ famiglie:{title:"Famiglie e memoriali",subtitle:"Accedi all’ambiente Famiglia di ciascun memoriale, mantenendo la tua identità SuperAdmin."}
 };
 function Metric({label,value,icon,tone,detail}:{label:string;value:string|number;icon:IconName;tone:string;detail?:string}){
  return <div className="ma-metric"><IconBadge name={icon} tone={tone}/><div className="ma-metric-copy"><span>{label}</span><strong>{value}</strong>{detail&&<small>{detail}</small>}</div></div>;
@@ -73,9 +74,9 @@ export async function DemoCatalog({view,query,userId}:{view:View;query:string;us
     <section className="ma-panel ma-reserve"><IconBadge name="shield" tone="gold"/><div><h2>Fondo di continuità e riserva rischi</h2><p>Monitoraggio finanziario non ancora collegato. Non vengono mostrati valori economici stimati.</p></div></section>
   </>}
   {view!=="dashboard"&&<>
-    <div className="ma-toolbar"><form method="get" action="/console/piattaforma" className="ma-search"><input type="hidden" name="sezione" value={view}/><UiIcon name="agenzie" size={17}/><input name="q" type="search" aria-label="Ricerca" defaultValue={query} placeholder={view==="agenzie"?"Cerca per agenzia, città o codice…":"Cerca memoriale, agenzia o codice…"} /><button type="submit">Cerca</button></form>
+    <div className="ma-toolbar"><form method="get" action="/console/piattaforma" className="ma-search"><input type="hidden" name="sezione" value={view}/><UiIcon name="agenzie" size={17}/><input name="q" type="search" aria-label="Ricerca" defaultValue={query} placeholder={view==="agenzie"?"Cerca per agenzia, città o codice…":"Cerca famiglia, memoriale, agenzia o codice…"} /><button type="submit">Cerca</button></form>
     <form action={setCatalogDemoFilter} className="ma-demo-filter"><input type="hidden" name="sezione" value={view}/><label htmlFor="ma-demo">Dati</label><select name="demo" id="ma-demo" defaultValue={preference}><option value="ALL">Tutti</option><option value="ONLY_DEMO">Solo demo</option><option value="NO_DEMO">Solo reali</option></select><button type="submit">Applica</button></form></div>
-    <section className="ma-panel ma-table-panel"><div className="ma-panel-head"><div><h2>{view==="agenzie"?"Elenco agenzie":"Elenco memoriali"}</h2><p>{view==="agenzie"?shownAgencies.length:shownMemorials.length} risultati · seleziona una riga per i dettagli</p></div></div>
+    <section className="ma-panel ma-table-panel"><div className="ma-panel-head"><div><h2>{view==="agenzie"?"Elenco agenzie":view==="famiglie"?"Elenco famiglie / memoriali":"Elenco memoriali"}</h2><p>{view==="agenzie"?shownAgencies.length:shownMemorials.length} risultati · seleziona una riga per i dettagli</p></div></div>
      <div className="ma-table-scroll"><table><thead>{view==="agenzie"?<tr><th>Agenzia</th><th>Città</th><th>Piano</th><th>Memoriali</th><th>Stato</th><th>Tipo dati</th><th aria-label="Azioni"/></tr>:<tr><th>Persona</th><th>Agenzia</th><th>Tipo</th><th>Stato</th><th>Visibilità</th><th>Tipo dati</th><th aria-label="Azioni"/></tr>}</thead><tbody>
       {view==="agenzie"?shownAgencies.map(a=><tr key={a.id}><td><Link className="ma-entity" href={"/console/piattaforma/agenzie/"+a.id}><span className="ma-monogram">{a.legal_name.charAt(0)}</span><strong>{a.legal_name}</strong></Link></td><td>{a.city??"—"}</td><td><Pill value={a.plan} kind="plan"/></td><td>{mm.filter(m=>m.agency_id===a.id).length}</td><td><Pill value={a.status} kind="state"/></td><td>{a.is_demo?<span className="ma-demo">Demo</span>:"Reale"}</td><td><div style={{display:"flex",alignItems:"center",gap:10,whiteSpace:"nowrap"}}><Link href={"/console/piattaforma/agenzie/"+a.id}>Apri →</Link><OpenAsButton kind="AGENCY" targetId={a.id} compact/></div></td></tr>):shownMemorials.map(m=><tr key={m.id}><td><Link className="ma-entity" href={"/console/piattaforma/memoriali/"+m.id}><span className="ma-monogram ma-monogram-green"><UiIcon name="memoriali" size={17}/></span><strong>{m.deceased_name??"In preparazione"}</strong></Link></td><td>{byId.get(m.agency_id)??"—"}</td><td><Pill value={m.tier??"STANDARD"} kind="plan"/></td><td><Pill value={m.status} kind="state"/></td><td>{m.visibility==="PUBLIC"?"Pubblico":"Riservato"}</td><td>{m.is_demo?<span className="ma-demo">Demo</span>:"Reale"}</td><td><div style={{display:"flex",alignItems:"center",gap:10,whiteSpace:"nowrap"}}><Link href={"/console/piattaforma/memoriali/"+m.id}>Apri →</Link><OpenAsButton kind="FAMILY" targetId={m.id} compact/></div></td></tr>)}
      </tbody></table></div>{(view==="agenzie"?shownAgencies.length:shownMemorials.length)===0&&<p className="ma-empty">Nessun risultato per i filtri selezionati.</p>}</section>
