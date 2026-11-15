@@ -2,6 +2,7 @@
 import {useCallback,useEffect,useMemo,useState,type FormEvent} from "react";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import "./agency-free-memorial.css";
+import {AgencyDemoCheckout} from "./agency-demo-checkout";
 
 type FreeStatus={total:number;used:number;remaining:number;not_configured?:boolean};
 export function AgencyFreeMemorialCreator({agencyId,contextKey=null,agencyName}:{agencyId:string;contextKey?:string|null;agencyName:string}){
@@ -60,6 +61,7 @@ export function AgencyFreeMemorialCreator({agencyId,contextKey=null,agencyName}:
   {notice&&<p role="status" className="afm-success">{notice}</p>}
   {error&&<p role="alert" className="afm-error">{error}</p>}
   <p className="afm-foot">Il memoriale è privato durante la preparazione. Il referente familiare deve verificare la propria email e accettare l'invito. Nessuna email è inviata automaticamente.</p>
+  <AgencyDemoCheckout agencyId={agencyId} agencyName={agencyName}/>
  </section>;
 }
 
