@@ -62,3 +62,23 @@ export function AgencyFreeMemorialCreator({agencyId,contextKey=null,agencyName}:
   <p className="afm-foot">Il memoriale è privato durante la preparazione. Il referente familiare deve verificare la propria email e accettare l'invito. Nessuna email è inviata automaticamente.</p>
  </section>;
 }
+
+export function AgencyFreeBalance({agencyId}:{agencyId:string}){
+ const db=useMemo(()=>createBrowserSupabaseClient(),[]);
+ const [status,setStatus]=useState<FreeStatus|null>(null);
+ const [error,setError]=useState(false);
+ useEffect(()=>{
+  let cancelled=false;
+  void db.rpc("agency_free_entitlements_status",{agency_key:agencyId}).then(({data,error:dbError})=>{
+   if(cancelled)return;
+   if(dbError){setError(true);return;}
+   setStatus(data as FreeStatus);setError(false);
+  });
+  return ()=>{cancelled=true;};
+ },[db,agencyId]);
+ return <div className="afm-balance" role="status">
+  <strong>{error?"—":status?.not_configured?"Non assegnate":status?.remaining??"…"}</strong>
+  <span>Attivazioni gratuite residue</span>
+  <small>{status?.not_configured?"I diritti gratuiti non sono stati ancora assegnati a questa agenzia.":status?"Utilizzate: "+status.used+" su "+status.total+" disponibili una sola volta.":"Caricamento stato…"}</small>
+ </div>;
+}
