@@ -5,6 +5,7 @@ import {useRouter} from "next/navigation";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import {WORKSPACE_NAV} from "@/lib/navigation";
 import {OpenAsButton} from "./superadmin-open-as-button";
+import {MilestonesEditor,normalizeMilestones,validMilestoneDate,type MemorialMilestone} from "./memorial-milestones-editor";
 import "./superadmin-open-as-workspace.css";
 
 type Agency={id:string;legal_name:string;city:string|null;country_code:string;vat_number:string|null;contact_email:string|null;plan:string;status:string;is_demo:boolean};
@@ -12,7 +13,7 @@ type Memorial={id:string;agency_id:string;name:string;status:string;tier:string;
 type Member={user_id:string;role:string;active:boolean;can_moderate?:boolean;can_edit_content?:boolean};
 type Contribution={id:string;title?:string;author?:string;body:string;status:string};
 type Preset={id:string;label:string;image_url:string};
-type Presentation={name:string;dedication:string;biography:string;story:string;portrait_url:string|null;portrait_focus_x:number|null;background:string};
+type Presentation={name:string;dedication:string;biography:string;highlights:MemorialMilestone[];story?:string;portrait_url:string|null;portrait_focus_x:number|null;background:string};
 export type OperatorSnapshot={context_id:string;kind:"AGENCY"|"FAMILY";expires_at:string;agency:Agency;memorial?:Memorial;memorials?:Memorial[];members:Member[];presentation?:Presentation;backgrounds?:Preset[];thoughts?:Contribution[];memories?:Contribution[]};
 type Event={action:string;at:string;reason:string|null;before:unknown;after:unknown};
 
@@ -63,7 +64,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  const [personName,setPersonName]=useState(initial.presentation?.name??initial.memorial?.name??"");
  const [dedication,setDedication]=useState(initial.presentation?.dedication??"");
  const [bio,setBio]=useState(initial.presentation?.biography??"");
- const [story,setStory]=useState(initial.presentation?.story??"");
+ const [milestones,setMilestones]=useState<MemorialMilestone[]>(normalizeMilestones(initial.presentation?.highlights));
  const [portraitUrl,setPortraitUrl]=useState(initial.presentation?.portrait_url??"");
  const [portraitFocus,setPortraitFocus]=useState(initial.presentation?.portrait_focus_x??42);
  const area=initial.kind==="AGENCY"?"agenzia":"famiglia";
@@ -94,8 +95,9 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  }
  async function saveFamily(e:FormEvent<HTMLFormElement>){
   e.preventDefault();
+  if(milestones.some(x=>!validMilestoneDate(x.date)||!x.detail.trim())){setNotice("Verifica date e didascalie delle tappe.");return;}
   await write(async()=>db.rpc("platform_context_update_family",{
-   context_key:snapshot.context_id,changes:{name:personName,dedication,biography:bio,story,portrait_url:portraitUrl,portrait_focus_x:portraitFocus},reason:null
+   context_key:snapshot.context_id,changes:{name:personName,dedication,biography:bio,highlights:milestones,portrait_url:portraitUrl,portrait_focus_x:portraitFocus},reason:null
   }),"Presentazione memoriale aggiornata e tracciata.");
  }
  async function saveBackground(){
@@ -161,7 +163,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
     <form className="oa-form" onSubmit={saveFamily}><label>Nome della persona<input value={personName} onChange={e=>setPersonName(e.target.value)} required minLength={3} maxLength={180}/></label>
       <label>Dedica<textarea value={dedication} onChange={e=>setDedication(e.target.value)} rows={2} maxLength={500}/></label>
       <label>Biografia — introduzione breve<textarea value={bio} onChange={e=>setBio(e.target.value)} rows={4} maxLength={8000}/></label>
-      <label>La sua storia — racconto della vita<textarea value={story} onChange={e=>setStory(e.target.value)} rows={7} maxLength={16000}/></label>
+      <fieldset className="oa-timeline-fieldset"><legend>Storia · tappe della vita</legend><MilestonesEditor items={milestones} onChange={setMilestones} disabled={busy}/></fieldset>
       <label>Percorso ritratto<input value={portraitUrl} onChange={e=>setPortraitUrl(e.target.value)} placeholder="/images/ritratto.webp"/></label>
       <label>Fuoco ritratto: {portraitFocus}%<input type="range" min={0} max={100} value={portraitFocus} onChange={e=>setPortraitFocus(Number(e.target.value))}/></label>
       <button type="submit" disabled={!canSave}>Salva presentazione</button></form></Panel>}
