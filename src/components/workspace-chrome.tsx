@@ -44,6 +44,7 @@ function NavItems({ area, selected, onNavigate }: {
         </span>
       );
     })}
+    {area==="piattaforma"&&<Link href="/console/piattaforma/reset-demo" className={selected==="reset-demo"?"side-item side-item-selected":"side-item"} onClick={onNavigate}><span className="sidebar-icon"><UiIcon name="impostazioni"/></span><span>Reset Demo Data</span></Link>}
   </nav>;
 }
 
@@ -55,7 +56,8 @@ export function WorkspaceChrome({ area, children }: { area: WorkspaceArea; child
   const searchParams = useSearchParams();
   const section = searchParams.get("sezione");
   const selected = area==="piattaforma"
-    ? pathname.includes("/agenzie/") ? "agenzie"
+    ? pathname.includes("/reset-demo") ? "reset-demo"
+      : pathname.includes("/agenzie/") ? "agenzie"
       : pathname.includes("/memoriali/") ? "memoriali"
       : WORKSPACE_NAV.piattaforma.some(item=>item.slug===section) ? section! : "dashboard"
     : area==="agenzia" ? (WORKSPACE_NAV.agenzia.some(item=>item.slug===section)?section!:"dashboard") : (WORKSPACE_NAV.famiglia.some(item=>item.slug===section)?section!:"panoramica");
