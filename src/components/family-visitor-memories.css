@@ -1,0 +1,13 @@
+.family-visitor-memories{margin-top:20px;background:white;border:1px solid #e2e9ef;border-radius:13px;padding:20px;font-family:Montserrat,Arial,sans-serif;color:#1d405d}
+.family-visitor-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:15px}
+.family-visitor-heading h2{font-size:18px;margin:0 0 6px}
+.family-visitor-heading p,.family-visitor-count{font-size:12px;color:#6d8092}
+.family-visitor-heading button,.family-visitor-actions button{font:700 12px Montserrat,Arial,sans-serif;padding:10px 14px;border-radius:8px;cursor:pointer;border:1px solid #254c6e;background:#234968;color:#fff}
+.family-visitor-heading button{color:#234968;background:#fff}.family-visitor-heading button:disabled,.family-visitor-actions button:disabled{opacity:.55;cursor:progress}
+.family-visitor-card{padding:17px;margin:14px 0;border:1px solid #e4e8ed;border-radius:10px;background:#fbfcfd}
+.family-visitor-card h3{font-size:16px;margin:10px 0}.family-visitor-card p{white-space:pre-wrap;line-height:1.6;font-size:13px}
+.family-visitor-meta{display:flex;justify-content:space-between;gap:12px;color:#647c8f;font-size:12px;flex-wrap:wrap}
+.family-visitor-meta strong{color:#274761}.family-visitor-photo{max-width:min(100%,500px);max-height:340px;object-fit:contain;display:block;margin:12px 0;border:1px solid #dbe5ed;border-radius:9px}
+.family-visitor-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.family-visitor-actions .family-visitor-reject{background:#fff;color:#a43d38;border-color:#d7a5a5}
+.family-visitor-error{color:#a12727;font-weight:600}.family-visitor-success{color:#235d40;font-weight:600}.family-visitor-history{margin-top:20px}.family-visitor-history summary{cursor:pointer;font-weight:700}
+@media(max-width:580px){.family-visitor-memories{padding:14px}.family-visitor-heading{flex-direction:column}}
