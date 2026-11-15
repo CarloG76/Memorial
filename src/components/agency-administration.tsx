@@ -11,8 +11,12 @@ export type AdministrationMemorial={
  id:string;agency_id?:string;name?:string|null;deceased_name?:string|null;
  tier?:string|null;status:string;is_demo:boolean;demo_code?:string|null;
 };
-const prices={FREE:{standard:"€ 5,90",premium:"€ 9,90",allowance:"Nessuno",operators:"1"},
- PRO:{standard:"€ 3,90",premium:"€ 5,90",allowance:"3 crediti Standard/mese",operators:"5"}} as const;
+// Nuovo listino B2B 2026. Premium +3 EUR ancora da confermare contrattualmente.
+const prices={
+ PAYG:{standard:"€ 19,90",premium:"€ 22,90"},
+ MONTHLY:{standard:"€ 13,90",premium:"€ 16,90"},
+ YEARLY:{standard:"€ 11,90",premium:"€ 14,90"}
+} as const;
 const statusLabels:Record<string,string>={
  ACTIVE:"Attiva",CLOSED:"Chiusa",SUSPENDED:"Sospesa",
  DRAFT:"Bozza",PAYMENT_PENDING:"Pagamento in attesa",SKELETON_ACTIVE:"Skeleton attivo",
@@ -34,7 +38,7 @@ export function AgencyAdministration({agency,memorials}:{agency:AdministrationAg
  const [exportError,setExportError]=useState("");
  const ours=memorials.filter(m=>m.agency_id===undefined||m.agency_id===agency.id);
  const pro=agency.plan==="PRO";
- const policy=prices[pro?"PRO":"FREE"];
+
  const published=ours.filter(m=>m.status==="PUBLISHED_ACTIVE").length;
  const pending=ours.filter(m=>["DRAFT","PAYMENT_PENDING","SKELETON_ACTIVE","FAMILY_PREPARING","READY_FOR_PUBLICATION"].includes(m.status)).length;
  function exportInventory(){
@@ -56,27 +60,29 @@ export function AgencyAdministration({agency,memorials}:{agency:AdministrationAg
    <span className={"agency-admin-plan "+(pro?"pro":"free")}>Piano {agency.plan}</span>
   </header>
   <div className="agency-admin-summary">
-   {metric(agency.plan,"Piano attuale",pro?"Pro — vedi condizioni sotto":"Free — senza canone")}
+   {metric(agency.plan,"Piano attuale",pro?"Periodicità da verificare":"Nessun canone")}
    {metric(ours.length,"Memoriali associati","Dati correnti")}
    {metric(published,"Pubblicati")}
    {metric(pending,"In preparazione / pagamento")}
   </div>
   <div className="agency-admin-columns">
    <section className="agency-admin-card">
-    <h2>Abbonamento e condizioni</h2>
+    <h2>Memoriali gratuiti e prezzi</h2>
     <p className="agency-admin-muted">Il piano visualizzato è quello effettivamente assegnato all'agenzia. Non è indicativo di un pagamento verificato.</p>
     <dl className="agency-admin-terms">
-     <div><dt>Piano corrente</dt><dd>{agency.plan}</dd></div>
-     <div><dt>Prezzo Standard</dt><dd>{policy.standard}</dd></div>
-     <div><dt>Prezzo Premium</dt><dd>{policy.premium}</dd></div>
-     <div><dt>Crediti inclusi</dt><dd>{policy.allowance}</dd></div>
-     <div><dt>Operatori previsti dal piano</dt><dd>{policy.operators}</dd></div>
+     <div><dt>Primi due memoriali per nuova agenzia</dt><dd>Gratuiti una sola volta</dd></div>
+     <div><dt>Senza abbonamento · Standard</dt><dd>{prices.PAYG.standard}</dd></div>
+     <div><dt>Senza abbonamento · Premium*</dt><dd>{prices.PAYG.premium}</dd></div>
+     <div><dt>Pro mensile · Canone</dt><dd>€ 39,90 / mese</dd></div>
+     <div><dt>Pro mensile · Standard / Premium*</dt><dd>{prices.MONTHLY.standard} / {prices.MONTHLY.premium}</dd></div>
+     <div><dt>Pro annuale · Canone</dt><dd>€ 379 / anno</dd></div>
+     <div><dt>Pro annuale · Standard / Premium*</dt><dd>{prices.YEARLY.standard} / {prices.YEARLY.premium}</dd></div>
     </dl>
     <div className="agency-admin-note">
-     {pro?<p>Listino Pro: <b>€ 39,90/mese</b> oppure <b>€ 379/anno</b>. I 3 crediti Standard mensili non si accumulano; possono scontare un Premium di € 3,90. Il saldo effettivo non è ancora consultabile.</p>:
-      <p>Il piano Free non prevede canone. Il passaggio a Pro sarà disponibile dopo l'attivazione del checkout e della gestione delle richieste di cambio piano.</p>}
+     <p>Ogni memoriale aggiuntivo si paga singolarmente, anche con Pro. <strong>Non esistono crediti mensili.</strong> I due memoriali gratuiti iniziali non si rinnovano.</p>
     </div>
-    <p className="agency-admin-muted">Cambio piano, periodo di rinnovo, metodo di pagamento e crediti residui: non ancora collegati ai sistemi di pagamento.</p>
+    <p className="agency-admin-muted">*Sovrapprezzo Premium di € 3 proposto, ancora da approvare. IVA da definire. Conteggio reale delle due attivazioni gratuite e periodicità dell'eventuale abbonamento Pro non ancora implementati: nessun saldo viene simulato.</p>
+    <p className="agency-admin-muted">Attivazione abbonamento, checkout Stripe, rinnovo automatico, disdetta e fatture saranno disponibili soltanto dopo integrazione e verifiche.</p>
    </section>
    <section className="agency-admin-card">
     <h2>Riepilogo amministrativo</h2>
