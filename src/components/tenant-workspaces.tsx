@@ -1,4 +1,5 @@
 import { getAgencyDashboard, getFamilyDashboard } from "@/features/catalog/workspace-server";
+import {AgencyTeamManager} from "./agency-team-manager";
 
 const statusLabels:Record<string,string>={
 DRAFT:"Bozza",PAYMENT_PENDING:"Pagamento in attesa",SKELETON_ACTIVE:"Skeleton attivo",
@@ -7,7 +8,7 @@ PUBLISHED_ACTIVE:"Pubblicato",PRESERVED_STATIC:"Conservato",EXPIRED:"Scaduto",
 UNPUBLISHED_ARCHIVED:"Archiviato non pubblicato",ARCHIVED:"Archiviato",CLOSED:"Chiuso",SUSPENDED:"Sospeso"
 };
 export async function AgencyWorkspace({userId}:{userId:string}) {
- const {agencies,memorials}=await getAgencyDashboard(userId);
+ const {agencies,memorials,membership}=await getAgencyDashboard(userId);
  return <div>
  <span className="workspace-label">Area Agenzia · dati dal database</span>
  <h1>Le tue agenzie</h1>
@@ -25,6 +26,7 @@ export async function AgencyWorkspace({userId}:{userId:string}) {
  <table className="catalog-table"><thead><tr><th>Persona</th><th>Codice</th><th>Tipo</th><th>Stato</th><th>Demo</th></tr></thead>
  <tbody>{memorials.map(m=><tr key={m.id}><td data-label="Persona">{m.deceased_name??"In preparazione"}</td><td data-label="Codice">{m.demo_code??"—"}</td><td data-label="Tipo">{m.tier??"—"}</td><td data-label="Stato">{statusLabels[m.status]??m.status}</td><td data-label="Demo">{m.is_demo?"Sì":"No"}</td></tr>)}</tbody></table></div>
  {memorials.length===0&&<p>Nessun memoriale assegnato.</p>}</section>
+ {agencies.filter(a=>membership.some(m=>m.agency_id===a.id&&m.role==="OWNER"&&m.active)).map(a=><AgencyTeamManager key={a.id} agencyId={a.id}/>)}
  </div>;
 }
 export async function FamilyWorkspace({userId}:{userId:string}) {
