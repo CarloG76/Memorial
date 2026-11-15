@@ -1,0 +1,10 @@
+.afm-section{border:1px solid #e2e9ef;border-radius:11px;background:#fff;padding:20px;margin:18px 0;color:#244962;font-family:Montserrat,Arial,sans-serif}
+.afm-section header{display:flex;justify-content:space-between;align-items:start;gap:15px}.afm-section h2{font-size:19px;margin:5px 0}.afm-section header p,.afm-foot{font-size:12px;color:#6d8395;line-height:1.65}
+.afm-counter{display:grid;place-items:center;border:1px solid #d5dfeb;border-radius:9px;padding:10px 17px;min-width:94px;background:#eef5fa}
+.afm-counter strong{font-size:29px}.afm-counter small{font-size:10px;white-space:nowrap}
+.afm-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}.afm-form label,.afm-output label{display:grid;gap:6px;font-size:12px;font-weight:700}
+.afm-form input,.afm-form select,.afm-output input{width:100%;box-sizing:border-box;padding:10px;border-radius:8px;border:1px solid #ccd9e3;background:#fff}
+.afm-form button,.afm-output button{justify-self:start;align-self:end;border:0;border-radius:8px;background:#234e6c;color:white;padding:11px 14px;font:700 12px Montserrat,Arial,sans-serif;cursor:pointer}.afm-form button:disabled{opacity:.5}
+.afm-output,.afm-info{padding:14px;margin-top:15px;background:#f0f6f9;border:1px solid #dfebf1;border-radius:9px;display:grid;gap:10px}.afm-output small,.afm-info p{font-size:12px;color:#5d758c}
+.afm-success{color:#286546}.afm-error{color:#a43636}.afm-foot{margin-bottom:0}
+@media(max-width:680px){.afm-section{padding:14px}.afm-form{grid-template-columns:1fr}.afm-section header{flex-direction:column}}
