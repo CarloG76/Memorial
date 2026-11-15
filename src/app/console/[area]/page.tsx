@@ -4,7 +4,7 @@ import { DemoCatalog } from "@/components/demo-catalog";
 import { WorkspaceSkeleton } from "@/components/workspace-skeleton";
 import { SuperadminAuditLog } from "@/components/superadmin-audit-log";
 import { RevenueForecast } from "@/components/revenue-forecast";
-import { AgencyWorkspace, FamilyWorkspace } from "@/components/tenant-workspaces";
+import { AgencyWorkspace, FamilyWorkspace, FamilyVisitorModerationSection } from "@/components/tenant-workspaces";
 import { FamilyProfileAppearance } from "@/components/family-profile-appearance";
 import { AgencyAdministration } from "@/components/agency-administration";
 import { getAgencyDashboard } from "@/features/catalog/workspace-server";
@@ -55,7 +55,7 @@ export default async function WorkspacePage({
     }
     return <WorkspaceShell area={area}>{section==="dashboard"?<AgencyWorkspace userId={identity.userId}/>:<WorkspaceSkeleton area={area} section={section}/>}</WorkspaceShell>;
   }
-  if (area==="famiglia") return <WorkspaceShell area={area}>{section==="panoramica"?<FamilyWorkspace userId={identity.userId}/>:section==="profilo-e-storia"?<FamilyProfileAppearance userId={identity.userId}/>:<WorkspaceSkeleton area={area} section={section}/>}</WorkspaceShell>;
+  if (area==="famiglia") return <WorkspaceShell area={area}>{section==="panoramica"?<FamilyWorkspace userId={identity.userId}/>:section==="profilo-e-storia"?<FamilyProfileAppearance userId={identity.userId}/>:section==="ricordi"?<FamilyVisitorModerationSection userId={identity.userId}/>:<WorkspaceSkeleton area={area} section={section}/>}</WorkspaceShell>;
   return (
     <WorkspaceShell area={area}>
       <span className="workspace-label">Area autenticata · funzioni in sviluppo</span>
