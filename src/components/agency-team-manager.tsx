@@ -30,7 +30,7 @@ function OwnerContact({owner,onSave,busy}:{owner:Member;onSave:(userId:string,va
   <div className="agency-team-fields">
    <label>Nome *<input required minLength={2} maxLength={100} autoComplete="given-name" value={values.first_name} onChange={e=>setValues(v=>({...v,first_name:e.target.value}))}/></label>
    <label>Cognome *<input required minLength={2} maxLength={100} autoComplete="family-name" value={values.last_name} onChange={e=>setValues(v=>({...v,last_name:e.target.value}))}/></label>
-   <label>Telefono *<input required type="tel" pattern="\\+[1-9][0-9 ()-]{6,23}" placeholder="+39 333 1234567" autoComplete="tel" value={values.phone} onChange={e=>setValues(v=>({...v,phone:e.target.value}))}/></label>
+   <label>Telefono *<input required type="tel" pattern="\+[1-9][0-9 ()-]{6,23}" placeholder="+39 333 1234567" autoComplete="tel" value={values.phone} onChange={e=>setValues(v=>({...v,phone:e.target.value}))}/></label>
    <label>Email di contatto *<input required type="email" maxLength={254} autoComplete="email" value={values.email} onChange={e=>setValues(v=>({...v,email:e.target.value}))}/></label>
   </div>
   <p className="agency-team-hint">Questa email è il recapito per contattare il titolare; non cambia l'email utilizzata per accedere.</p>
