@@ -6,6 +6,7 @@ import {OpenAsButton} from "./superadmin-open-as-button";
 import {AgencyTeamManager} from "./agency-team-manager";
 import {AgencyAdministration} from "./agency-administration";
 import {FamilyVisitorMemories} from "./family-visitor-memories";
+import {ContextActionNotice} from "./context-action-notice";
 import {MilestonesEditor,normalizeMilestones,validMilestoneDate,type MemorialMilestone} from "./memorial-milestones-editor";
 import "./superadmin-open-as-workspace.css";
 
@@ -134,6 +135,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
 
   <nav className="oa-section-nav" aria-label={"Sezioni "+area}>{currentItems.map(item=><button type="button" key={item.slug} className={tab===item.slug?"oa-tab is-active":"oa-tab"} onClick={()=>setTab(item.slug)} aria-current={tab===item.slug?"page":undefined}>{item.label}</button>)}</nav>
   {notice&&<p role="status" className="oa-notice">{notice}</p>}
+  {family&&snapshot.memorial&&<ContextActionNotice memorialId={snapshot.memorial.id} onOpen={()=>setTab("ricordi")}/>}
 
   {!family&&<>
    {tab==="dashboard"&&<div className="oa-summary"><div><span>Memoriali</span><strong>{memorials.length}</strong></div><div><span>Piano</span><strong>{snapshot.agency.plan}</strong></div><div><span>Stato</span><strong>{snapshot.agency.status}</strong></div><div><span>Operatori</span><strong>{members.length}</strong></div></div>}
