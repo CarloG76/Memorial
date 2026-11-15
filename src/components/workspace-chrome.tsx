@@ -6,6 +6,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Brand } from "./brand";
 import { UiIcon } from "./ui-icon";
 import { WORKSPACE_NAV, type WorkspaceArea } from "@/lib/navigation";
+import { WorkspaceNotifications } from "./workspace-notifications";
 
 
 const icons = ["dashboard", "agenzie", "memoriali", "economia", "statistiche", "assistenza", "impostazioni"] as const;
@@ -118,6 +119,7 @@ export function WorkspaceChrome({ area, children }: { area: WorkspaceArea; child
           <span>{area==="piattaforma"?"Apri elenco agenzie":"Vai alla panoramica"}</span>
         </Link>
         <div className="workspace-account">
+          <WorkspaceNotifications area={area}/>
           <span className="workspace-avatar">{area==="piattaforma"?"SA":area==="agenzia"?"AG":"FA"}</span>
           <span className="workspace-account-label">{areaLabel[area]}</span>
           <Link href="/account/password" aria-label="Cambia password" title="Cambia password">
