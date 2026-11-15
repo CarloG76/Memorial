@@ -39,7 +39,6 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  const router=useRouter();
  const [snapshot,setSnapshot]=useState(initial);
  const [tab,setTab]=useState(initial.kind==="AGENCY"?"dashboard":"panoramica");
- const [editable,setEditable]=useState(false);
  const [busy,setBusy]=useState(false);
  const [notice,setNotice]=useState("");
  const [events,setEvents]=useState<Event[]|null>(null);
@@ -57,7 +56,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
   :"/console/piattaforma/memoriali/"+initial.memorial?.id;
  const title=initial.kind==="AGENCY"?snapshot.agency.legal_name:snapshot.memorial?.name??"Famiglia";
  const currentItems=WORKSPACE_NAV[area];
- const canSave=editable&&!busy;
+ const canSave=!busy;
  const fail=(e:string)=>{setNotice(e);setBusy(false);};
  async function reload(){
   const result=await db.rpc("platform_get_operator_context",{context_key:snapshot.context_id});
@@ -88,6 +87,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
    "Sfondo del memoriale aggiornato e tracciato.");
  }
  async function moderate(resource:"THOUGHT"|"MEMORY",operation:"EDIT"|"APPROVE"|"REJECT"|"DELETE",fields:Record<string,string>,item:Contribution){
+  if(operation==="DELETE"&&!window.confirm("Eliminare definitivamente questo contenuto?"))return;
   await write(async()=>db.rpc("platform_context_moderate",{context_key:snapshot.context_id,resource,record_id:item.id,operation,fields,reason:null}),
    "Contributo aggiornato e registrato nel contesto.");
  }
@@ -112,9 +112,8 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
    <p>Stai operando con la tua identità, non con le credenziali dell&apos;utente. Contesto: <b>{title}</b> · {snapshot.agency.is_demo||snapshot.memorial?.is_demo?"DEMO":"REALE"}</p>
    </div><button type="button" onClick={exit} disabled={busy}>Esci e torna a SuperAdmin</button></div>
   <div className="oa-heading"><div><span className="workspace-label">APRI COME / {family?"FAMIGLIA":"AGENZIA"}</span><h1>{title}</h1>
-    <p>{editable?"Modalità intervento: modifica e salva direttamente.":"Modalità visualizzazione: nessuna modifica possibile."}</p></div>
-   <div className="oa-heading-buttons"><button type="button" className={editable?"oa-primary":"oa-secondary"} onClick={()=>{setEditable(v=>!v);setNotice("");}}>{editable?"Termina intervento":"Intervieni come SuperAdmin"}</button>
-    <Link href={backUrl}>Scheda SuperAdmin</Link></div></div>
+    <p>Puoi modificare e salvare direttamente i contenuti disponibili per questo profilo.</p></div>
+   <div className="oa-heading-buttons"><Link href={backUrl}>Scheda SuperAdmin</Link></div></div>
   <nav className="oa-section-nav" aria-label={"Sezioni "+area}>{currentItems.map(item=><button type="button" key={item.slug} className={tab===item.slug?"oa-tab is-active":"oa-tab"} onClick={()=>setTab(item.slug)} aria-current={tab===item.slug?"page":undefined}>{item.label}</button>)}</nav>
   {notice&&<p role="status" className="oa-notice">{notice}</p>}
 
@@ -124,10 +123,9 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
      <div><strong>{m.name??"Memoriale in preparazione"}</strong><p>{m.tier} · {m.status} {m.is_demo?"· DEMO":""}</p></div>
      <OpenAsButton kind="FAMILY" targetId={m.id}/></article>):<p>Nessun memoriale associato.</p>}</Panel>}
    {(tab==="dashboard"||tab==="la-mia-agenzia")&&<Panel title="Anagrafica e operatori">
-    {!editable?<dl className="oa-dl"><div><dt>Ragione sociale</dt><dd>{snapshot.agency.legal_name}</dd></div><div><dt>Città</dt><dd>{snapshot.agency.city??"—"}</dd></div><div><dt>Email contatto</dt><dd>{snapshot.agency.contact_email??"—"}</dd></div><div><dt>Partita IVA</dt><dd>{snapshot.agency.vat_number??"—"}</dd></div></dl>:
-     <form className="oa-form" onSubmit={saveAgency}><label>Ragione sociale<input required minLength={2} maxLength={240} value={agencyName} onChange={e=>setAgencyName(e.target.value)}/></label>
+    <form className="oa-form" onSubmit={saveAgency}><label>Ragione sociale<input required minLength={2} maxLength={240} value={agencyName} onChange={e=>setAgencyName(e.target.value)}/></label>
       <label>Città<input maxLength={150} value={agencyCity} onChange={e=>setAgencyCity(e.target.value)}/></label>
-      <label>Email contatto<input type="email" value={agencyEmail} maxLength={254} onChange={e=>setAgencyEmail(e.target.value)}/></label><button type="submit" disabled={!canSave}>Salva dati agenzia</button></form>}
+      <label>Email contatto<input type="email" value={agencyEmail} maxLength={254} onChange={e=>setAgencyEmail(e.target.value)}/></label><button type="submit" disabled={!canSave}>Salva dati agenzia</button></form>
     <h3>Utenti associati</h3><div className="oa-members">{members.map(m=><div key={m.user_id}><span>{m.user_id}</span><Status value={m.role}/><small>{m.active?"Attivo":"Disattivato"}</small></div>)}</div>
    </Panel>}
    {tab==="amministrazione"&&<Panel title="Contratto e amministrazione"><dl className="oa-dl"><div><dt>Piano attuale</dt><dd>{snapshot.agency.plan}</dd></div><div><dt>Stato</dt><dd>{snapshot.agency.status}</dd></div><div><dt>Partita IVA</dt><dd>{snapshot.agency.vat_number??"—"}</dd></div></dl><p>Modifica piani e fatturazione non ancora collegata a un workflow finanziario autorizzato.</p></Panel>}
@@ -137,31 +135,29 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
   {family&&snapshot.memorial&&<>
    {tab==="panoramica"&&<div className="oa-summary"><div><span>Prodotto</span><strong>{snapshot.memorial.tier}</strong></div><div><span>Stato</span><strong>{snapshot.memorial.status}</strong></div><div><span>Pensieri</span><strong>{thoughts.length}</strong></div><div><span>Ricordi</span><strong>{memories.length}</strong></div></div>}
    {(tab==="panoramica"||tab==="profilo-e-storia")&&<Panel title="Profilo e storia">
-    {!editable?<div className="oa-profile"><dl className="oa-dl"><div><dt>Persona</dt><dd>{snapshot.memorial.name}</dd></div><div><dt>Visibilità</dt><dd>{snapshot.memorial.visibility}</dd></div><div><dt>Dedica</dt><dd>{snapshot.presentation?.dedication??"—"}</dd></div></dl><p>{snapshot.presentation?.biography??"Biografia non inserita."}</p>
-    {snapshot.presentation?.portrait_url&&<div className="oa-portrait" style={{backgroundImage:"url("+snapshot.presentation.portrait_url+")"}} role="img" aria-label="Ritratto commemorativo"/>}</div>:
-     <form className="oa-form" onSubmit={saveFamily}><label>Nome della persona<input value={personName} onChange={e=>setPersonName(e.target.value)} required minLength={3} maxLength={180}/></label>
+    <form className="oa-form" onSubmit={saveFamily}><label>Nome della persona<input value={personName} onChange={e=>setPersonName(e.target.value)} required minLength={3} maxLength={180}/></label>
       <label>Dedica<textarea value={dedication} onChange={e=>setDedication(e.target.value)} rows={2} maxLength={500}/></label>
       <label>Biografia<textarea value={bio} onChange={e=>setBio(e.target.value)} rows={6} maxLength={8000}/></label>
       <label>Percorso ritratto<input value={portraitUrl} onChange={e=>setPortraitUrl(e.target.value)} placeholder="/images/ritratto.webp"/></label>
       <label>Fuoco ritratto: {portraitFocus}%<input type="range" min={0} max={100} value={portraitFocus} onChange={e=>setPortraitFocus(Number(e.target.value))}/></label>
-      <button type="submit" disabled={!canSave}>Salva presentazione</button></form>}</Panel>}
+      <button type="submit" disabled={!canSave}>Salva presentazione</button></form></Panel>}
    {(tab==="panoramica"||tab==="pensieri-e-commenti")&&<Panel title="Pensieri e commenti">
-    {thoughts.length?thoughts.map(t=>editable?<ContributionEditor key={t.id} item={t} resource="THOUGHT" busy={busy} onAction={(op,fields,item)=>void moderate("THOUGHT",op,fields,item)}/>:<article className="oa-record" key={t.id}><div><strong>{t.author}</strong><p>{t.body}</p></div><Status value={t.status}/></article>):<p>Nessun pensiero registrato.</p>}
+    {thoughts.length?thoughts.map(t=><ContributionEditor key={t.id} item={t} resource="THOUGHT" busy={busy} onAction={(op,fields,item)=>void moderate("THOUGHT",op,fields,item)}/>):<p>Nessun pensiero registrato.</p>}
     <p className="oa-note">I contenuti in attesa non sono visibili pubblicamente.</p>
    </Panel>}
    {(tab==="panoramica"||tab==="ricordi")&&<Panel title="Ricordi">
-    {memories.length?memories.map(m=>editable?<ContributionEditor key={m.id} item={m} resource="MEMORY" busy={busy} onAction={(op,fields,item)=>void moderate("MEMORY",op,fields,item)}/>:<article className="oa-record" key={m.id}><div><strong>{m.title}</strong><p>{m.body}</p></div><Status value={m.status}/></article>):<p>Nessun ricordo registrato.</p>}
+    {memories.length?memories.map(m=><ContributionEditor key={m.id} item={m} resource="MEMORY" busy={busy} onAction={(op,fields,item)=>void moderate("MEMORY",op,fields,item)}/>):<p>Nessun ricordo registrato.</p>}
    </Panel>}
    {tab==="famiglia-e-contatti"&&<Panel title="Membri della famiglia e contatti">
     {members.length?members.map(m=><div className="oa-record" key={m.user_id}><div><strong>{m.user_id}</strong><p>{m.can_moderate?"Può moderare":"Nessuna moderazione"} · {m.can_edit_content?"Può modificare":"Sola lettura"}</p></div><Status value={m.role}/></div>):<p>Nessun membro.</p>}
     <p>Recapiti e consensi dei visitatori non disponibili finché il flusso Consumer non sarà implementato.</p>
    </Panel>}
    {(tab==="impostazioni"||tab==="profilo-e-storia")&&<Panel title="Paesaggio del memoriale">
-    <p>La selezione è normalmente riservata alla famiglia; qui puoi vedere e, in modalità operativa, correggere la versione pubblicata.</p>
-    <div className="oa-presets">{(snapshot.backgrounds??[]).map(p=><button key={p.id} type="button" disabled={!editable} className={preset===p.id?"oa-preset selected":"oa-preset"} onClick={()=>setPreset(p.id)} aria-pressed={preset===p.id}>
+    <p>Puoi scegliere e pubblicare direttamente lo sfondo del memoriale.</p>
+    <div className="oa-presets">{(snapshot.backgrounds??[]).map(p=><button key={p.id} type="button" disabled={busy} className={preset===p.id?"oa-preset selected":"oa-preset"} onClick={()=>setPreset(p.id)} aria-pressed={preset===p.id}>
       <span style={{backgroundImage:"url("+p.image_url+")"}}/><strong>{p.label}</strong></button>)}</div>
     <p>Attualmente pubblicato: <b>{snapshot.presentation?.background??"montagna"}</b></p>
-    {editable&&<button type="button" className="oa-primary" disabled={!canSave||preset===snapshot.presentation?.background} onClick={saveBackground}>Applica sfondo al memoriale</button>}
+    <button type="button" className="oa-primary" disabled={!canSave||preset===snapshot.presentation?.background} onClick={saveBackground}>Applica sfondo al memoriale</button>
    </Panel>}
    {tab==="anniversari-e-solidarieta"&&<Panel title="Ricorrenze e solidarietà"><p>La gestione delle ricorrenze e delle raccolte non è ancora operativa. Nessuna modifica simulata.</p></Panel>}
   </>}
