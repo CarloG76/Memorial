@@ -7,10 +7,10 @@ import "./public-memorial-fidelity.css";
 type Memory={title:string;body:string};
 type GalleryPhoto={title:string;subtitle:string;image_url:string};
 type Thought={author:string;body:string};
-type Milestone={year:string;title:string;detail:string};
+type Milestone={date?:string;year?:string;title:string;detail:string};
 export type DemoMemorial={
  name:string;birth_date:string|null;death_date:string|null;tier:string;
- dedication:string;biography:string;story:string;highlights:Milestone[];memories:Memory[];thoughts:Thought[];photos:GalleryPhoto[];background_preset:string;background_url:string|null;portrait_url:string|null;portrait_focus_x:number;is_demo:true;
+ dedication:string;biography:string;story?:string;highlights:Milestone[];memories:Memory[];thoughts:Thought[];photos:GalleryPhoto[];background_preset:string;background_url:string|null;portrait_url:string|null;portrait_focus_x:number;is_demo:true;
 };
 type Dialog="contact"|"thought"|"private"|"share"|"propose"|null;
 function date(value:string|null){if(!value)return "—";return new Intl.DateTimeFormat("it-IT",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}).format(new Date(value+"T12:00:00Z"));}
@@ -57,7 +57,7 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
    <div className="pm-content">
     <section className="pm-intro"><div><span className="pm-kicker">UNA STORIA DA CUSTODIRE</span><h2>Un ricordo che continua</h2><p>{data.biography}</p></div><div className="pm-intro-symbol"><Symbol name="mountain" size={45}/><span>La montagna</span><small>Una passione da condividere</small></div></section>
     <div className="pm-grid"><section id="storia" className="pm-section pm-story"><div className="pm-section-heading"><div><span className="pm-kicker">IL SUO PERCORSO</span><h2>La sua storia</h2></div></div>
-      <p>{data.story || "La storia non è ancora stata inserita."}</p><div className="pm-timeline">{data.highlights.map((x,i)=><div key={i}><span>{x.year}</span><div><h3>{x.title}</h3><p>{x.detail}</p></div></div>)}</div>
+      <div className="pm-timeline">{data.highlights.map((x,i)=><div key={i}><span>{x.date??x.year}</span><div><h3>{x.title}</h3><p>{x.detail}</p></div></div>)}</div>
      </section>
      <div className="pm-right">
       {data.tier==="PREMIUM"&&<section id="ricordi" className="pm-section"><div className="pm-section-heading"><div><span className="pm-kicker">MOMENTI CHE RESTANO</span><h2>Ricordi</h2></div><button onClick={()=>open("propose")} type="button">Proponi un ricordo →</button></div><div className="pm-photo-intro">Un album di momenti condivisi <span>· Fotografie illustrative della demo</span></div>
