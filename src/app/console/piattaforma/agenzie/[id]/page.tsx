@@ -15,11 +15,16 @@ export default async function AgencyDetail({params}:{params:Promise<{id:string}>
  const [a,m,staff]=await Promise.all([
   db.from("agencies").select("id,legal_name,vat_number,contact_email,city,country_code,status,plan,is_demo,created_at,demo_code").eq("id",id).maybeSingle(),
   db.from("memorials").select("id,deceased_name,status,tier,is_demo,created_at").eq("agency_id",id).order("created_at",{ascending:false}),
-  db.from("agency_members").select("user_id,role,active").eq("agency_id",id)
+  db.rpc("platform_agency_members_directory",{agency_key:id})
  ]);
  if(a.error||m.error||staff.error)throw new Error("Errore caricamento dettaglio agenzia.");
  if(!a.data)notFound();
  const agency=a.data;
+ const members=(staff.data??[]) as Array<{
+  user_id:string;role:string;active:boolean;display_name:string;
+  first_name:string;last_name:string;phone:string;contact_email:string;
+  login_email:string;contact_complete:boolean;
+ }>;
  return <WorkspaceShell area="piattaforma">
   <Link href="/console/piattaforma?sezione=agenzie">← Tutte le agenzie</Link>
   <div className="catalog-header"><div><span className="workspace-label">Scheda agenzia</span><h1>{agency.legal_name}</h1></div>
@@ -43,10 +48,16 @@ export default async function AgencyDetail({params}:{params:Promise<{id:string}>
     <td data-label="Demo">{row.is_demo?"Sì":"No"}</td>
     <td data-label="Azioni"><Link href={`/console/piattaforma/memoriali/${row.id}`}>Dettaglio →</Link></td>
    </tr>)}</tbody></table></div></section>
-  <section className="workspace-panel"><h2>Accessi agenzia</h2><p>{staff.data?.length??0} membri registrati</p>
+  <section className="workspace-panel"><h2>Titolare e collaboratori</h2><p>{members.length} utenti associati. Per aggiornare l'anagrafica o i permessi usa «Entra come».</p>
    <div className="catalog-table-wrap"><table className="catalog-table">
-    <thead><tr><th>ID utente</th><th>Ruolo</th><th>Attivo</th></tr></thead>
-    <tbody>{staff.data?.map(u=><tr key={u.user_id}><td data-label="ID utente">{u.user_id}</td><td data-label="Ruolo">{u.role}</td><td data-label="Attivo">{u.active?"Sì":"No"}</td></tr>)}</tbody>
+    <thead><tr><th>Nome e cognome</th><th>Ruolo</th><th>Email</th><th>Telefono</th><th>Stato</th></tr></thead>
+    <tbody>{members.map(u=><tr key={u.user_id}>
+      <td data-label="Nome">{[u.first_name,u.last_name].filter(Boolean).join(" ")||u.display_name||"Anagrafica da completare"}</td>
+      <td data-label="Ruolo">{u.role==="OWNER"?"Titolare":"Operatore"}</td>
+      <td data-label="Email">{u.contact_email||u.login_email||"—"}{u.role==="OWNER"&&!u.contact_complete&&<small style={{display:"block",color:"#986e37"}}>Recapito da completare</small>}</td>
+      <td data-label="Telefono">{u.phone||"Da compilare"}</td>
+      <td data-label="Stato">{u.active?"Attivo":"Disattivato"}</td>
+     </tr>)}</tbody>
    </table></div></section>
   <p className="catalog-footnote">Scheda in consultazione. Modifiche e azioni operative saranno disponibili quando i relativi flussi saranno implementati e autorizzati.</p>
  </WorkspaceShell>;
