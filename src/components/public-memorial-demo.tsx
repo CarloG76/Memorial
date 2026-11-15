@@ -40,6 +40,7 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
  const [photoPreview,setPhotoPreview]=useState("");
  const [photoError,setPhotoError]=useState("");
  const [submitting,setSubmitting]=useState(false);
+ const [rightsConfirmed,setRightsConfirmed]=useState(false);
  useEffect(()=>{
   if(!photo){setPhotoPreview("");return;}
   const url=URL.createObjectURL(photo);setPhotoPreview(url);
@@ -58,7 +59,7 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
  }
  const sceneImage=data.background_url??"";
  const portrait=data.portrait_url??"";
- const open=(next:Dialog)=>{setDialog(next);setNotice("");setBody("");setDisplayName("");setEmail("");setConsents({});setPhoto(null);setPhotoError("");};
+ const open=(next:Dialog)=>{setDialog(next);setNotice("");setBody("");setDisplayName("");setEmail("");setConsents({});setPhoto(null);setPhotoError("");setRightsConfirmed(false);};
  async function demoSubmit(e:FormEvent<HTMLFormElement>){
   e.preventDefault();
   if(dialog!=="propose"){
@@ -72,6 +73,7 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
    form.set("memorial_id",data.memorial_id);
    form.set("author",displayName.trim());
    form.set("body",body.trim());
+   form.set("rights_confirmed",rightsConfirmed?"yes":"no");
    if(photo)form.set("photo",photo);
    const endpoint=process.env.NEXT_PUBLIC_SUPABASE_URL;
    if(!endpoint)throw new Error("Servizio non configurato.");
@@ -127,7 +129,8 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
        {photoError&&<p role="alert" className="pm-photo-error">{photoError}</p>}
        {photoPreview&&<figure className="pm-photo-preview"><img src={photoPreview} alt="Anteprima della fotografia selezionata"/><figcaption>{photo?.name} · pronta per l’invio</figcaption><button type="button" onClick={()=>setPhoto(null)}>Rimuovi fotografia</button></figure>}
       </div>}
-      <p className="pm-privacy">{dialog==="propose"?"Il ricordo rimane privato fino all’approvazione della famiglia.":"Questa funzione è ancora dimostrativa: non salva dati."}</p><button className="pm-primary" type="submit" disabled={submitting||!!photoError}>{dialog==="propose"?(submitting?"Invio in corso…":"Invia il ricordo alla famiglia"):"Visualizza conferma demo"}</button></>}
+      {dialog==="propose"&&<label className="pm-check"><input type="checkbox" checked={rightsConfirmed} onChange={e=>setRightsConfirmed(e.target.checked)} required/><span>Confermo di poter condividere questa fotografia e il ricordo con la famiglia e autorizzo la valutazione per la pubblicazione.</span></label>}
+      <p className="pm-privacy">{dialog==="propose"?"Il ricordo rimane privato fino all’approvazione della famiglia.":"Questa funzione è ancora dimostrativa: non salva dati."}</p><button className="pm-primary" type="submit" disabled={submitting||!!photoError||(dialog==="propose"&&!rightsConfirmed)}>{dialog==="propose"?(submitting?"Invio in corso…":"Invia il ricordo alla famiglia"):"Visualizza conferma demo"}</button></>}
     </form>}
     {notice&&<div className="pm-notice" role="status">{notice}</div>}
    </section></div>}
