@@ -28,13 +28,13 @@ export default async function WorkspacePage({
       redirect("/console?errore=non-autorizzato");
     }
     const queryParams = await searchParams;
-    const view = queryParams.sezione === "agenzie" || queryParams.sezione === "memoriali"
+    const view = queryParams.sezione === "agenzie" || queryParams.sezione === "memoriali" || queryParams.sezione === "famiglie"
       ? queryParams.sezione
       : "dashboard";
     const q = typeof queryParams.q === "string" ? queryParams.q.slice(0,120) : "";
     const section = typeof queryParams.sezione==="string" && WORKSPACE_NAV.piattaforma.some(item=>item.slug===queryParams.sezione) ? queryParams.sezione : "dashboard";
     return <WorkspaceShell area={area}>
-      {section==="dashboard"||section==="agenzie"||section==="memoriali" ? <DemoCatalog view={view} query={q} userId={identity.userId} /> : section==="impostazioni" ? <><WorkspaceSkeleton area={area} section={section}/><SuperadminAuditLog page={Math.max(0,Math.min(1000000,Number.parseInt(queryParams.audit_page??"0",10)||0))}/></> : <WorkspaceSkeleton area={area} section={section}/>}
+      {section==="dashboard"||section==="agenzie"||section==="memoriali"||section==="famiglie" ? <DemoCatalog view={view} query={q} userId={identity.userId} /> : section==="impostazioni" ? <><WorkspaceSkeleton area={area} section={section}/><SuperadminAuditLog page={Math.max(0,Math.min(1000000,Number.parseInt(queryParams.audit_page??"0",10)||0))}/></> : <WorkspaceSkeleton area={area} section={section}/>}
     </WorkspaceShell>;
   }
 
