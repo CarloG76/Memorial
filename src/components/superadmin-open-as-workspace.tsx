@@ -12,7 +12,7 @@ type Memorial={id:string;agency_id:string;name:string;status:string;tier:string;
 type Member={user_id:string;role:string;active:boolean;can_moderate?:boolean;can_edit_content?:boolean};
 type Contribution={id:string;title?:string;author?:string;body:string;status:string};
 type Preset={id:string;label:string;image_url:string};
-type Presentation={name:string;dedication:string;biography:string;portrait_url:string|null;portrait_focus_x:number|null;background:string};
+type Presentation={name:string;dedication:string;biography:string;story:string;portrait_url:string|null;portrait_focus_x:number|null;background:string};
 export type OperatorSnapshot={context_id:string;kind:"AGENCY"|"FAMILY";expires_at:string;agency:Agency;memorial?:Memorial;memorials?:Memorial[];members:Member[];presentation?:Presentation;backgrounds?:Preset[];thoughts?:Contribution[];memories?:Contribution[]};
 type Event={action:string;at:string;reason:string|null;before:unknown;after:unknown};
 
@@ -63,6 +63,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  const [personName,setPersonName]=useState(initial.presentation?.name??initial.memorial?.name??"");
  const [dedication,setDedication]=useState(initial.presentation?.dedication??"");
  const [bio,setBio]=useState(initial.presentation?.biography??"");
+ const [story,setStory]=useState(initial.presentation?.story??"");
  const [portraitUrl,setPortraitUrl]=useState(initial.presentation?.portrait_url??"");
  const [portraitFocus,setPortraitFocus]=useState(initial.presentation?.portrait_focus_x??42);
  const area=initial.kind==="AGENCY"?"agenzia":"famiglia";
@@ -94,7 +95,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  async function saveFamily(e:FormEvent<HTMLFormElement>){
   e.preventDefault();
   await write(async()=>db.rpc("platform_context_update_family",{
-   context_key:snapshot.context_id,changes:{name:personName,dedication,biography:bio,portrait_url:portraitUrl,portrait_focus_x:portraitFocus},reason:null
+   context_key:snapshot.context_id,changes:{name:personName,dedication,biography:bio,story,portrait_url:portraitUrl,portrait_focus_x:portraitFocus},reason:null
   }),"Presentazione memoriale aggiornata e tracciata.");
  }
  async function saveBackground(){
@@ -130,11 +131,11 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  const thoughts=snapshot.thoughts??[];
  const memories=snapshot.memories??[];
  return <div className="oa-workspace">
-  <div className="oa-banner" role="status"><div><strong>Modalità SuperAdmin · {family?"Vista Famiglia":"Vista Agenzia"}</strong>
-   <p>Stai operando con la tua identità, non con le credenziali dell&apos;utente. Contesto: <b>{title}</b> · {snapshot.agency.is_demo||snapshot.memorial?.is_demo?"DEMO":"REALE"}</p>
+  <div className="oa-banner" role="status"><div><strong>SuperAdmin · Stai gestendo {family?"la Famiglia":"l’Agenzia"}: {title}</strong>
+   <p>{snapshot.agency.is_demo||snapshot.memorial?.is_demo?"Ambiente DEMO":"Ambiente reale"} · Operazioni effettuate con la tua identità.</p>
    </div><button type="button" onClick={exit} disabled={busy}>Esci e torna a SuperAdmin</button></div>
   <div className="oa-heading"><div><span className="workspace-label">APRI COME / {family?"FAMIGLIA":"AGENZIA"}</span><h1>{title}</h1>
-    <p>Puoi modificare e salvare direttamente i contenuti disponibili per questo profilo.</p></div>
+    </div>
    <div className="oa-heading-buttons"><Link href={backUrl}>Scheda SuperAdmin</Link></div></div>
   <nav className="oa-section-nav" aria-label={"Sezioni "+area}>{currentItems.map(item=><button type="button" key={item.slug} className={tab===item.slug?"oa-tab is-active":"oa-tab"} onClick={()=>setTab(item.slug)} aria-current={tab===item.slug?"page":undefined}>{item.label}</button>)}</nav>
   {notice&&<p role="status" className="oa-notice">{notice}</p>}
@@ -159,7 +160,8 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
    {(tab==="panoramica"||tab==="profilo-e-storia")&&<Panel title="Profilo e storia">
     <form className="oa-form" onSubmit={saveFamily}><label>Nome della persona<input value={personName} onChange={e=>setPersonName(e.target.value)} required minLength={3} maxLength={180}/></label>
       <label>Dedica<textarea value={dedication} onChange={e=>setDedication(e.target.value)} rows={2} maxLength={500}/></label>
-      <label>Biografia<textarea value={bio} onChange={e=>setBio(e.target.value)} rows={6} maxLength={8000}/></label>
+      <label>Biografia — introduzione breve<textarea value={bio} onChange={e=>setBio(e.target.value)} rows={4} maxLength={8000}/></label>
+      <label>La sua storia — racconto della vita<textarea value={story} onChange={e=>setStory(e.target.value)} rows={7} maxLength={16000}/></label>
       <label>Percorso ritratto<input value={portraitUrl} onChange={e=>setPortraitUrl(e.target.value)} placeholder="/images/ritratto.webp"/></label>
       <label>Fuoco ritratto: {portraitFocus}%<input type="range" min={0} max={100} value={portraitFocus} onChange={e=>setPortraitFocus(Number(e.target.value))}/></label>
       <button type="submit" disabled={!canSave}>Salva presentazione</button></form></Panel>}
