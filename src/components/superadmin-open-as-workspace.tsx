@@ -9,7 +9,7 @@ import "./superadmin-open-as-workspace.css";
 
 type Agency={id:string;legal_name:string;city:string|null;country_code:string;vat_number:string|null;contact_email:string|null;plan:string;status:string;is_demo:boolean};
 type Memorial={id:string;agency_id:string;name:string;status:string;tier:string;visibility?:string;is_demo:boolean;birth_date?:string|null;death_date?:string|null};
-type Member={user_id:string;role:string;active:boolean;can_moderate?:boolean;can_edit_content?:boolean};
+type Member={user_id:string;role:string;active:boolean;display_name?:string;can_moderate?:boolean;can_edit_content?:boolean};
 type Contribution={id:string;title?:string;author?:string;body:string;status:string};
 type Preset={id:string;label:string;image_url:string};
 type Presentation={name:string;dedication:string;biography:string;highlights:MemorialMilestone[];story?:string;portrait_url:string|null;portrait_focus_x:number|null;background:string};
@@ -168,7 +168,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
     <NewContribution resource="MEMORY" busy={busy} onCreate={fields=>createContribution("MEMORY",fields)}/>
    </Panel>}
    {tab==="famiglia-e-contatti"&&<Panel title="Membri della famiglia e contatti">
-    {members.length?members.map(m=><div className="oa-record" key={m.user_id}><div><strong>{m.user_id}</strong><p>{m.can_moderate?"Può moderare":"Nessuna moderazione"} · {m.can_edit_content?"Può modificare":"Sola lettura"}</p></div><Status value={m.role}/></div>):<p>Nessun membro.</p>}
+    {members.length?members.map(m=><div className="oa-record" key={m.user_id}><div><strong>{m.display_name?.trim()||"Anagrafica familiare da completare"}</strong><p>{m.can_moderate?"Può moderare":"Nessuna moderazione"} · {m.can_edit_content?"Può modificare":"Sola lettura"}</p></div><Status value={m.role}/></div>):<p>Nessun membro.</p>}
     <p>Recapiti e consensi dei visitatori non disponibili finché il flusso Consumer non sarà implementato.</p>
    </Panel>}
    {(tab==="impostazioni"||tab==="profilo-e-storia")&&<Panel title="Paesaggio del memoriale">
