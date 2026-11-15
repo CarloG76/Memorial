@@ -5,7 +5,7 @@ import "./agency-free-memorial.css";
 import {AgencyDemoCheckout} from "./agency-demo-checkout";
 
 type FreeStatus={total:number;used:number;remaining:number;not_configured?:boolean};
-export function AgencyFreeMemorialCreator({agencyId,contextKey=null,agencyName}:{agencyId:string;contextKey?:string|null;agencyName:string}){
+export function AgencyFreeMemorialCreator({agencyId,contextKey=null,agencyName,isDemo=false}:{agencyId:string;contextKey?:string|null;agencyName:string;isDemo?:boolean}){
  const db=useMemo(()=>createBrowserSupabaseClient(),[]);
  const [free,setFree]=useState<FreeStatus|null>(null);
  const [name,setName]=useState("");
@@ -42,6 +42,7 @@ export function AgencyFreeMemorialCreator({agencyId,contextKey=null,agencyName}:
   catch{setNotice("Seleziona e copia manualmente il link.");}
  }
  const remaining=free?.remaining??0;
+ if(isDemo)return <AgencyDemoCheckout agencyId={agencyId} agencyName={agencyName} contextKey={contextKey} isDemo/>;
  return <section className="afm-section">
   <header><div><span className="workspace-label">AGENZIA / NUOVO MEMORIALE</span>
    <h2>Attiva i memoriali gratuiti</h2><p>{agencyName} · 2 creazioni iniziali gratuite, una sola volta.</p></div>
@@ -61,7 +62,6 @@ export function AgencyFreeMemorialCreator({agencyId,contextKey=null,agencyName}:
   {notice&&<p role="status" className="afm-success">{notice}</p>}
   {error&&<p role="alert" className="afm-error">{error}</p>}
   <p className="afm-foot">Il memoriale è privato durante la preparazione. Il referente familiare deve verificare la propria email e accettare l'invito. Nessuna email è inviata automaticamente.</p>
-  <AgencyDemoCheckout agencyId={agencyId} agencyName={agencyName}/>
  </section>;
 }
 
