@@ -3,6 +3,7 @@
 import {useState} from "react";
 import {AgencyFreeBalance} from "./agency-free-memorial";
 import "./agency-administration.css";
+import {AgencyDemoCheckout} from "./agency-demo-checkout";
 
 export type AdministrationAgency={
  id:string;legal_name:string;city:string|null;plan:string;status:string;is_demo:boolean;
@@ -99,6 +100,7 @@ export function AgencyAdministration({agency,memorials}:{agency:AdministrationAg
     <p className="agency-admin-muted">La chiusura o il downgrade dell'agenzia non terminano i periodi di conservazione già pagati.</p>
    </section>
   </div>
+  <AgencyDemoCheckout agencyId={agency.id} agencyName={agency.legal_name}/>
   <section className="agency-admin-card">
    <div className="agency-admin-card-head"><div><h2>Memoriali e documentazione</h2><p>Inventario dell'agenzia, esportabile per controllo interno.</p></div>
     <button type="button" className="agency-admin-export" onClick={exportInventory}>Esporta CSV</button></div>
