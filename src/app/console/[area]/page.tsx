@@ -7,6 +7,8 @@ import { RevenueForecast } from "@/components/revenue-forecast";
 import { AgencyWorkspace, FamilyWorkspace, FamilyVisitorModerationSection } from "@/components/tenant-workspaces";
 import { FamilyProfileAppearance } from "@/components/family-profile-appearance";
 import { AgencyAdministration } from "@/components/agency-administration";
+import { AgencyMemorials, AgencyStatistics, AgencyContactProfile } from "@/components/agency-console-sections";
+import { AgencyTeamManager } from "@/components/agency-team-manager";
 import { getAgencyDashboard } from "@/features/catalog/workspace-server";
 import { readIdentityAndMemberships, requireWorkspaceAccess } from "@/lib/authz/server";
 import { isWorkspaceArea, WORKSPACE_NAV } from "@/lib/navigation";
@@ -52,6 +54,22 @@ export default async function WorkspacePage({
         ?<AgencyAdministration key={agency.id} agency={agency} memorials={data.memorials.filter(m=>m.agency_id===agency.id)}/>
         :<section key={agency.id} className="workspace-panel"><h2>{agency.legal_name}</h2><p>La gestione amministrativa è riservata al responsabile dell’agenzia.</p></section>
       ):<p>Non risultano agenzie associate al tuo account.</p>}</WorkspaceShell>;
+    }
+    if(section==="memoriali"||section==="statistiche"||section==="la-mia-agenzia"){
+      const data=await getAgencyDashboard(identity.userId);
+      const owners=new Set(data.membership.filter(m=>m.role==="OWNER"&&m.active).map(m=>m.agency_id));
+      return <WorkspaceShell area={area}>
+       {section==="memoriali"?<AgencyMemorials agencies={data.agencies} memorials={data.memorials}/>:
+       section==="statistiche"?<AgencyStatistics agencies={data.agencies} memorials={data.memorials}/>:
+       <div className="ac-section"><span className="workspace-label">AGENZIA / ORGANIZZAZIONE</span><h1>La mia agenzia</h1>
+        <p>Anagrafica e persone autorizzate delle agenzie assegnate al tuo account.</p>
+        {data.agencies.map(agency=><div key={agency.id}>
+         <AgencyContactProfile agency={agency} canEdit={owners.has(agency.id)}/>
+         {owners.has(agency.id)&&<AgencyTeamManager agencyId={agency.id}/>}
+        </div>)}
+        {!data.agencies.length&&<p>Nessuna agenzia associata.</p>}
+       </div>}
+      </WorkspaceShell>;
     }
     return <WorkspaceShell area={area}>{section==="dashboard"?<AgencyWorkspace userId={identity.userId}/>:<WorkspaceSkeleton area={area} section={section}/>}</WorkspaceShell>;
   }
