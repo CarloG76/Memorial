@@ -59,7 +59,7 @@ export function AgencyAdministration({agency,memorials,contextKey=null}:{agency:
   <header className="agency-admin-heading">
    <div><span className="workspace-label">AGENZIA / AMMINISTRAZIONE</span><h1>Amministrazione</h1>
     <p>{agency.legal_name} · {agency.is_demo?"Dati dimostrativi":"Dati agenzia"} · {format(agency.status)}</p></div>
-   <span className={"agency-admin-plan "+(pro?"pro":"free")}>Piano {agency.plan}</span>
+   <span className={"agency-admin-plan "+(pro?"pro":"free")}>{agency.is_demo?"Agenzia DEMO · piano contrattuale "+agency.plan:"Piano "+agency.plan}</span>
   </header>
   <div className="agency-admin-summary">
    {metric(agency.plan,"Piano attuale",pro?"Periodicità da verificare":"Nessun canone")}
@@ -85,7 +85,7 @@ export function AgencyAdministration({agency,memorials,contextKey=null}:{agency:
      <p>Ogni memoriale aggiuntivo si paga singolarmente, anche con Pro. <strong>Non esistono crediti mensili.</strong> I due memoriali gratuiti iniziali non si rinnovano.</p>
     </div>
     <p className="agency-admin-muted">*Sovrapprezzo Premium di € 3 proposto, ancora da approvare. IVA da definire. Le attivazioni e il piano demo vengono salvati nel database DEMO; gli importi demo non sono fatture.</p>
-    <p className="agency-admin-muted">Attivazione abbonamento, checkout Stripe, rinnovo automatico, disdetta e fatture saranno disponibili soltanto dopo integrazione e verifiche.</p>
+    <p className="agency-admin-muted">{agency.is_demo?"Qui sotto puoi confermare piani e creare memoriali veri con pagamenti simulati; la scelta del piano DEMO è separata dal contratto.":"Attivazione abbonamento, checkout Stripe, rinnovo automatico, disdetta e fatture saranno disponibili soltanto dopo integrazione e verifiche."}</p>
    </section>
    <section className="agency-admin-card">
     <h2>Riepilogo amministrativo</h2>
