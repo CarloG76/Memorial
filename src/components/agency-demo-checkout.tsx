@@ -49,8 +49,9 @@ export function AgencyDemoCheckout({agencyId,agencyName}:{agencyId:string;agency
   const next={...model,plan:choice,orders:[...model.orders,{id:crypto.randomUUID(),name:fees[choice].label,email:"",tier:"STANDARD" as Tier,plan:choice,amount:fees[choice].subscription,date:new Date().toISOString(),kind:"SUBSCRIPTION" as const}]};
   persist(next);setEditingPlan(false);
  }
- function prepare(e:FormEvent<HTMLFormElement>){e.preventDefault();if(person.trim().length<3||!email.includes("@"))return;setStage("CONFIRM");}
+ function prepare(e:FormEvent<HTMLFormElement>){e.preventDefault();if(editingPlan||person.trim().length<3||!email.includes("@"))return;setStage("CONFIRM");}
  function pay(){
+  if(editingPlan)return;
   const order:DemoOrder={id:crypto.randomUUID(),name:person.trim(),email:email.trim(),tier,plan:choice,amount:price,date:new Date().toISOString(),kind:"MEMORIAL"};
   const next:DemoState={...model,plan:choice,freeUsed:Math.min(2,model.freeUsed+(price===0?1:0)),orders:[...model.orders,order]};
   persist(next);setLast(order);setStage("SUCCESS");setPerson("");setEmail("");
@@ -90,6 +91,7 @@ export function AgencyDemoCheckout({agencyId,agencyName}:{agencyId:string;agency
    {choice!=="PAYG"&&<small>Equivalente annuale del canone: {money(annualFee)}.</small>}</div>
    <button type="button" onClick={confirmPlan}>{choice==="PAYG"?"Conferma nessun abbonamento":"Conferma piano DEMO"}</button></div>}
   <h3>2. Crea un memoriale</h3>
+  {editingPlan&&<p className="adc-disclaimer" role="status">Conferma prima il piano scelto per applicare la tariffa corretta.</p>}
   {stage==="SUCCESS"&&last?<div className="adc-success" role="status"><strong>Operazione DEMO completata</strong>
    <p>{last.name} · {last.tier==="STANDARD"?"Standard":"Premium"} · {money(last.amount)} {last.amount===0?"(gratuito)": "(pagamento simulato)"}</p>
    <p>Memoriale inserito nello storico locale della DEMO. Non è stato realmente pubblicato e non è stato inviato un invito alla famiglia.</p>
@@ -100,14 +102,14 @@ export function AgencyDemoCheckout({agencyId,agencyName}:{agencyId:string;agency
     <div><dt>Totale memoriale</dt><dd><b>{money(price)}</b></dd></div></dl>
     {price>0&&<p className="adc-disclaimer">Pagamento simulato: nella versione reale questo passaggio avverrà su Stripe prima di attivare il memoriale.</p>}
     <div className="adc-actions"><button type="button" onClick={()=>setStage("SELECT")} className="adc-secondary">Indietro</button>
-     <button type="button" onClick={pay}>{price===0?"Attiva gratuito nella DEMO":"Simula pagamento e conferma"}</button></div>
+     <button type="button" onClick={pay} disabled={editingPlan}>{price===0?"Attiva gratuito nella DEMO":"Simula pagamento e conferma"}</button></div>
    </div>:<form className="adc-form" onSubmit={prepare}>
     <label>Nome della persona<input required minLength={3} maxLength={180} value={person} onChange={e=>setPerson(e.target.value)}/></label>
     <label>Email referente famiglia<input required type="email" maxLength={254} value={email} onChange={e=>setEmail(e.target.value)}/></label>
     <label>Tipologia<select value={tier} onChange={e=>setTier(e.target.value as Tier)}><option value="STANDARD">Standard</option><option value="PREMIUM">Premium</option></select></label>
     <div className="adc-due"><small>{remaining>0?"Attivazione gratuita "+(model.freeUsed+1)+" di 2":"Prezzo del memoriale · "+fees[choice].label}</small>
      <strong>{money(price)}</strong></div>
-    <button type="submit" disabled={!ready}>Continua al riepilogo</button>
+    <button type="submit" disabled={!ready||editingPlan}>Continua al riepilogo</button>
    </form>}
   <h3>3. Storico delle operazioni di prova</h3>
   {model.orders.length===0?<p className="adc-disclaimer">Nessuna operazione demo ancora effettuata.</p>:
