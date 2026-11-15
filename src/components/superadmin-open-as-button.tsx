@@ -1,18 +1,32 @@
 "use client";
 import {useMemo,useState} from "react";
-import {useRouter} from "next/navigation";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 type Kind="AGENCY"|"FAMILY";
 export function OpenAsButton({kind,targetId,full=false,compact=false}:{kind:Kind;targetId:string;full?:boolean;compact?:boolean}){
  const db=useMemo(()=>createBrowserSupabaseClient(),[]);
- const router=useRouter();
  const [busy,setBusy]=useState(false);
  const [error,setError]=useState("");
  async function open(){
+  if(busy)return;
+  // Create the tab synchronously during the click: browsers block windows opened after await.
+  const tab=window.open("about:blank","_blank");
+  if(!tab){setError("Il browser ha bloccato la nuova scheda. Abilita i popup per Memorial.");return;}
+  tab.opener=null;
+  tab.document.title="Apertura Memorial";
+  tab.document.body.textContent="Apertura ambiente Memorial…";
   setBusy(true);setError("");
-  const result=await db.rpc("platform_start_operator_context",{kind,target_id:targetId});
-  if(result.error||!result.data){setError("Impossibile aprire il contesto: "+(result.error?.message??"accesso negato"));setBusy(false);return;}
-  router.push("/console/piattaforma/apri-come/"+encodeURIComponent(result.data));
+  try{
+   const result=await db.rpc("platform_start_operator_context",{kind,target_id:targetId});
+   if(result.error||!result.data){
+    tab.close();
+    setError("Impossibile aprire il contesto: "+(result.error?.message??"accesso negato"));
+    return;
+   }
+   tab.location.replace("/console/piattaforma/apri-come/"+encodeURIComponent(result.data));
+  }catch{
+   tab.close();
+   setError("Impossibile aprire una nuova scheda. Riprova.");
+  }finally{setBusy(false);}
  }
  return <span style={{display:full?"block":"inline-flex",verticalAlign:"middle"}}>
   <button type="button" onClick={open} disabled={busy} className={compact?"ma-row-action ma-row-action-enter":undefined} style={compact?undefined:{
