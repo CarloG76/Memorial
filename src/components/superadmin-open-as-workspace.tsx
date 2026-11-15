@@ -140,7 +140,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
 
   {!family&&<>
    {tab==="dashboard"&&<div className="oa-summary"><div><span>Memoriali</span><strong>{memorials.length}</strong></div><div><span>Piano</span><strong>{snapshot.agency.plan}</strong></div><div><span>Stato</span><strong>{snapshot.agency.status}</strong></div><div><span>Operatori</span><strong>{members.length}</strong></div></div>}
-   {tab==="memoriali"&&<AgencyFreeMemorialCreator agencyId={snapshot.agency.id} contextKey={snapshot.context_id} agencyName={snapshot.agency.legal_name}/>}
+   {tab==="memoriali"&&<AgencyFreeMemorialCreator agencyId={snapshot.agency.id} contextKey={snapshot.context_id} agencyName={snapshot.agency.legal_name} isDemo={snapshot.agency.is_demo}/>}
    {(tab==="dashboard"||tab==="memoriali")&&<Panel title="Memoriali dell'agenzia">{memorials.length?memorials.map(m=><article key={m.id} className="oa-record">
      <div><strong>{m.name??"Memoriale in preparazione"}</strong><p>{m.tier} · {m.status} {m.is_demo?"· DEMO":""}</p></div>
      <OpenAsButton kind="FAMILY" targetId={m.id}/></article>):<p>Nessun memoriale associato.</p>}</Panel>}
@@ -150,7 +150,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
       <label>Email contatto<input type="email" value={agencyEmail} maxLength={254} onChange={e=>setAgencyEmail(e.target.value)}/></label><button type="submit" disabled={!canSave}>Salva dati agenzia</button></form>
     <AgencyTeamManager agencyId={snapshot.agency.id} contextKey={snapshot.context_id}/>
    </Panel>}
-   {tab==="amministrazione"&&<AgencyAdministration agency={snapshot.agency} memorials={memorials.map(m=>({...m,agency_id:snapshot.agency.id}))}/>}
+   {tab==="amministrazione"&&<AgencyAdministration agency={snapshot.agency} contextKey={snapshot.context_id} memorials={memorials.map(m=>({...m,agency_id:snapshot.agency.id}))}/>}
    {tab==="statistiche"&&<Panel title="Statistiche operative"><div className="oa-summary"><div><span>Totale memoriali</span><strong>{memorials.length}</strong></div><div><span>Pubblicati</span><strong>{memorials.filter(x=>x.status==="PUBLISHED_ACTIVE").length}</strong></div><div><span>Demo</span><strong>{memorials.filter(x=>x.is_demo).length}</strong></div></div></Panel>}
   </>}
 
