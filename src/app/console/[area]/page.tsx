@@ -47,7 +47,9 @@ export default async function WorkspacePage({
     if(section==="amministrazione"){
       const data=await getAgencyDashboard(identity.userId);
       return <WorkspaceShell area={area}>{data.agencies.length?data.agencies.map(agency=>
-        <AgencyAdministration key={agency.id} agency={agency} memorials={data.memorials.filter(m=>m.agency_id===agency.id)}/>
+        data.membership.some(m=>m.agency_id===agency.id&&m.role==="OWNER"&&m.active)
+        ?<AgencyAdministration key={agency.id} agency={agency} memorials={data.memorials.filter(m=>m.agency_id===agency.id)}/>
+        :<section key={agency.id} className="workspace-panel"><h2>{agency.legal_name}</h2><p>La gestione amministrativa è riservata al responsabile dell’agenzia.</p></section>
       ):<p>Non risultano agenzie associate al tuo account.</p>}</WorkspaceShell>;
     }
     return <WorkspaceShell area={area}>{section==="dashboard"?<AgencyWorkspace userId={identity.userId}/>:<WorkspaceSkeleton area={area} section={section}/>}</WorkspaceShell>;
