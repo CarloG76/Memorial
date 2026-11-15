@@ -1,6 +1,7 @@
 "use client";
 
 import {useState} from "react";
+import {AgencyFreeBalance} from "./agency-free-memorial";
 import "./agency-administration.css";
 
 export type AdministrationAgency={
@@ -68,6 +69,7 @@ export function AgencyAdministration({agency,memorials}:{agency:AdministrationAg
   <div className="agency-admin-columns">
    <section className="agency-admin-card">
     <h2>Memoriali gratuiti e prezzi</h2>
+    <AgencyFreeBalance agencyId={agency.id}/>
     <p className="agency-admin-muted">Il piano visualizzato è quello effettivamente assegnato all'agenzia. Non è indicativo di un pagamento verificato.</p>
     <dl className="agency-admin-terms">
      <div><dt>Primi due memoriali per nuova agenzia</dt><dd>Gratuiti una sola volta</dd></div>
