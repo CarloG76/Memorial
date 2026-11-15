@@ -26,7 +26,10 @@ export async function GET(request: NextRequest) {
     return deny();
   }
 
-  const response = NextResponse.redirect(new URL("/console", request.url));
+  // Only invitation routes with a verified opaque token are safe return targets.
+  const next = request.nextUrl.searchParams.get("next")??"";
+  const safe = /^\\/invito-(titolare|famiglia)\\/[a-f0-9]{64}$/.test(next)?next:"/console";
+  const response = NextResponse.redirect(new URL(safe, request.url));
   response.headers.set("Cache-Control", "no-store");
   response.headers.set("Referrer-Policy", "no-referrer");
   return response;
