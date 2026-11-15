@@ -7,6 +7,7 @@ export const WORKSPACE_NAV: Record<WorkspaceArea, readonly NavigationItem[]> = {
     { label: "Dashboard", slug: "dashboard" },
     { label: "Agenzie", slug: "agenzie" },
     { label: "Memoriali", slug: "memoriali" },
+    { label: "Famiglie", slug: "famiglie" },
     { label: "Economia", slug: "economia" },
     { label: "Statistiche", slug: "statistiche" },
     { label: "Assistenza", slug: "assistenza" },
