@@ -8,7 +8,7 @@ import "./superadmin-memorial-editor.css";
 export type EditorialHistory={actor:string|null;action:string;before:Record<string,unknown>;after:Record<string,unknown>;at:string};
 export type MemorialPresentation={
  memorial_id:string;name:string;tier:string;status:string;is_demo:boolean;
- dedication:string;biography:string;portrait_url:string;portrait_focus_x:number;
+ dedication:string;biography:string;story:string;portrait_url:string;portrait_focus_x:number;
  background:string;photos:{id:string;title:string;subtitle:string;image_url:string;position:number}[];presets:{id:string;label:string;image_url:string}[];history:EditorialHistory[];
 };
 export function SuperadminMemorialEditor({initial}:{initial:MemorialPresentation}){
@@ -17,13 +17,14 @@ export function SuperadminMemorialEditor({initial}:{initial:MemorialPresentation
  const [name,setName]=useState(initial.name??"");
  const [dedication,setDedication]=useState(initial.dedication??"");
  const [biography,setBiography]=useState(initial.biography??"");
+ const [story,setStory]=useState(initial.story??"");
  const [portraitUrl,setPortraitUrl]=useState(initial.portrait_url??"");
  const [focus,setFocus]=useState(initial.portrait_focus_x??42);
  const [saving,setSaving]=useState(false);
  const [message,setMessage]=useState("");
  async function save(event:FormEvent<HTMLFormElement>){
   event.preventDefault();setSaving(true);setMessage("");
-  const changes={name,dedication,biography,portrait_url:portraitUrl,portrait_focus_x:focus};
+  const changes={name,dedication,biography,story,portrait_url:portraitUrl,portrait_focus_x:focus};
   const r=await db.rpc("platform_update_memorial_presentation",{target_memorial:data.memorial_id,changes,reason:null});
   if(r.error){setMessage("Errore: "+r.error.message);setSaving(false);return;}
   const next=await db.rpc("platform_get_memorial_presentation",{target_memorial:data.memorial_id});
@@ -39,7 +40,8 @@ export function SuperadminMemorialEditor({initial}:{initial:MemorialPresentation
     <h2>Presentazione pubblica</h2>
     <label htmlFor="me-name">Nome e cognome</label><input id="me-name" value={name} onChange={e=>setName(e.target.value)} maxLength={180} required/>
     <label htmlFor="me-dedication">Dedica</label><textarea id="me-dedication" value={dedication} onChange={e=>setDedication(e.target.value)} rows={3} maxLength={500}/>
-    <label htmlFor="me-bio">Biografia</label><textarea id="me-bio" value={biography} onChange={e=>setBiography(e.target.value)} rows={8} maxLength={8000}/>
+    <label htmlFor="me-bio">Biografia · introduzione breve</label><textarea id="me-bio" value={biography} onChange={e=>setBiography(e.target.value)} rows={4} maxLength={8000}/>
+    <label htmlFor="me-story">La sua storia · racconto della vita</label><textarea id="me-story" value={story} onChange={e=>setStory(e.target.value)} rows={8} maxLength={16000}/>
     <label htmlFor="me-portrait">Percorso dell&apos;immagine ritratto</label><input id="me-portrait" value={portraitUrl} onChange={e=>setPortraitUrl(e.target.value)} placeholder="/images/ritratto.webp"/>
     <label htmlFor="me-focus">Posizione orizzontale del ritratto: {focus}%</label><input type="range" id="me-focus" min={0} max={100} value={focus} onChange={e=>setFocus(Number(e.target.value))}/>
     <button type="submit" disabled={saving}>{saving?"Salvataggio…":"Salva e registra modifica"}</button>
