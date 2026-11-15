@@ -1,0 +1,11 @@
+.ia-main{max-width:660px;margin:55px auto;padding:20px;color:#214663;font-family:Montserrat,Arial,sans-serif}
+.ia-brand{display:inline-block;margin-bottom:26px;text-decoration:none;color:#1a4665;font-size:21px;font-weight:800}
+.ia-main h1{font-size:32px;margin:7px 0 14px}.ia-main>p{font-size:13px;line-height:1.7}
+.ia-card{background:#fff;border:1px solid #dce5ed;border-radius:12px;padding:22px;margin-top:20px}.ia-card h2{font-size:18px;margin:0 0 14px}
+.ia-card form{display:grid;gap:13px}.ia-card form label{display:grid;gap:6px;font-size:12px;font-weight:600}.ia-card form input{border:1px solid #cbd9e4;padding:12px;border-radius:7px;font:inherit}
+.ia-card button{padding:11px 15px;border:0;border-radius:8px;background:#214663;color:#fff;cursor:pointer;font:700 12px Montserrat,Arial,sans-serif}
+.ia-card button:disabled{opacity:.55;cursor:not-allowed}.ia-card .ia-switch{display:flex;gap:8px;margin-bottom:15px}
+.ia-switch button[aria-pressed=false]{color:#24516e;background:#edf3f8}.ia-check{display:flex;align-items:start;gap:9px;margin:14px 0;font-size:12px;line-height:1.65}
+.ia-check input{margin-top:4px}.ia-error{margin-top:12px;padding:12px;border:1px solid #dfb3ad;border-radius:8px;color:#9e3931;background:#fff4f2}
+.ia-notice,.ia-success{color:#28674c}.ia-foot{margin-top:24px;color:#73869a;font-size:11px}
+@media(max-width:550px){.ia-main{margin:22px auto;padding:15px}.ia-main h1{font-size:26px}}
