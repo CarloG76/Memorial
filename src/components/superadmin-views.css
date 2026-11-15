@@ -47,3 +47,6 @@
 .memorial-admin .ma-row-action-enter:hover{background:#f5e2bd;border-color:#cda362}
 .memorial-admin .ma-row-action:focus-visible{outline:3px solid #306da4;outline-offset:2px}
 .memorial-admin .ma-row-action:disabled{opacity:.6;cursor:progress}
+
+/* Actionable, server-scoped notifications on agency and family rows */
+.memorial-admin .ma-pending-count{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:31px;padding:6px 9px;border:1px solid #e7c99e;border-radius:8px;background:#fff4df;color:#784816;font:700 11px/1.3 Montserrat,Arial,sans-serif;white-space:nowrap}
