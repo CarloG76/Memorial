@@ -3,6 +3,7 @@ import {useMemo,useState,type FormEvent} from "react";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import {WORKSPACE_NAV} from "@/lib/navigation";
 import {OpenAsButton} from "./superadmin-open-as-button";
+import {AgencyTeamManager} from "./agency-team-manager";
 import {MilestonesEditor,normalizeMilestones,validMilestoneDate,type MemorialMilestone} from "./memorial-milestones-editor";
 import "./superadmin-open-as-workspace.css";
 
@@ -141,7 +142,7 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
     <form className="oa-form" onSubmit={saveAgency}><label>Ragione sociale<input required minLength={2} maxLength={240} value={agencyName} onChange={e=>setAgencyName(e.target.value)}/></label>
       <label>Città<input maxLength={150} value={agencyCity} onChange={e=>setAgencyCity(e.target.value)}/></label>
       <label>Email contatto<input type="email" value={agencyEmail} maxLength={254} onChange={e=>setAgencyEmail(e.target.value)}/></label><button type="submit" disabled={!canSave}>Salva dati agenzia</button></form>
-    <h3>Utenti associati</h3><div className="oa-members">{members.map(m=><div key={m.user_id}><span>{m.user_id}</span><Status value={m.role}/><small>{m.active?"Attivo":"Disattivato"}</small></div>)}</div>
+    <AgencyTeamManager agencyId={snapshot.agency.id} contextKey={snapshot.context_id}/>
    </Panel>}
    {tab==="amministrazione"&&<Panel title="Contratto e amministrazione"><dl className="oa-dl"><div><dt>Piano attuale</dt><dd>{snapshot.agency.plan}</dd></div><div><dt>Stato</dt><dd>{snapshot.agency.status}</dd></div><div><dt>Partita IVA</dt><dd>{snapshot.agency.vat_number??"—"}</dd></div></dl><p>Modifica piani e fatturazione non ancora collegata a un workflow finanziario autorizzato.</p></Panel>}
    {tab==="statistiche"&&<Panel title="Statistiche operative"><div className="oa-summary"><div><span>Totale memoriali</span><strong>{memorials.length}</strong></div><div><span>Pubblicati</span><strong>{memorials.filter(x=>x.status==="PUBLISHED_ACTIVE").length}</strong></div><div><span>Demo</span><strong>{memorials.filter(x=>x.is_demo).length}</strong></div></div></Panel>}
