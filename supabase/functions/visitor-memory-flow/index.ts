@@ -51,8 +51,10 @@ async function proposal(req:Request){
  const author=String(form.get("author")??"").trim();
  const body=String(form.get("body")??"").trim();
  const honeypot=String(form.get("website")??"").trim();
+ const rightsConfirmed=form.get("rights_confirmed")==="yes";
  const file=form.get("photo");
  if(honeypot)return respond(req,{ok:true});
+ if(!rightsConfirmed)return respond(req,{error:"È richiesta la conferma di autorizzazione alla condivisione."},400);
  if(!uuid.test(memorialId)||author.length<2||author.length>100||body.length<10||body.length>1000)return respond(req,{error:"Controlla nome e descrizione del ricordo."},400);
  if(file!==null&&!(file instanceof File))return respond(req,{error:"Fotografia non valida."},400);
  const img=file instanceof File&&file.size>0?await photoValid(file):null;
@@ -116,7 +118,7 @@ async function moderate(req:Request){
   const download=await api.storage.from("memorial-pending").download(row.photo_private_path);
   if(download.error||!download.data)return safeError(req);
   const type=row.photo_private_path.endsWith(".webp")?"image/webp":row.photo_private_path.endsWith(".png")?"image/png":"image/jpeg";
-  const result=await api.storage.from("memorial-approved").upload(row.photo_private_path,download.data,{contentType:type,upsert:false});
+  const result=await api.storage.from("memorial-approved").upload(row.photo_private_path,download.data,{contentType:type,upsert:false,cacheControl:"0"});
   if(result.error)return safeError(req);
   publicPath=row.photo_private_path;uploaded=true;
  }
