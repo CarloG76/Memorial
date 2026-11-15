@@ -19,6 +19,21 @@ type Event={action:string;at:string;reason:string|null;before:unknown;after:unkn
 function Panel({title,children}:{title:string;children:React.ReactNode}){return <section className="oa-panel"><h2>{title}</h2>{children}</section>;}
 function Status({value}:{value:string}){return <span className="oa-status">{value.replaceAll("_"," ")}</span>;}
 
+function NewContribution({resource,busy,onCreate}:{resource:"THOUGHT"|"MEMORY";busy:boolean;onCreate:(fields:Record<string,string>)=>Promise<void>}){
+ const [label,setLabel]=useState("");
+ const [body,setBody]=useState("");
+ async function submit(event:FormEvent<HTMLFormElement>){
+  event.preventDefault();
+  try{await onCreate(resource==="THOUGHT"?{author:label,body}:{title:label,body});setLabel("");setBody("");}
+  catch{return;}
+ }
+ return <form className="oa-contribution oa-new-contribution" onSubmit={e=>void submit(e)}>
+  <h3>Aggiungi {resource==="THOUGHT"?"un pensiero":"un ricordo"}</h3>
+  <label>{resource==="THOUGHT"?"Autore":"Titolo"}<input required minLength={2} maxLength={resource==="THOUGHT"?80:180} value={label} onChange={e=>setLabel(e.target.value)}/></label>
+  <label>Testo<textarea required minLength={10} maxLength={resource==="THOUGHT"?2000:10000} rows={3} value={body} onChange={e=>setBody(e.target.value)}/></label>
+  <div className="oa-row-actions"><button type="submit" disabled={busy}>Aggiungi in attesa di approvazione</button></div>
+ </form>;
+}
 function ContributionEditor({item,resource,busy,onAction}:{item:Contribution;resource:"THOUGHT"|"MEMORY";busy:boolean;onAction:(operation:"EDIT"|"APPROVE"|"REJECT"|"DELETE",fields:Record<string,string>,item:Contribution)=>void}){
  const [label,setLabel]=useState(item.author??item.title??"");
  const [body,setBody]=useState(item.body);
@@ -91,6 +106,13 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
   await write(async()=>db.rpc("platform_context_moderate",{context_key:snapshot.context_id,resource,record_id:item.id,operation,fields,reason:null}),
    "Contributo aggiornato e registrato nel contesto.");
  }
+ async function createContribution(resource:"THOUGHT"|"MEMORY",fields:Record<string,string>){
+  if(!canSave)return;
+  setBusy(true);setNotice("");
+  const r=await db.rpc("platform_context_moderate",{context_key:snapshot.context_id,resource,record_id:null,operation:"CREATE",fields,reason:null});
+  if(r.error){fail("Operazione non riuscita: "+r.error.message);throw new Error(r.error.message);}
+  setNotice("Contributo creato in attesa di approvazione.");await reload();
+ }
  async function loadEvents(){
   setBusy(true);const r=await db.rpc("platform_get_operator_context_events",{context_key:snapshot.context_id});
   if(r.error)fail(r.error.message);else{setEvents(r.data as Event[]);setBusy(false);}
@@ -143,10 +165,12 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
       <button type="submit" disabled={!canSave}>Salva presentazione</button></form></Panel>}
    {(tab==="panoramica"||tab==="pensieri-e-commenti")&&<Panel title="Pensieri e commenti">
     {thoughts.length?thoughts.map(t=><ContributionEditor key={t.id} item={t} resource="THOUGHT" busy={busy} onAction={(op,fields,item)=>void moderate("THOUGHT",op,fields,item)}/>):<p>Nessun pensiero registrato.</p>}
+    <NewContribution resource="THOUGHT" busy={busy} onCreate={fields=>createContribution("THOUGHT",fields)}/>
     <p className="oa-note">I contenuti in attesa non sono visibili pubblicamente.</p>
    </Panel>}
    {(tab==="panoramica"||tab==="ricordi")&&<Panel title="Ricordi">
     {memories.length?memories.map(m=><ContributionEditor key={m.id} item={m} resource="MEMORY" busy={busy} onAction={(op,fields,item)=>void moderate("MEMORY",op,fields,item)}/>):<p>Nessun ricordo registrato.</p>}
+    <NewContribution resource="MEMORY" busy={busy} onCreate={fields=>createContribution("MEMORY",fields)}/>
    </Panel>}
    {tab==="famiglia-e-contatti"&&<Panel title="Membri della famiglia e contatti">
     {members.length?members.map(m=><div className="oa-record" key={m.user_id}><div><strong>{m.user_id}</strong><p>{m.can_moderate?"Può moderare":"Nessuna moderazione"} · {m.can_edit_content?"Può modificare":"Sola lettura"}</p></div><Status value={m.role}/></div>):<p>Nessun membro.</p>}
