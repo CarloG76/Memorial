@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
+import {memorialPortraitSrc} from "@/lib/memorial-portrait-url";
 import "./public-memorial-demo.css";
 import "./public-memorial-fidelity.css";
 
@@ -10,7 +11,7 @@ type Thought={author:string;body:string};
 type Milestone={date?:string;year?:string;title:string;detail:string};
 export type DemoMemorial={
  memorial_id:string;name:string;birth_date:string|null;death_date:string|null;tier:string;
- dedication:string;biography:string;story?:string;highlights:Milestone[];memories:Memory[];thoughts:Thought[];photos:GalleryPhoto[];background_preset:string;background_url:string|null;portrait_url:string|null;portrait_focus_x:number;is_demo:true;
+ dedication:string;biography:string;story?:string;highlights:Milestone[];memories:Memory[];thoughts:Thought[];photos:GalleryPhoto[];background_preset:string;background_url:string|null;portrait_url:string|null;portrait_focus_x:number;is_demo:boolean;is_preview?:boolean;status?:string;
 };
 type Dialog="contact"|"thought"|"private"|"share"|"propose"|null;
 function date(value:string|null){if(!value)return "—";return new Intl.DateTimeFormat("it-IT",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}).format(new Date(value+"T12:00:00Z"));}
@@ -58,11 +59,11 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
   setPhoto(file);
  }
  const sceneImage=data.background_url??"";
- const portrait=data.portrait_url??"";
+ const portrait=memorialPortraitSrc(data.portrait_url);
  const open=(next:Dialog)=>{setDialog(next);setNotice("");setBody("");setDisplayName("");setEmail("");setConsents({});setPhoto(null);setPhotoError("");setRightsConfirmed(false);};
  async function demoSubmit(e:FormEvent<HTMLFormElement>){
   e.preventDefault();
-  if(dialog!=="propose"){
+  if(dialog!=="propose"||data.is_preview){
    setNotice("Questa funzione non è ancora disponibile nella demo; nessun dato è stato inviato.");
    return;
   }
@@ -80,7 +81,7 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
    const response=await fetch(endpoint+"/functions/v1/visitor-memory-flow?action=submit",{method:"POST",body:form});
    const result=await response.json();
    if(!response.ok||!result.ok)throw new Error(result.error??"Invio non riuscito.");
-   setNotice("Ricordo e fotografia, se allegata, ricevuti. La famiglia di Giovanni Rossi potrà approvarli prima della pubblicazione.");
+   setNotice("Ricordo e fotografia, se allegata, ricevuti. La famiglia di "+data.name+" potrà approvarli prima della pubblicazione.");
    setBody("");setPhoto(null);setDisplayName("");
   }catch(error){
    setNotice(error instanceof Error?error.message:"Impossibile inviare il ricordo.");
@@ -88,7 +89,7 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
  }
  async function copyLink(){try{await navigator.clipboard.writeText(window.location.href);setNotice("Collegamento copiato.");}catch{setNotice("Copia l’indirizzo dalla barra del browser.");}}
  return <div className="pm-site pm-v2">
-  <div className="pm-demo-ribbon">Memoriale dimostrativo · le proposte di ricordo vengono inviate alla famiglia per approvazione</div>
+  <div className="pm-demo-ribbon">{data.is_preview?"ANTEPRIMA RISERVATA · "+data.name+" · memoriale non ancora pubblico":"Memoriale dimostrativo · le proposte dei visitatori richiedono approvazione"}</div>
   <header className="pm-header"><Link href="/" className="pm-brand"><span>✦</span> Memorial</Link>
    <nav aria-label="Sezioni del memoriale"><a href="#home">Home</a><a href="#storia">La sua storia</a>{data.tier==="PREMIUM"&&<a href="#ricordi">Ricordi</a>}<a href="#pensieri">Pensieri</a></nav>
    <button className="pm-header-share" type="button" onClick={()=>open("share")}><Symbol name="share" size={16}/> Condividi</button>
@@ -97,7 +98,7 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
    <section className="pm-hero" id="home">
     <div className="pm-hero-scene" style={{backgroundImage:"linear-gradient(90deg,rgba(13,30,49,.18),rgba(12,26,40,.24)),url("+sceneImage+")"}} aria-hidden="true"/>
     {portrait&&<div className="pm-hero-portrait" style={{backgroundImage:"url("+portrait+")",backgroundPosition:`${data.portrait_focus_x??42}% 43%`}} role="img" aria-label="Ritratto commemorativo sfumato sul paesaggio"/>}
-    <div className="pm-hero-copy"><span className="pm-overline">IN RICORDO DI</span><h1>{data.name}</h1><p className="pm-life-dates">{date(data.birth_date)} <span>—</span> {date(data.death_date)}</p><span className="pm-gold-stroke"/><blockquote>“{data.dedication}”</blockquote><span className="pm-portrait-note">Memoriale dimostrativo</span></div>
+    <div className="pm-hero-copy"><span className="pm-overline">IN RICORDO DI</span><h1>{data.name}</h1><p className="pm-life-dates">{date(data.birth_date)} <span>—</span> {date(data.death_date)}</p><span className="pm-gold-stroke"/><blockquote>“{data.dedication}”</blockquote><span className="pm-portrait-note">{data.is_preview?"Anteprima in preparazione":data.is_demo?"Memoriale dimostrativo":"Memoriale"}</span></div>
     <div className="pm-hero-actions"><button onClick={()=>open("thought")} type="button"><Symbol name="heart"/> Lascia un pensiero <b>›</b></button>{data.tier==="PREMIUM"&&<button onClick={()=>open("propose")} type="button"><Symbol name="camera"/> Proponi un ricordo <b>›</b></button>}<button onClick={()=>open("private")} type="button"><Symbol name="mail"/> Scrivi ai suoi cari <b>›</b></button><button onClick={()=>open("contact")} type="button"><Symbol name="users"/> Rimani in contatto <b>›</b></button></div>
    </section>
    <div className="pm-content">
@@ -106,7 +107,7 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
       <div className="pm-timeline">{data.highlights.map((x,i)=><div key={i}><span>{x.date??x.year}</span><div><h3>{x.title}</h3><p>{x.detail}</p></div></div>)}</div>
      </section>
      <div className="pm-right">
-      {data.tier==="PREMIUM"&&<section id="ricordi" className="pm-section"><div className="pm-section-heading"><div><span className="pm-kicker">MOMENTI CHE RESTANO</span><h2>Ricordi</h2></div><button onClick={()=>open("propose")} type="button">Proponi un ricordo →</button></div><div className="pm-photo-intro">Un album di momenti condivisi <span>· Fotografie illustrative della demo</span></div>
+      {data.tier==="PREMIUM"&&<section id="ricordi" className="pm-section"><div className="pm-section-heading"><div><span className="pm-kicker">MOMENTI CHE RESTANO</span><h2>Ricordi</h2></div><button onClick={()=>open("propose")} type="button">Proponi un ricordo →</button></div><div className="pm-photo-intro">{data.photos.length?"Un album di momenti condivisi":"La famiglia potrà aggiungere qui le fotografie"}</div>
       <div className="pm-photo-grid">{data.photos.map((photo,i)=><article key={photo.title+"-"+i} className="pm-photo-card">
        <div className="pm-photo-image" role="img" aria-label={photo.title+", immagine illustrativa"} style={{backgroundImage:"url("+photo.image_url+")"}}/>
        <div className="pm-photo-overlay"><span className="pm-photo-type"><Symbol name="camera" size={13}/> Foto</span><h3>{photo.title}</h3><p>{photo.subtitle}</p></div>
@@ -117,7 +118,7 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
     <section className="pm-bottom-cta"><div className="pm-cta pm-cta-blue"><span><Symbol name="mail" size={27}/></span><div><h2>Scrivi ai suoi cari</h2><p>Un messaggio privato alla famiglia, sottoposto a moderazione.</p><button type="button" onClick={()=>open("private")}>Scrivi un messaggio →</button></div></div><div className="pm-cta pm-cta-sand"><span><Symbol name="users" size={28}/></span><div><h2>Rimani in contatto</h2><p>Lascia un recapito solo se lo desideri e scegli per quali finalità.</p><button type="button" onClick={()=>open("contact")}>Gestisci i recapiti →</button></div></div><div className="pm-cta pm-cta-green"><span><Symbol name="heart" size={27}/></span><div><h2>Opere di bene</h2><p>In suo ricordo, un gesto per chi ne ha bisogno.</p><span className="pm-unavailable">Nessuna raccolta attiva</span></div></div></section>
    </div>
   </main>
-  <footer className="pm-footer"><Link href="/" className="pm-brand"><span>✦</span> Memorial</Link><span>Uno spazio per ricordare, condividere, continuare.</span><span>Memoriale dimostrativo · Non indicizzato</span></footer>
+  <footer className="pm-footer"><Link href="/" className="pm-brand"><span>✦</span> Memorial</Link><span>Uno spazio per ricordare, condividere, continuare.</span><span>{data.is_preview?"Anteprima privata · Non indicizzata":data.is_demo?"Memoriale dimostrativo · Non indicizzato":"Memoriale"}</span></footer>
   {dialog&&<div className="pm-modal-backdrop" onMouseDown={(e)=>{if(e.target===e.currentTarget)setDialog(null)}}><section className="pm-modal" role="dialog" aria-modal="true" aria-labelledby="pm-modal-heading"><div className="pm-modal-heading"><div><span className="pm-kicker">MEMORIAL</span><h2 id="pm-modal-heading">{dialog==="contact"?"Rimani in contatto":dialog==="thought"?"Lascia un pensiero":dialog==="private"?"Scrivi ai suoi cari":dialog==="propose"?"Proponi un ricordo":"Condividi questo memoriale"}</h2></div><button aria-label="Chiudi finestra" type="button" onClick={()=>setDialog(null)}>×</button></div>
     {dialog==="share"?<div className="pm-modal-content"><p>Puoi condividere questo memoriale dimostrativo tramite il suo collegamento.</p><button className="pm-primary" onClick={copyLink} type="button">Copia collegamento</button></div>:<form className="pm-modal-content" onSubmit={demoSubmit}>
      {dialog==="contact"?<><p>La tua email è facoltativa. Puoi scegliere separatamente quali comunicazioni desideri ricevere.</p><label htmlFor="pm-email">Indirizzo email (facoltativo)</label><input id="pm-email" type="email" placeholder="nome@esempio.it" autoComplete="off" value={email} onChange={e=>setEmail(e.target.value)}/><fieldset><legend>Le tue preferenze</legend>{choices.map(ch=><label key={ch.id} className="pm-check"><input type="checkbox" checked={!!consents[ch.id]} onChange={e=>setConsents(p=>({...p,[ch.id]:e.target.checked}))}/><span>{ch.label}</span></label>)}</fieldset><p className="pm-privacy">Nella versione operativa: verifica dell’email prima di attivare servizi, gestione autonoma e revoca dei consensi. Nessuna opzione è preselezionata. Questa demo non trasmette né memorizza recapiti.</p><button className="pm-primary" type="submit">Visualizza conferma demo</button></>:
