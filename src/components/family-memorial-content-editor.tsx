@@ -6,7 +6,7 @@ import {MilestonesEditor,normalizeMilestones,validMilestoneDate,type MemorialMil
 import "./family-memorial-content-editor.css";
 
 type Profile={name:string;dedication:string;biography:string;highlights:MemorialMilestone[];portrait_url:string|null;portrait_focus_x:number|null};
-export function FamilyMemorialContentEditor({memorialId,memorialName}:{memorialId:string;memorialName:string}){
+export function FamilyMemorialContentEditor({memorialId,memorialName,portraitUrl=null}:{memorialId:string;memorialName:string;portraitUrl?:string|null}){
  const db=useMemo(()=>createBrowserSupabaseClient(),[]);
  const [loading,setLoading]=useState(true);
  const [saving,setSaving]=useState(false);
@@ -47,7 +47,7 @@ export function FamilyMemorialContentEditor({memorialId,memorialName}:{memorialI
    <fieldset><legend>Storia · tappe della vita</legend><MilestonesEditor items={milestones} onChange={setMilestones} disabled={saving}/></fieldset>
    <button className="fmce-save" disabled={saving} type="submit">{saving?"Salvataggio…":"Salva biografia e storia"}</button>
   </form>}
-  <MemorialPortraitUploader memorialId={memorialId} personName={name||memorialName}/>
+  <MemorialPortraitUploader memorialId={memorialId} personName={name||memorialName} initialUrl={portraitUrl}/>
   {error&&<p role="alert" className="fmce-error">{error}</p>}
   {message&&<p role="status" className="fmce-ok">{message}</p>}
  </section>;
