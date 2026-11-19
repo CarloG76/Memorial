@@ -1,0 +1,9 @@
+.mpu-section{padding:17px 18px;margin:15px 0;border:1px solid #dce6ed;border-radius:10px;background:#fff;font-family:Montserrat,Arial,sans-serif;color:#1e455e}
+.mpu-section h3{margin:0 0 8px;font-size:15px}.mpu-section>p{font-size:12px;line-height:1.5;color:#6d8396}
+.mpu-main{display:flex;align-items:flex-start;gap:18px}.mpu-preview{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:130px;height:165px;border:1px dashed #c4d2dd;border-radius:9px;overflow:hidden;background:#eef3f6}
+.mpu-preview img{width:100%;height:100%;object-fit:cover}.mpu-preview span{padding:12px;font-size:11px;color:#8295a4;text-align:center}
+.mpu-controls{display:grid;gap:11px;min-width:0;flex:1}.mpu-controls label{font-size:12px;font-weight:700;display:grid;gap:9px}.mpu-controls input{max-width:100%;font-size:12px}
+.mpu-controls p{font-size:11px;color:#748b9c;line-height:1.5;margin:0}
+.mpu-controls button{justify-self:start;border:0;border-radius:8px;background:#1b4d6c;color:#fff;font:700 12px Montserrat,Arial,sans-serif;padding:11px 15px;cursor:pointer}.mpu-controls button:disabled{opacity:.5;cursor:not-allowed}
+.mpu-error{color:#a53b34!important}.mpu-success{color:#287044!important}
+@media(max-width:550px){.mpu-main{flex-direction:column}.mpu-preview{width:120px;height:150px}}
