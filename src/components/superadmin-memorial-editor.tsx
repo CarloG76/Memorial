@@ -2,6 +2,8 @@
 import {useMemo,useState,type FormEvent} from "react";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import Link from "next/link";
+import {MemorialPortraitUploader} from "./memorial-portrait-uploader";
+import {memorialPortraitSrc} from "@/lib/memorial-portrait-url";
 import {SuperadminMemorialMedia} from "./superadmin-memorial-media";
 import {MilestonesEditor,normalizeMilestones,validMilestoneDate,type MemorialMilestone} from "./memorial-milestones-editor";
 import "./superadmin-memorial-editor.css";
@@ -51,9 +53,10 @@ export function SuperadminMemorialEditor({initial}:{initial:MemorialPresentation
     {message&&<p className="me-message" role="status">{message}</p>}
    </form>
    <section className="me-card"><h2>Anteprima ritratto</h2>
-    {portraitUrl?<div className="me-portrait" role="img" aria-label="Anteprima del ritratto" style={{backgroundImage:"url("+portraitUrl+")",backgroundPosition:focus+"% 50%"}}/>:<p>Nessuna foto selezionata.</p>}
+    <MemorialPortraitUploader memorialId={data.memorial_id} personName={name} initialUrl={portraitUrl} onSaved={setPortraitUrl}/>
+    {portraitUrl?<div className="me-portrait" role="img" aria-label="Anteprima del ritratto" style={{backgroundImage:"url("+memorialPortraitSrc(portraitUrl)+")",backgroundPosition:focus+"% 50%"}}/>:<p>Nessuna foto selezionata.</p>}
     <p>Paesaggio pubblicato: <strong>{data.background}</strong>. La famiglia gestisce le modifiche ordinarie; il SuperAdmin può intervenire con tracciamento.</p>
-    {data.is_demo&&<Link href="/memoriale/demo" target="_blank" rel="noopener noreferrer">Apri il memoriale pubblico →</Link>}
+    <Link href={"/memoriale/anteprima/"+data.memorial_id} target="_blank" rel="noopener noreferrer">Anteprima di {data.name} ↗</Link>
    </section>
   </div>
   <SuperadminMemorialMedia data={data} onUpdate={next=>setData(next)}/>
