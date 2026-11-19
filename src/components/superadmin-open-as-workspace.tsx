@@ -1,5 +1,6 @@
 "use client";
-import {useMemo,useState,type FormEvent} from "react";
+import {useEffect,useMemo,useState,type FormEvent} from "react";
+import {useRouter} from "next/navigation";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import {WORKSPACE_NAV} from "@/lib/navigation";
 import {OpenAsButton} from "./superadmin-open-as-button";
@@ -53,10 +54,16 @@ function ContributionEditor({item,resource,busy,onAction}:{item:Contribution;res
   </div>
  </article>;
 }
-export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
+export function SuperadminOpenAsWorkspace({initial,section}:{initial:OperatorSnapshot;section?:string}){
+ const router=useRouter();
  const db=useMemo(()=>createBrowserSupabaseClient(),[]);
  const [snapshot,setSnapshot]=useState(initial);
- const [tab,setTab]=useState(initial.kind==="AGENCY"?"dashboard":"panoramica");
+ const validSections=WORKSPACE_NAV[initial.kind==="AGENCY"?"agenzia":"famiglia"].map(item=>item.slug);
+ const defaultSection=initial.kind==="AGENCY"?"dashboard":"panoramica";
+ const [tab,setTab]=useState(section&&validSections.includes(section)?section:defaultSection);
+ useEffect(()=>{
+  setTab(section&&validSections.includes(section)?section:defaultSection);
+ },[section,defaultSection,initial.context_id]);
  const [busy,setBusy]=useState(false);
  const [notice,setNotice]=useState("");
  const [events,setEvents]=useState<Event[]|null>(null);
@@ -71,7 +78,6 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
  const [portraitFocus,setPortraitFocus]=useState(initial.presentation?.portrait_focus_x??42);
  const area=initial.kind==="AGENCY"?"agenzia":"famiglia";
  const title=initial.kind==="AGENCY"?snapshot.agency.legal_name:snapshot.memorial?.name??"Famiglia";
- const currentItems=WORKSPACE_NAV[area];
  const canSave=!busy;
  const fail=(e:string)=>{setNotice(e);setBusy(false);};
  async function reload(){
@@ -134,9 +140,8 @@ export function SuperadminOpenAsWorkspace({initial}:{initial:OperatorSnapshot}){
     </div>
   </div>
 
-  <nav className="oa-section-nav" aria-label={"Sezioni "+area}>{currentItems.map(item=><button type="button" key={item.slug} className={tab===item.slug?"oa-tab is-active":"oa-tab"} onClick={()=>setTab(item.slug)} aria-current={tab===item.slug?"page":undefined}>{item.label}</button>)}</nav>
   {notice&&<p role="status" className="oa-notice">{notice}</p>}
-  {family&&snapshot.memorial&&<ContextActionNotice memorialId={snapshot.memorial.id} onOpen={()=>setTab("ricordi")}/>}
+  {family&&snapshot.memorial&&<ContextActionNotice memorialId={snapshot.memorial.id} onOpen={()=>router.push("/console/piattaforma/apri-come/"+encodeURIComponent(snapshot.context_id)+"?sezione=ricordi")}/>}
 
   {!family&&<>
    {tab==="dashboard"&&<div className="oa-summary"><div><span>Memoriali</span><strong>{memorials.length}</strong></div><div><span>Piano</span><strong>{snapshot.agency.plan}</strong></div><div><span>Stato</span><strong>{snapshot.agency.status}</strong></div><div><span>Operatori</span><strong>{members.length}</strong></div></div>}
