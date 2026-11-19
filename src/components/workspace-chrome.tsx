@@ -22,15 +22,16 @@ function workspaceUrl(area: WorkspaceArea, slug: string) {
   return `/console/${area}?sezione=${slug}`;
 }
 
-function NavItems({ area, selected, onNavigate }: {
-  area: WorkspaceArea; selected: string; onNavigate?: () => void;
+export type DelegatedWorkspace = { contextId: string; agencyName: string; kind: "AGENCY" | "FAMILY" };
+function NavItems({ area, selected, onNavigate, delegated }: {
+  area: WorkspaceArea; selected: string; onNavigate?: () => void; delegated?: DelegatedWorkspace;
 }) {
   return <nav className="workspace-nav" aria-label={`Sezioni ${areaLabel[area]}`}>
     {WORKSPACE_NAV[area].map((item) => {
       const available = true;
       const active = selected === item.slug;
       return available ? (
-        <Link key={item.slug} href={workspaceUrl(area,item.slug)}
+        <Link key={item.slug} href={delegated?"/console/piattaforma/apri-come/"+encodeURIComponent(delegated.contextId)+"?sezione="+encodeURIComponent(item.slug):workspaceUrl(area,item.slug)}
           className={active ? "side-item side-item-selected" : "side-item"}
           aria-current={active ? "page" : undefined} onClick={onNavigate}>
           <span className="sidebar-icon"><UiIcon name={iconFor(item.slug)} /></span>
@@ -49,14 +50,14 @@ function NavItems({ area, selected, onNavigate }: {
   </nav>;
 }
 
-export function WorkspaceChrome({ area, children }: { area: WorkspaceArea; children: React.ReactNode }) {
+export function WorkspaceChrome({ area, children, delegated }: { area: WorkspaceArea; children: React.ReactNode; delegated?: DelegatedWorkspace }) {
   const [open,setOpen] = useState(false);
   const menuRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const section = searchParams.get("sezione");
-  const selected = area==="piattaforma"
+  const selected = delegated ? (WORKSPACE_NAV[area].some(item=>item.slug===section)?section!:(area==="agenzia"?"dashboard":"panoramica")) : area==="piattaforma"
     ? pathname.includes("/reset-demo") ? "reset-demo"
       : pathname.includes("/forecast") ? "economia"
       : pathname.includes("/agenzie/") ? "agenzie"
@@ -97,8 +98,10 @@ export function WorkspaceChrome({ area, children }: { area: WorkspaceArea; child
   return <div className="workspace">
     <aside className="workspace-sidebar workspace-desktop-sidebar" aria-label="Navigazione desktop">
       <Brand compact />
-      <p className="workspace-context">Console {areaLabel[area]}</p>
-      <NavItems area={area} selected={selected}/>
+      <p className="workspace-context">{delegated?"SuperAdmin → "+areaLabel[area]:"Console "+areaLabel[area]}</p>
+      {delegated&&<p className="workspace-delegated-name">{delegated.agencyName}</p>}
+      <NavItems area={area} selected={selected} delegated={delegated}/>
+      {delegated&&<Link href="/console/piattaforma?sezione=agenzie" className="side-item workspace-delegated-return"><span className="sidebar-icon"><UiIcon name="agenzie"/></span><span>Torna a SuperAdmin</span></Link>}
       <p className="sidebar-footnote">Un luogo di memoria, custodito nel tempo.</p>
     </aside>
 
@@ -112,19 +115,19 @@ export function WorkspaceChrome({ area, children }: { area: WorkspaceArea; child
         <Link className="workspace-mobile-brand" href="/console" aria-label="Memorial, scegli area">
           <span className="workspace-mobile-monogram">✦</span> Memorial
         </Link>
-        <Link href={area==="piattaforma"?"/console/piattaforma?sezione=agenzie":"/console"}
+        <Link href={delegated?"/console/piattaforma?sezione=agenzie":area==="piattaforma"?"/console/piattaforma?sezione=agenzie":"/console"}
           className="workspace-search"
           aria-label={area==="piattaforma"?"Apri elenco agenzie":"Vai alla panoramica"}>
           <UiIcon name={area==="piattaforma"?"agenzie":"dashboard"}/>
           <span>{area==="piattaforma"?"Apri elenco agenzie":"Vai alla panoramica"}</span>
         </Link>
         <div className="workspace-account">
-          <WorkspaceNotifications area={area}/>
-          <span className="workspace-avatar">{area==="piattaforma"?"SA":area==="agenzia"?"AG":"FA"}</span>
-          <span className="workspace-account-label">{areaLabel[area]}</span>
-          <Link href="/account/password" aria-label="Cambia password" title="Cambia password">
+          {!delegated&&<WorkspaceNotifications area={area}/>}
+          <span className="workspace-avatar">{delegated?"SA":area==="piattaforma"?"SA":area==="agenzia"?"AG":"FA"}</span>
+          <span className="workspace-account-label">{delegated?"SuperAdmin · come "+areaLabel[area]:areaLabel[area]}</span>
+          {!delegated&&<Link href="/account/password" aria-label="Cambia password" title="Cambia password">
             <UiIcon name="shield" size={18}/>
-          </Link>
+          </Link>}
           <Link href="/" aria-label="Sito pubblico" title="Sito pubblico">
             <UiIcon name="external" size={18}/>
           </Link>
@@ -143,10 +146,11 @@ export function WorkspaceChrome({ area, children }: { area: WorkspaceArea; child
           <button type="button" className="workspace-mobile-close" aria-label="Chiudi menu"
             onClick={closeMenu}>×</button>
         </div>
-        <p className="workspace-mobile-drawer-context">Console {areaLabel[area]}</p>
-        <NavItems area={area} selected={selected} onNavigate={()=>setOpen(false)}/>
+        <p className="workspace-mobile-drawer-context">{delegated?"SuperAdmin → "+areaLabel[area]+" · "+delegated.agencyName:"Console "+areaLabel[area]}</p>
+        <NavItems area={area} selected={selected} delegated={delegated} onNavigate={()=>setOpen(false)}/>
+        {delegated&&<Link href="/console/piattaforma?sezione=agenzie" className="side-item workspace-delegated-return" onClick={()=>setOpen(false)}>Torna a SuperAdmin</Link>
         <div className="workspace-mobile-drawer-footer">
-          <Link href="/account/password" onClick={()=>setOpen(false)}>Cambia password</Link>
+          {!delegated&&<Link href="/account/password" onClick={()=>setOpen(false)}>Cambia password</Link>}
           <Link href="/" onClick={()=>setOpen(false)}>Torna al sito</Link>
         </div>
       </aside>
