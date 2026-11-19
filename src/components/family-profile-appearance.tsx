@@ -33,7 +33,7 @@ export async function FamilyProfileAppearance({userId}:{userId:string}) {
   };
  });
  return <div>
-  {items.filter(x=>x.canEdit).map(x=><FamilyMemorialContentEditor key={x.id} memorialId={x.id} memorialName={x.name}/>)}
+  {items.filter(x=>x.canEdit).map(x=><FamilyMemorialContentEditor key={x.id} memorialId={x.id} memorialName={x.name} portraitUrl={x.portraitUrl}/>)}
   <FamilyBackgroundEditor memorials={items} presets={presets}/>
  </div>;
 }
