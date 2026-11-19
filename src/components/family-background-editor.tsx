@@ -1,6 +1,8 @@
 "use client";
 import { useEffect,useMemo,useRef,useState,type ChangeEvent } from "react";
 import Link from "next/link";
+import {MemorialPortraitUploader} from "./memorial-portrait-uploader";
+import {memorialPortraitSrc} from "@/lib/memorial-portrait-url";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import type { MemorialBackgroundPreset } from "@/lib/memorial-backgrounds";
 import "./family-background-editor.css";
@@ -60,7 +62,7 @@ export function FamilyBackgroundEditor({memorials,presets}:{memorials:FamilyHero
   setMessage("Sfondo approvato e pubblicato. La pagina visitatore mostra ora questa scelta.");
  }
  return <div className="fb-editor">
-  <div className="fb-header"><div><span className="fb-eyebrow">AREA FAMIGLIA · PROFILO E STORIA</span><h1>Aspetto del memoriale</h1><p>La famiglia sceglie il paesaggio dietro alla fotografia della persona ricordata. Il visitatore vede soltanto la versione approvata.</p></div><Link href="/memoriale/demo" className="fb-public-link">Vedi il memoriale demo ↗</Link></div>
+  <div className="fb-header"><div><span className="fb-eyebrow">AREA FAMIGLIA · PROFILO E STORIA</span><h1>Aspetto del memoriale</h1><p>La famiglia sceglie il paesaggio dietro alla fotografia della persona ricordata. Il visitatore vede soltanto la versione approvata.</p></div>{current&&<Link href={"/memoriale/anteprima/"+current.id} className="fb-public-link" target="_blank" rel="noopener noreferrer">Anteprima di {current.name} ↗</Link>}</div>
   {records.length===0?<section className="fb-panel">Non ci sono memoriali associati al tuo account.</section>:
   <div className="fb-layout">
    <section className="fb-panel fb-settings">
@@ -68,6 +70,7 @@ export function FamilyBackgroundEditor({memorials,presets}:{memorials:FamilyHero
     <select id="fb-memorial" value={currentId} onChange={e=>switchMemorial(e.target.value)}>
      {records.map(r=><option key={r.id} value={r.id}>{r.name} · {r.status}</option>)}
     </select>
+    {current&&current.canEdit&&<MemorialPortraitUploader key={current.id} memorialId={current.id} personName={current.name} initialUrl={current.portraitUrl} onSaved={url=>setRecords(old=>old.map(item=>item.id===current.id?{...item,portraitUrl:url}:item))}/>}
     <h2>Paesaggio di sfondo</h2>
     <p>La foto del defunto resta separata dallo sfondo e sfuma verso il paesaggio.</p>
     <div className="fb-options">{presets.map(item=><button type="button" key={item.id} className={selected===item.id?"fb-tile fb-active":"fb-tile"} onClick={()=>selectPreset(item.id)} disabled={!current?.canEdit} aria-pressed={selected===item.id}>
@@ -80,7 +83,7 @@ export function FamilyBackgroundEditor({memorials,presets}:{memorials:FamilyHero
     {current?.status!=="PUBLISHED_ACTIVE"&&<p className="fb-note">La pubblicazione dello sfondo sarà possibile dopo la pubblicazione del memoriale.</p>}
    </section>
    <div className="fb-preview-wrap"><div className="fb-preview-label">ANTEPRIMA PRIVATA · SOLO FAMIGLIA</div><div className="fb-preview" style={{backgroundImage:"linear-gradient(90deg,transparent,#061e32bd),url("+background+")"}}>
-     {current?.portraitUrl?<div className="fb-preview-portrait" style={{backgroundImage:"url("+current.portraitUrl+")"}} aria-label="Ritratto commemorativo"/>:<div className="fb-preview-placeholder">Foto della persona da caricare</div>}
+     {current?.portraitUrl?<div className="fb-preview-portrait" style={{backgroundImage:"url("+memorialPortraitSrc(current.portraitUrl)+")"}} aria-label="Ritratto commemorativo"/>:<div className="fb-preview-placeholder">Foto della persona da caricare</div>}
      <div className="fb-preview-name"><span>IN RICORDO DI</span><strong>{current?.name}</strong></div>
     </div>
     <div className="fb-preview-help">Il ritratto è sempre in primo piano. L&apos;immagine di sfondo può essere modificata dalla famiglia, non dai visitatori.</div></div>
