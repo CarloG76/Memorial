@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useMemo,useState,type FormEvent} from "react";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
+import {MemorialPortraitUploader} from "./memorial-portrait-uploader";
 import {MilestonesEditor,normalizeMilestones,validMilestoneDate,type MemorialMilestone} from "./memorial-milestones-editor";
 import "./family-memorial-content-editor.css";
 
@@ -46,6 +47,7 @@ export function FamilyMemorialContentEditor({memorialId,memorialName}:{memorialI
    <fieldset><legend>Storia · tappe della vita</legend><MilestonesEditor items={milestones} onChange={setMilestones} disabled={saving}/></fieldset>
    <button className="fmce-save" disabled={saving} type="submit">{saving?"Salvataggio…":"Salva biografia e storia"}</button>
   </form>}
+  <MemorialPortraitUploader memorialId={memorialId} personName={name||memorialName}/>
   {error&&<p role="alert" className="fmce-error">{error}</p>}
   {message&&<p role="status" className="fmce-ok">{message}</p>}
  </section>;
