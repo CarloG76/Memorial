@@ -9,6 +9,8 @@ import {AgencyAdministration} from "./agency-administration";
 import {FamilyVisitorMemories} from "./family-visitor-memories";
 import {ContextActionNotice} from "./context-action-notice";
 import {AgencyFreeMemorialCreator} from "./agency-free-memorial";
+import {MemorialPortraitUploader} from "./memorial-portrait-uploader";
+import Link from "next/link";
 import {MilestonesEditor,normalizeMilestones,validMilestoneDate,type MemorialMilestone} from "./memorial-milestones-editor";
 import "./superadmin-open-as-workspace.css";
 
@@ -148,7 +150,7 @@ export function SuperadminOpenAsWorkspace({initial,section}:{initial:OperatorSna
    {tab==="memoriali"&&<AgencyFreeMemorialCreator agencyId={snapshot.agency.id} contextKey={snapshot.context_id} agencyName={snapshot.agency.legal_name} isDemo={snapshot.agency.is_demo}/>}
    {(tab==="dashboard"||tab==="memoriali")&&<Panel title="Memoriali dell'agenzia">{memorials.length?memorials.map(m=><article key={m.id} className="oa-record">
      <div><strong>{m.name??"Memoriale in preparazione"}</strong><p>{m.tier} · {m.status} {m.is_demo?"· DEMO":""}</p></div>
-     <OpenAsButton kind="FAMILY" targetId={m.id}/></article>):<p>Nessun memoriale associato.</p>}</Panel>}
+     <div className="oa-memorial-actions"><Link href={"/memoriale/anteprima/"+m.id+"?contesto="+encodeURIComponent(snapshot.context_id)} target="_blank" rel="noopener noreferrer">Anteprima {m.name} ↗</Link><OpenAsButton kind="FAMILY" targetId={m.id}/></div></article>):<p>Nessun memoriale associato.</p>}</Panel>}
    {(tab==="dashboard"||tab==="la-mia-agenzia")&&<Panel title="Anagrafica e operatori">
     <form className="oa-form" onSubmit={saveAgency}><label>Ragione sociale<input required minLength={2} maxLength={240} value={agencyName} onChange={e=>setAgencyName(e.target.value)}/></label>
       <label>Città<input maxLength={150} value={agencyCity} onChange={e=>setAgencyCity(e.target.value)}/></label>
@@ -162,6 +164,8 @@ export function SuperadminOpenAsWorkspace({initial,section}:{initial:OperatorSna
   {family&&snapshot.memorial&&<>
    {tab==="panoramica"&&<div className="oa-summary"><div><span>Prodotto</span><strong>{snapshot.memorial.tier}</strong></div><div><span>Stato</span><strong>{snapshot.memorial.status}</strong></div><div><span>Pensieri</span><strong>{thoughts.length}</strong></div><div><span>Ricordi</span><strong>{memories.length}</strong></div></div>}
    {(tab==="panoramica"||tab==="profilo-e-storia")&&<Panel title="Profilo e storia">
+    <Link href={"/memoriale/anteprima/"+snapshot.memorial.id+"?contesto="+encodeURIComponent(snapshot.context_id)} target="_blank" rel="noopener noreferrer" className="oa-preview-link">Anteprima privata di {snapshot.memorial.name} ↗</Link>
+    <MemorialPortraitUploader memorialId={snapshot.memorial.id} personName={snapshot.memorial.name} initialUrl={portraitUrl} onSaved={setPortraitUrl}/>
     <form className="oa-form" onSubmit={saveFamily}><label>Nome della persona<input value={personName} onChange={e=>setPersonName(e.target.value)} required minLength={3} maxLength={180}/></label>
       <label>Dedica<textarea value={dedication} onChange={e=>setDedication(e.target.value)} rows={2} maxLength={500}/></label>
       <label>Biografia — introduzione breve<textarea value={bio} onChange={e=>setBio(e.target.value)} rows={4} maxLength={8000}/></label>
