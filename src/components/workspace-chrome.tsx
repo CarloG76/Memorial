@@ -148,7 +148,7 @@ export function WorkspaceChrome({ area, children, delegated }: { area: Workspace
         </div>
         <p className="workspace-mobile-drawer-context">{delegated?"SuperAdmin → "+areaLabel[area]+" · "+delegated.agencyName:"Console "+areaLabel[area]}</p>
         <NavItems area={area} selected={selected} delegated={delegated} onNavigate={()=>setOpen(false)}/>
-        {delegated&&<Link href="/console/piattaforma?sezione=agenzie" className="side-item workspace-delegated-return" onClick={()=>setOpen(false)}>Torna a SuperAdmin</Link>
+        {delegated&&<Link href="/console/piattaforma?sezione=agenzie" className="side-item workspace-delegated-return" onClick={()=>setOpen(false)}>Torna a SuperAdmin</Link>}
         <div className="workspace-mobile-drawer-footer">
           {!delegated&&<Link href="/account/password" onClick={()=>setOpen(false)}>Cambia password</Link>}
           <Link href="/" onClick={()=>setOpen(false)}>Torna al sito</Link>
