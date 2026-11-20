@@ -17,7 +17,9 @@ Prime **due attivazioni gratuite** per nuova agenzia secondo regola corrente. Pr
 - [x] Anteprima privata per memoriale specifico, senza link generico Giovanni
 - [x] Famiglia: ricordi diretti approvati, visitatori in moderazione
 - [x] RPC pubblicazione familiare con condizioni, hash versione, audit, URL token e visibilità
-- [ ] **Pubblicazione in modalità "Entra come Famiglia" sia per Agenzia sia per SuperAdmin**: stessi controlli del Family Owner, tracciabilità attore effettivo + contesto delegato, non falsificare identità
+- [x] **Pubblicazione in modalità "Entra come Famiglia" per Agenzia e SuperAdmin**: identità reale, contesto delegato verificato, hash versione, approvazione esplicita, audit actor e acting_as. Test SQL con rollback.
+- [ ] **Completare l'intero editing in contesto Agenzia → Famiglia**: biografia, timeline, moderazione e ricordi attraverso funzioni contestualizzate; il percorso pubblicazione delegata è già operativo, non tutte le altre azioni familiari.
+- [ ] Test Playwright end-to-end con login Agenzia/SuperAdmin e accesso delegato (non sostituibile con SQL o build READY).
 - [ ] Delimitazione autorizzazioni agency vs family: l'Agenzia non accede fuori dal proprio contesto a PII e contenuti, il ruolo delegato è esplicito, limitato e temporaneo
 - [ ] Browser E2E con credenziali reali di test, test RLS e rollback/reset demo
 - [ ] Integrazione UI upload e foto su ogni percorso, compreso controllo recupero dopo refresh
