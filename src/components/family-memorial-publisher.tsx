@@ -4,7 +4,7 @@ import Link from "next/link";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import "./family-memorial-publisher.css";
 
-type Check={ready:boolean;issues:string[];name:string;status:string;already_published:boolean};
+type Check={ready:boolean;issues:string[];name:string;status:string;already_published:boolean;share_token?:string|null};
 export function FamilyMemorialPublisher({memorialId,personName}:{memorialId:string;personName:string}){
  const db=useMemo(()=>createBrowserSupabaseClient(),[]);
  const [check,setCheck]=useState<Check|null>(null);
@@ -22,7 +22,7 @@ export function FamilyMemorialPublisher({memorialId,personName}:{memorialId:stri
    db.rpc("family_publication_version",{target_memorial:memorialId})
   ]);
   if(a.error||b.error||!a.data||!b.data){setError(a.error?.message??b.error?.message??"Controllo non disponibile");}
-  else {setCheck(a.data as Check);setHash(String((b.data as {hash:string}).hash));}
+  else {const next=a.data as Check;setCheck(next);setToken(next.share_token??"");setHash(String((b.data as {hash:string}).hash));}
   setLoading(false);
  }
  useEffect(()=>{void refresh();},[memorialId,db]);
