@@ -1,0 +1,8 @@
+.fmp{margin:22px 0;border:1px solid #d8e2e7;border-radius:12px;background:#fff;padding:23px;color:#203f54}
+.fmp h2{font-size:20px;margin:0 0 10px}.fmp h3{font-size:15px;margin:15px 0 8px}.fmp p,.fmp li{font-size:13px;line-height:1.7}
+.fmp ul{padding-left:24px}.fmp fieldset{margin:16px 0 0;border:1px solid #d9e3e9;border-radius:9px;display:grid;gap:16px;padding:16px}
+.fmp fieldset label{font-size:13px;line-height:1.6;display:flex;align-items:flex-start;gap:10px}
+.fmp fieldset input{flex:none;margin-top:4px}.fmp fieldset button{justify-self:start}
+.fmp button{background:#173c57;color:white;border:0;border-radius:8px;padding:11px 16px;cursor:pointer;font-weight:700}
+.fmp button:disabled{opacity:.5;cursor:not-allowed}.fmp .fmp-secondary{background:#fff;color:#173c57;border:1px solid #bfcdd7}
+.fmp .fmp-ready{color:#27704e}.fmp .fmp-error{color:#a03a3a}
