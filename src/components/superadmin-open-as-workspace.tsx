@@ -8,6 +8,7 @@ import {AgencyTeamManager} from "./agency-team-manager";
 import {AgencyAdministration} from "./agency-administration";
 import {FamilyVisitorMemories} from "./family-visitor-memories";
 import {FamilyDirectMemory} from "./family-direct-memory";
+import {FamilyMemorialPublisher} from "./family-memorial-publisher";
 import {ContextActionNotice} from "./context-action-notice";
 import {AgencyFreeMemorialCreator} from "./agency-free-memorial";
 import {MemorialPortraitUploader} from "./memorial-portrait-uploader";
@@ -164,6 +165,7 @@ export function SuperadminOpenAsWorkspace({initial,section}:{initial:OperatorSna
 
   {family&&snapshot.memorial&&<>
    {tab==="panoramica"&&<div className="oa-summary"><div><span>Prodotto</span><strong>{snapshot.memorial.tier}</strong></div><div><span>Stato</span><strong>{snapshot.memorial.status}</strong></div><div><span>Pensieri</span><strong>{thoughts.length}</strong></div><div><span>Ricordi</span><strong>{memories.length}</strong></div></div>}
+   {(tab==="panoramica"||tab==="profilo-e-storia")&&<FamilyMemorialPublisher memorialId={snapshot.memorial.id} personName={snapshot.memorial.name} contextKey={snapshot.context_id} delegatedBy="SUPERADMIN"/>}
    {(tab==="panoramica"||tab==="profilo-e-storia")&&<Panel title="Profilo e storia">
     <Link href={"/memoriale/anteprima/"+snapshot.memorial.id+"?contesto="+encodeURIComponent(snapshot.context_id)} target="_blank" rel="noopener noreferrer" className="oa-preview-link">Anteprima privata di {snapshot.memorial.name} ↗</Link>
     <MemorialPortraitUploader memorialId={snapshot.memorial.id} personName={snapshot.memorial.name} initialUrl={portraitUrl} onSaved={setPortraitUrl}/>
