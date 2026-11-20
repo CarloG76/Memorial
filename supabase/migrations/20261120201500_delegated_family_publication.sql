@@ -111,7 +111,7 @@ begin
  return jsonb_build_object('ready',cardinality(issues)=0,'issues',to_jsonb(issues),
  'memorial_id',m.id,'name',m.deceased_name,'status',m.status,'visibility',m.visibility,
  'already_published',m.status='PUBLISHED_ACTIVE','share_token',case when m.status='PUBLISHED_ACTIVE' then m.public_token else null end);
-end $function$
+end $function$;
 
 CREATE OR REPLACE FUNCTION public.family_publication_version_context(target_memorial uuid, context_key uuid)
  RETURNS jsonb
@@ -128,7 +128,7 @@ begin
  snapshot:=jsonb_build_object('name',m.deceased_name,'tier',m.tier,'birth_date',m.birth_date,'death_date',m.death_date,
  'dedication',p.dedication,'biography',p.biography,'story',p.story,'highlights',p.highlights,'portrait_url',p.portrait_url,'portrait_focus_x',p.portrait_focus_x);
  return jsonb_build_object('hash',encode(extensions.digest(snapshot::text,'sha256'),'hex'),'snapshot',snapshot);
-end $function$
+end $function$;
 
 CREATE OR REPLACE FUNCTION public.family_publish_memorial_context(target_memorial uuid, selected_visibility text, approval boolean, expected_content_hash text, context_key uuid)
  RETURNS jsonb
@@ -173,7 +173,7 @@ begin
   values(context_key,actor,'FAMILY_PUBLICATION_DELEGATED',m.id,jsonb_build_object('visibility',selected_visibility));
  end if;
  return jsonb_build_object('status','PUBLISHED_ACTIVE','public_token',token,'already_published',false);
-end $function$
+end $function$;
 
 
 create or replace function public.family_publication_check(target_memorial uuid)
