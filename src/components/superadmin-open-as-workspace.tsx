@@ -7,6 +7,7 @@ import {OpenAsButton} from "./superadmin-open-as-button";
 import {AgencyTeamManager} from "./agency-team-manager";
 import {AgencyAdministration} from "./agency-administration";
 import {FamilyVisitorMemories} from "./family-visitor-memories";
+import {FamilyDirectMemory} from "./family-direct-memory";
 import {ContextActionNotice} from "./context-action-notice";
 import {AgencyFreeMemorialCreator} from "./agency-free-memorial";
 import {MemorialPortraitUploader} from "./memorial-portrait-uploader";
@@ -181,7 +182,7 @@ export function SuperadminOpenAsWorkspace({initial,section}:{initial:OperatorSna
    {(tab==="panoramica"||tab==="ricordi")&&<FamilyVisitorMemories memorialId={snapshot.memorial.id} memorialName={snapshot.memorial.name} contextKey={snapshot.context_id}/>}
    {(tab==="panoramica"||tab==="ricordi")&&<Panel title="Ricordi">
     {memories.length?memories.map(m=><ContributionEditor key={m.id} item={m} resource="MEMORY" busy={busy} onAction={(op,fields,item)=>void moderate("MEMORY",op,fields,item)}/>):<p>Nessun ricordo registrato.</p>}
-    <NewContribution resource="MEMORY" busy={busy} onCreate={fields=>createContribution("MEMORY",fields)}/>
+    <FamilyDirectMemory memorialId={snapshot.memorial.id} memorialName={snapshot.memorial.name} contextKey={snapshot.context_id} onCreated={()=>void reload()}/>
    </Panel>}
    {tab==="famiglia-e-contatti"&&<Panel title="Membri della famiglia e contatti">
     {members.length?members.map(m=><div className="oa-record" key={m.user_id}><div><strong>{m.display_name?.trim()||"Anagrafica familiare da completare"}</strong><p>{m.can_moderate?"Può moderare":"Nessuna moderazione"} · {m.can_edit_content?"Può modificare":"Sola lettura"}</p></div><Status value={m.role}/></div>):<p>Nessun membro.</p>}
