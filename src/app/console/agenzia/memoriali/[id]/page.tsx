@@ -2,6 +2,7 @@ import Link from "next/link";
 import {notFound} from "next/navigation";
 import {WorkspaceShell} from "@/components/workspace-shell";
 import {MemorialPortraitUploader} from "@/components/memorial-portrait-uploader";
+import {AgencyOpenAsFamilyButton} from "@/components/agency-open-as-family-button";
 import {getAgencyDashboard} from "@/features/catalog/workspace-server";
 import {requireWorkspaceAccess} from "@/lib/authz/server";
 
@@ -21,6 +22,7 @@ export default async function AgencyMemorialDetail({params}:{params:Promise<{id:
   <h1>{m.deceased_name??"Memoriale da completare"}</h1>
   <p>Dettaglio del memoriale affidato alla tua agenzia.</p>
   <Link href={"/memoriale/anteprima/"+m.id} target="_blank" rel="noopener noreferrer">Apri anteprima di {m.deceased_name} ↗</Link>
+  <AgencyOpenAsFamilyButton memorialId={m.id}/>
   <MemorialPortraitUploader memorialId={m.id} personName={m.deceased_name??"Persona ricordata"}/>
   <section className="workspace-panel"><h2>Riepilogo</h2>
    <dl className="catalog-details">
