@@ -5,7 +5,7 @@ import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import "./family-memorial-publisher.css";
 
 type Check={ready:boolean;issues:string[];name:string;status:string;already_published:boolean;share_token?:string|null};
-export function FamilyMemorialPublisher({memorialId,personName}:{memorialId:string;personName:string}){
+export function FamilyMemorialPublisher({memorialId,personName,contextKey,delegatedBy}:{memorialId:string;personName:string;contextKey?:string;delegatedBy?:"AGENCY"|"SUPERADMIN"}){
  const db=useMemo(()=>createBrowserSupabaseClient(),[]);
  const [check,setCheck]=useState<Check|null>(null);
  const [hash,setHash]=useState("");
@@ -18,8 +18,8 @@ export function FamilyMemorialPublisher({memorialId,personName}:{memorialId:stri
  async function refresh(){
   setLoading(true);setError("");
   const [a,b]=await Promise.all([
-   db.rpc("family_publication_check",{target_memorial:memorialId}),
-   db.rpc("family_publication_version",{target_memorial:memorialId})
+   contextKey?db.rpc("family_publication_check_context",{target_memorial:memorialId,context_key:contextKey}):db.rpc("family_publication_check",{target_memorial:memorialId}),
+   contextKey?db.rpc("family_publication_version_context",{target_memorial:memorialId,context_key:contextKey}):db.rpc("family_publication_version",{target_memorial:memorialId})
   ]);
   if(a.error||b.error||!a.data||!b.data){setError(a.error?.message??b.error?.message??"Controllo non disponibile");}
   else {const next=a.data as Check;setCheck(next);setToken(next.share_token??"");setHash(String((b.data as {hash:string}).hash));}
@@ -30,9 +30,10 @@ export function FamilyMemorialPublisher({memorialId,personName}:{memorialId:stri
   if(!check?.ready||busy||!approved||!hash)return;
   if(!window.confirm("Confermi la prima pubblicazione del memoriale di "+personName+"? La pagina diventerà accessibile tramite link."))return;
   setBusy(true);setError("");
-  const r=await db.rpc("family_publish_memorial",{
-   target_memorial:memorialId,selected_visibility:visibility,approval:true,expected_content_hash:hash
-  });
+  const args={target_memorial:memorialId,selected_visibility:visibility,approval:true,expected_content_hash:hash};
+  const r=contextKey
+   ?await db.rpc("family_publish_memorial_context",{...args,context_key:contextKey})
+   :await db.rpc("family_publish_memorial",args);
   setBusy(false);
   if(r.error){setError("Pubblicazione non riuscita: "+r.error.message);return;}
   const result=r.data as {public_token:string};
@@ -42,7 +43,8 @@ export function FamilyMemorialPublisher({memorialId,personName}:{memorialId:stri
  const link=token?"/memoriale/p/"+token:"";
  return <section className="fmp">
   <h2>Pubblicazione del memoriale</h2>
-  <p>Solo il responsabile familiare può approvare e pubblicare. La pubblicazione non avviene automaticamente al pagamento o al salvataggio dei contenuti.</p>
+  {contextKey&&<p role="status"><strong>Operazione delegata · {delegatedBy==="AGENCY"?"Agenzia":"SuperAdmin"}</strong>. Stai pubblicando per conto della famiglia. La tua identità effettiva e il contesto saranno registrati nello storico.</p>}
+  <p>Il responsabile familiare può pubblicare direttamente; Agenzia e SuperAdmin soltanto tramite «Entra come Famiglia» autorizzato. La pubblicazione non avviene automaticamente al pagamento o al salvataggio.</p>
   {loading?<p>Verifica dei requisiti…</p>:check?.already_published?
    <div><strong>Memoriale pubblicato</strong><p>Il memoriale è stato autorizzato dalla famiglia.</p>
     {link&&<Link href={link} target="_blank" rel="noopener noreferrer">Apri il memoriale pubblico ↗</Link>}
@@ -59,7 +61,7 @@ export function FamilyMemorialPublisher({memorialId,personName}:{memorialId:stri
      <label><input type="radio" name={"visibility-"+memorialId} checked={visibility==="PUBLIC"} onChange={()=>setVisibility("PUBLIC")}/>
       Pubblico: autorizzo la disponibilità anche tramite ricerca e directory quando attivate</label>
      <label className="fmp-consent"><input type="checkbox" checked={approved} onChange={e=>setApproved(e.target.checked)}/>
-      Sono il responsabile familiare e autorizzo la pubblicazione del nome, dei contenuti e delle immagini del memoriale. Confermo di avere i diritti necessari sui materiali pubblicati.</label>
+      {contextKey?"Confermo di operare per conto della famiglia, di essere autorizzato a pubblicare i contenuti e le immagini e di avere verificato le necessarie autorizzazioni.":"Sono il responsabile familiare e autorizzo la pubblicazione del nome, dei contenuti e delle immagini del memoriale. Confermo di avere i diritti necessari sui materiali pubblicati."}</label>
      <button type="button" disabled={!approved||busy||!check?.ready} onClick={()=>void publish()}>{busy?"Pubblicazione…":"Approva e pubblica il memoriale"}</button>
     </fieldset>
    </>
