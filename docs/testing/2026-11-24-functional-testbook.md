@@ -1,6 +1,6 @@
 # MEMORIAL — Functional Testbook UAT-01
 
-Baseline: 24/11/2026, aggiornata dopo sprint delega Agenzia. **Owner: Carlo Gonella.** Progetto Testiny `MEMOR`, Test Run `TR-1`. **63 casi**, tutti NOT RUN.
+Baseline: 24/11/2026, aggiornata dopo sprint delega Agenzia. **Owner: Carlo Gonella.** Progetto Testiny `MEMOR`, Test Run `TR-1`. **64 casi**, tutti NOT RUN.
 
 ## Regole operative
 - Testare solo funzionalità esistenti, non mock o placeholder.
@@ -620,3 +620,14 @@ Testiny TC-63 | **Owner:** Carlo Gonella | **Stato:** NOT RUN
    **Atteso:** Nessuna modifica permanente inattesa o attribuzione dell'azione all'identità errata.
 
 **Verifiche tecniche del blocco:** backend RPC editor/ricordo con esecuzione autorizzata e rollback verificati; revoca contesto negata; Edge visitor-memory-flow versione 3 deploy ACTIVE. Queste verifiche **non** sono un test funzionale browser superato.
+
+### [FT-064] Agenzia delegata carica ritratto con audit
+Testiny TC-64 | **Owner:** Carlo Gonella | **Stato:** NOT RUN
+
+**Precondizioni:** Owner: Carlo Gonella. UAT/staging; account Agency Owner Aurora, contesto Entra come Famiglia attivo per memoriale di prova con fotografia JPG autorizzata inferiore a 5 MB.
+
+1. **Azione:** Aprire Profilo e storia nel contesto delegato, caricare una nuova fotografia e premere Salva fotografia.
+   **Atteso:** La fotografia appare, il file è nel bucket memorial-portraits e il profilo del memoriale contiene il percorso corretto.
+
+2. **Azione:** Ricaricare la pagina, verificare il ritratto e l'evento audit; poi chiudere il contesto.
+   **Atteso:** Ritratto persistente; evento FAMILY_PORTRAIT_UPDATED associato a identità effettiva Agency e context_id. Dopo uscita il contesto non può salvare ulteriori foto.
