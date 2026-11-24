@@ -659,8 +659,8 @@ Testiny TC-64 | **Owner:** Carlo Gonella | **Stato:** NOT RUN
 **Testiny:** TC-67 · **Esito:** NOT RUN
 **Precondizioni:** Galleria Premium con una fotografia UAT già caricata.
 
-1. **Azione:** Modificare titolo/descrizione/ordine e salvare; ricaricare. Eliminare dalla galleria confermando.
-   **Atteso:** Aggiornamenti persistenti; dopo rimozione la foto non compare più nelle liste, e audit registra l'operazione.
+1. **Azione:** Modificare titolo/descrizione/ordine e salvare; ricaricare. Eliminare dalla galleria confermando, poi verificare anche lo Storage.
+   **Atteso:** Aggiornamenti persistenti; dopo rimozione la foto non compare nelle liste, il file caricato è rimosso dallo Storage e l'audit registra l'operazione. Eventuali errori di cleanup devono essere mostrati.
 
 2. **Azione:** Documentare screenshot, pagina, ruolo, ID memoriale ed esito reale. Ripristinare dati UAT, se modificati.
    **Atteso:** Nessuna alterazione di altri memoriali; l'esito è registrato soltanto dopo esecuzione.
