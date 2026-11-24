@@ -18,7 +18,7 @@ Prime **due attivazioni gratuite** per nuova agenzia secondo regola corrente. Pr
 - [x] Famiglia: ricordi diretti approvati, visitatori in moderazione
 - [x] RPC pubblicazione familiare con condizioni, hash versione, audit, URL token e visibilità
 - [x] **Pubblicazione in modalità "Entra come Famiglia" per Agenzia e SuperAdmin**: identità reale, contesto delegato verificato, hash versione, approvazione esplicita, audit actor e acting_as. Test SQL con rollback.
-- [x] **Estensione editing Agenzia → Famiglia**: biografia, dedica, timeline, ricordi diretti approvati, moderazione visitatori con contesto valido. Test SQL di editor/ricordi/contesto superati; Edge Function v3 pubblicata. **Non ancora collaudato via browser (Testiny FT-059…063 NOT RUN).**
+- [x] **Estensione editing Agenzia → Famiglia**: biografia, dedica, timeline, ricordi diretti approvati, moderazione visitatori con contesto valido. Test SQL di editor/ricordi/contesto superati; Edge Function v3 pubblicata; ritratto in contesto delegato con audit. **Non ancora collaudato via browser (Testiny FT-059…064 NOT RUN).**
 - [ ] Test Playwright end-to-end con login Agenzia/SuperAdmin e accesso delegato (non sostituibile con SQL o build READY).
 - [ ] Delimitazione autorizzazioni agency vs family: l'Agenzia non accede fuori dal proprio contesto a PII e contenuti, il ruolo delegato è esplicito, limitato e temporaneo
 - [ ] Browser E2E con credenziali reali di test, test RLS e rollback/reset demo
