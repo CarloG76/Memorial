@@ -3,11 +3,11 @@ import {useMemo,useState,type FormEvent} from "react";
 import Link from "next/link";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import "./agency-console-sections.css";
+import {memorialStateLabel,agencyStatusLabel} from "@/lib/memorial-states";
 
 type Agency={id:string;legal_name:string;city:string|null;contact_email:string|null;vat_number:string|null;country_code:string;plan:string;status:string;is_demo:boolean};
 type Memorial={id:string;agency_id:string;deceased_name:string|null;demo_code:string|null;status:string;tier:string|null;visibility:string;is_demo:boolean;created_at:string;first_published_at:string|null;covered_until:string|null};
-const statusLabels:Record<string,string>={PUBLISHED_ACTIVE:"Pubblicato",DRAFT:"Bozza",SKELETON_ACTIVE:"In preparazione",PAYMENT_PENDING:"In attesa di pagamento",FAMILY_PREPARING:"In preparazione famiglia",READY_FOR_PUBLICATION:"Pronto per pubblicazione",PRESERVED_STATIC:"Conservato",EXPIRED:"Scaduto",UNPUBLISHED_ARCHIVED:"Archiviato",ACTIVE:"Attiva"};
-function status(s:string){return statusLabels[s]??s.replaceAll("_"," ");}
+function status(s:string){return ["ACTIVE","CLOSED","SUSPENDED"].includes(s)?agencyStatusLabel(s):memorialStateLabel(s);}
 function date(s:string|null){return s?new Date(s).toLocaleDateString("it-IT"):"—";}
 
 export function AgencyMemorials({agencies,memorials}:{agencies:Agency[];memorials:Memorial[]}){
