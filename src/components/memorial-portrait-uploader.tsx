@@ -4,9 +4,9 @@ import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import {memorialPortraitSrc} from "@/lib/memorial-portrait-url";
 import "./memorial-portrait-uploader.css";
 
-export function MemorialPortraitUploader({memorialId,personName,initialUrl,onSaved,disabled=false}:{
+export function MemorialPortraitUploader({memorialId,personName,initialUrl,onSaved,disabled=false,contextKey}:{
  memorialId:string;personName:string;initialUrl?:string|null;
- onSaved?:(url:string)=>void;disabled?:boolean;
+ onSaved?:(url:string)=>void;disabled?:boolean;contextKey?:string;
 }){
  const db=useMemo(()=>createBrowserSupabaseClient(),[]);
  const [picture,setPicture]=useState(initialUrl??"");
@@ -28,7 +28,7 @@ export function MemorialPortraitUploader({memorialId,personName,initialUrl,onSav
   const key=memorialId+"/"+crypto.randomUUID()+"."+ext;
   const stored=await db.storage.from("memorial-portraits").upload(key,file,{upsert:false,contentType:file.type,cacheControl:"3600"});
   if(stored.error){setError("Caricamento non riuscito: "+stored.error.message);setBusy(false);return;}
-  const saved=await db.rpc("set_memorial_portrait",{memorial_key:memorialId,object_key:key});
+  const saved=await db.rpc(contextKey?"agency_family_set_memorial_portrait":"set_memorial_portrait",{memorial_key:memorialId,object_key:key,...(contextKey?{context_key:contextKey}:{})});
   if(saved.error){setError("Foto caricata, ma salvataggio del ritratto non riuscito: "+saved.error.message);setBusy(false);return;}
   const path=String(saved.data);
   setPicture(path);setFile(null);setMessage("Foto salvata su Supabase e collegata a "+personName+".");onSaved?.(path);
