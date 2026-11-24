@@ -1,3 +1,4 @@
+import {memorialStateLabel} from "@/lib/memorial-states";
 "use client";
 import {useMemo,useState,type FormEvent} from "react";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
@@ -40,7 +41,7 @@ export function SuperadminMemorialEditor({initial}:{initial:MemorialPresentation
  return <div className="me-layout">
   <header className="me-head"><div><span className="workspace-label">SUPERADMIN / MODIFICA MEMORIALE</span><h1>{data.name}</h1>
    <p>Modifica anche i contenuti DEMO. Tutte le operazioni sono verificate sul server e registrate nel database.</p></div>
-   <span className="me-tag">{data.is_demo?"DEMO":"REALE"} · {data.status}</span></header>
+   <span className="me-tag">{data.is_demo?"DEMO":"REALE"} · {memorialStateLabel(data.status)}</span></header>
   <div className="me-grid"><form className="me-card" onSubmit={save}>
     <h2>Presentazione pubblica</h2>
     <label htmlFor="me-name">Nome e cognome</label><input id="me-name" value={name} onChange={e=>setName(e.target.value)} maxLength={180} required/>
