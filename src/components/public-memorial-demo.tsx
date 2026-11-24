@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
-import {memorialPortraitSrc} from "@/lib/memorial-portrait-url";
+import {memorialPortraitSrc,memorialGallerySrc} from "@/lib/memorial-portrait-url";
 import "./public-memorial-demo.css";
 import "./public-memorial-fidelity.css";
 
@@ -109,7 +109,7 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
      <div className="pm-right">
       {data.tier==="PREMIUM"&&<section id="ricordi" className="pm-section"><div className="pm-section-heading"><div><span className="pm-kicker">MOMENTI CHE RESTANO</span><h2>Ricordi</h2></div><button onClick={()=>open("propose")} type="button">Proponi un ricordo →</button></div><div className="pm-photo-intro">{data.photos.length?"Un album di momenti condivisi":"La famiglia potrà aggiungere qui le fotografie"}</div>
       <div className="pm-photo-grid">{data.photos.map((photo,i)=><article key={photo.title+"-"+i} className="pm-photo-card">
-       <div className="pm-photo-image" role="img" aria-label={photo.title+", immagine illustrativa"} style={{backgroundImage:"url("+photo.image_url+")"}}/>
+       <div className="pm-photo-image" role="img" aria-label={photo.title+", immagine illustrativa"} style={{backgroundImage:"url("+memorialGallerySrc(photo.image_url)+")"}}/>
        <div className="pm-photo-overlay"><span className="pm-photo-type"><Symbol name="camera" size={13}/> Foto</span><h3>{photo.title}</h3><p>{photo.subtitle}</p></div>
       </article>)}</div>
       {data.memories.length>0&&<div className="pm-memory-stories"><span>RACCONTI CONDIVISI</span>{data.memories.map((m,i)=><article key={i}><h3>{m.title}</h3>{m.author&&<small>Proposto da {m.author}</small>}<p>{m.body}</p>{m.photo_path&&<img style={{maxWidth:"100%",maxHeight:340,objectFit:"contain",borderRadius:10,marginTop:12}} src={process.env.NEXT_PUBLIC_SUPABASE_URL+"/storage/v1/object/public/memorial-approved/"+m.photo_path} alt={"Fotografia del ricordo: "+m.title}/>}</article>)}</div>}</section>}
