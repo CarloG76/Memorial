@@ -48,7 +48,7 @@ export function FamilyMemorialContentEditor({memorialId,memorialName,portraitUrl
    <fieldset><legend>Storia · tappe della vita</legend><MilestonesEditor items={milestones} onChange={setMilestones} disabled={saving}/></fieldset>
    <button className="fmce-save" disabled={saving} type="submit">{saving?"Salvataggio…":"Salva biografia e storia"}</button>
   </form>}
-  <MemorialPortraitUploader memorialId={memorialId} personName={name||memorialName} initialUrl={savedPortrait} onSaved={setSavedPortrait}/>
+  <MemorialPortraitUploader memorialId={memorialId} personName={name||memorialName} initialUrl={savedPortrait} onSaved={setSavedPortrait} contextKey={contextKey}/>
   {error&&<p role="alert" className="fmce-error">{error}</p>}
   {message&&<p role="status" className="fmce-ok">{message}</p>}
  </section>;
