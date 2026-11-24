@@ -17,6 +17,7 @@ export function FamilyGalleryEditor({memorialId,personName,contextKey}:{memorial
  const [position,setPosition]=useState(1);
  const [file,setFile]=useState<File|null>(null);
  const [savedKey,setSavedKey]=useState<string|null>(null);
+ const [rightsConfirmed,setRightsConfirmed]=useState(false);
  const currentKey=edit?.image_url.match(/\/memorial-gallery\/(.+)$/)?.[1]??null;
  const load=useCallback(async()=>{
   setLoading(true);
@@ -26,22 +27,22 @@ export function FamilyGalleryEditor({memorialId,personName,contextKey}:{memorial
   setLoading(false);
  },[db,memorialId,contextKey]);
  useEffect(()=>{void load();},[load]);
- function startEdit(p:Photo){setEdit(p);setTitle(p.title);setSubtitle(p.subtitle);setPosition(p.position);setFile(null);setSavedKey(null);setMessage("");setError("");}
- function reset(){setEdit(null);setTitle("");setSubtitle("");setPosition(Math.min(99,photos.length+1));setFile(null);setSavedKey(null);}
+ function startEdit(p:Photo){setEdit(p);setTitle(p.title);setSubtitle(p.subtitle);setPosition(p.position);setFile(null);setSavedKey(null);setRightsConfirmed(false);setMessage("");setError("");}
+ function reset(){setEdit(null);setTitle("");setSubtitle("");setPosition(Math.min(99,photos.length+1));setFile(null);setSavedKey(null);setRightsConfirmed(false);}
  function choose(f:File|null){
   setError("");
   if(!f){setFile(null);return;}
   if(!["image/jpeg","image/png","image/webp"].includes(f.type)||f.size<1||f.size>5*1024*1024){
-   setError("Sono accettate solo fotografie JPG, PNG o WebP fino a 5 MB.");return;
+   setFile(null);setError("Sono accettate solo fotografie JPG, PNG o WebP fino a 5 MB.");return;
   }
   setFile(f);setSavedKey(null);
  }
  async function submit(e:FormEvent<HTMLFormElement>){
   e.preventDefault();
-  if(busy||(!file&&!currentKey))return;
+  if(busy||!rightsConfirmed||(!file&&!currentKey))return;
   setBusy(true);setMessage("");setError("");
   let key=savedKey??currentKey;
-  if(file){
+  if(file&&!savedKey){
     const ext=file.type==="image/jpeg"?"jpg":file.type==="image/png"?"png":"webp";
     key=memorialId+"/"+crypto.randomUUID()+"."+ext;
     const uploaded=await db.storage.from("memorial-gallery").upload(key,file,{contentType:file.type,upsert:false});
@@ -63,7 +64,7 @@ export function FamilyGalleryEditor({memorialId,personName,contextKey}:{memorial
  }
  return <section className="workspace-panel" aria-label={"Galleria fotografica di "+personName} style={{marginBlock:18}}>
   <h2>Galleria fotografica · {personName}</h2>
-  <p>Gestisci le fotografie del memoriale Premium, l'ordine e le descrizioni. Le foto inserite nella galleria saranno visibili ai visitatori quando il memoriale sarà pubblico.</p>
+  <p>Gestisci fotografie, ordine e descrizioni. Nella pagina dei visitatori saranno mostrate soltanto dopo la pubblicazione del memoriale. Attenzione: per ora chi conosce l'URL diretto del file può accedervi anche prima della pubblicazione; non caricare immagini riservate.</p>
   {loading?<p>Caricamento fotografie…</p>:
    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(190px,1fr))",gap:12}}>
     {photos.map(p=><article key={p.id} style={{border:"1px solid #d5dce1",borderRadius:9,padding:11}}>
@@ -79,7 +80,8 @@ export function FamilyGalleryEditor({memorialId,personName,contextKey}:{memorial
    <label>Descrizione<input maxLength={350} value={subtitle} onChange={e=>setSubtitle(e.target.value)}/></label>
    <label>Ordine<input required type="number" min={1} max={99} value={position} onChange={e=>setPosition(Number(e.target.value))}/></label>
    <label>Fotografia (JPG, PNG o WebP, massimo 5 MB)<input type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>choose(e.target.files?.[0]??null)}/></label>
-   <div style={{display:"flex",gap:10}}><button disabled={busy||(!file&&!currentKey)} type="submit">{busy?"Salvataggio…":edit?"Salva modifiche":"Aggiungi alla galleria"}</button>
+   <label style={{display:"flex",alignItems:"flex-start",gap:8}}><input type="checkbox" checked={rightsConfirmed} onChange={e=>setRightsConfirmed(e.target.checked)}/> Confermo di avere il diritto di condividere questa fotografia nel memoriale e di aver compreso la visibilità del file.</label>
+   <div style={{display:"flex",gap:10}}><button disabled={busy||!rightsConfirmed||(!file&&!currentKey)} type="submit">{busy?"Salvataggio…":edit?"Salva modifiche":"Aggiungi alla galleria"}</button>
    {edit&&<button type="button" disabled={busy} onClick={reset}>Annulla</button>}</div>
   </form>
   {error&&<p role="alert" style={{color:"#a02e30"}}>{error}</p>}
