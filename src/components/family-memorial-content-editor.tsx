@@ -6,7 +6,7 @@ import {MilestonesEditor,normalizeMilestones,validMilestoneDate,type MemorialMil
 import "./family-memorial-content-editor.css";
 
 type Profile={name:string;dedication:string;biography:string;highlights:MemorialMilestone[];portrait_url:string|null;portrait_focus_x:number|null};
-export function FamilyMemorialContentEditor({memorialId,memorialName,portraitUrl=null}:{memorialId:string;memorialName:string;portraitUrl?:string|null}){
+export function FamilyMemorialContentEditor({memorialId,memorialName,portraitUrl=null,contextKey}:{memorialId:string;memorialName:string;portraitUrl?:string|null;contextKey?:string}){
  const db=useMemo(()=>createBrowserSupabaseClient(),[]);
  const [loading,setLoading]=useState(true);
  const [saving,setSaving]=useState(false);
@@ -18,7 +18,7 @@ export function FamilyMemorialContentEditor({memorialId,memorialName,portraitUrl
  const [milestones,setMilestones]=useState<MemorialMilestone[]>([]);
  useEffect(()=>{
   let active=true;
-  void db.rpc("family_get_memorial_editor",{target_memorial:memorialId}).then(({data,error:dbError})=>{
+  void db.rpc(contextKey?"family_get_memorial_editor_context":"family_get_memorial_editor",{target_memorial:memorialId,...(contextKey?{context_key:contextKey}:{})}).then(({data,error:dbError})=>{
    if(!active)return;
    if(dbError||!data){setError("Impossibile caricare il memoriale: "+(dbError?.message??"non disponibile"));setLoading(false);return;}
    const p=data as Profile;
@@ -26,14 +26,14 @@ export function FamilyMemorialContentEditor({memorialId,memorialName,portraitUrl
    setMilestones(normalizeMilestones(p.highlights));setLoading(false);
   });
   return ()=>{active=false;};
- },[db,memorialId,memorialName]);
+ },[db,memorialId,memorialName,contextKey]);
  async function save(event:FormEvent<HTMLFormElement>){
   event.preventDefault();if(saving||loading)return;
   setError("");setMessage("");
   if(milestones.some(x=>!validMilestoneDate(x.date)||!x.detail.trim())){setError("Controlla le date e le didascalie delle tappe.");return;}
   setSaving(true);
-  const r=await db.rpc("family_save_memorial_editor",{target_memorial:memorialId,
-   changes:{name,dedication,biography:bio,highlights:milestones},reason:null});
+  const r=await db.rpc(contextKey?"family_save_memorial_editor_context":"family_save_memorial_editor",{target_memorial:memorialId,
+   changes:{name,dedication,biography:bio,highlights:milestones},reason:null,...(contextKey?{context_key:contextKey}:{})});
   if(r.error)setError("Salvataggio non riuscito: "+r.error.message);
   else setMessage("Biografia e tappe salvate. Il memoriale resta in preparazione finché non viene pubblicato.");
   setSaving(false);
