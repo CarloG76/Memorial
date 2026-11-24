@@ -2,13 +2,8 @@ import { getAgencyDashboard, getFamilyDashboard } from "@/features/catalog/works
 import {AgencyTeamManager} from "./agency-team-manager";
 import {FamilyVisitorMemories} from "./family-visitor-memories";
 import {FamilyDirectMemory} from "./family-direct-memory";
+import {memorialStateLabel,moderationStatusLabel,agencyStatusLabel} from "@/lib/memorial-states";
 
-const statusLabels:Record<string,string>={
-DRAFT:"Bozza",PAYMENT_PENDING:"Pagamento in attesa",SKELETON_ACTIVE:"Skeleton attivo",
-FAMILY_PREPARING:"Preparazione famiglia",READY_FOR_PUBLICATION:"Pronto per pubblicazione",
-PUBLISHED_ACTIVE:"Pubblicato",PRESERVED_STATIC:"Conservato",EXPIRED:"Scaduto",
-UNPUBLISHED_ARCHIVED:"Archiviato non pubblicato",ARCHIVED:"Archiviato",CLOSED:"Chiuso",SUSPENDED:"Sospeso"
-};
 export async function AgencyWorkspace({userId}:{userId:string}) {
  const {agencies,memorials,membership}=await getAgencyDashboard(userId);
  return <div>
@@ -22,11 +17,11 @@ export async function AgencyWorkspace({userId}:{userId:string}) {
  <div className="catalog-metric"><small>In preparazione</small><b>{memorials.filter(m=>["DRAFT","SKELETON_ACTIVE","FAMILY_PREPARING"].includes(m.status)).length}</b></div>
  </div>
  <section className="workspace-panel"><h2>Agenzie</h2><div className="catalog-table-wrap">
- <table className="catalog-table"><thead><tr><th>Nome</th><th>Città</th><th>Piano</th><th>Stato</th></tr></thead><tbody>{agencies.map(a=><tr key={a.id}><td data-label="Agenzia">{a.legal_name}</td><td data-label="Città">{a.city??"—"}</td><td data-label="Piano">{a.plan}</td><td data-label="Stato">{a.status}</td></tr>)}</tbody></table></div>
+ <table className="catalog-table"><thead><tr><th>Nome</th><th>Città</th><th>Piano</th><th>Stato</th></tr></thead><tbody>{agencies.map(a=><tr key={a.id}><td data-label="Agenzia">{a.legal_name}</td><td data-label="Città">{a.city??"—"}</td><td data-label="Piano">{a.plan}</td><td data-label="Stato">{agencyStatusLabel(a.status)}</td></tr>)}</tbody></table></div>
  {agencies.length===0&&<p>Nessuna agenzia assegnata.</p>}</section>
  <section className="workspace-panel"><h2>Memoriali</h2><div className="catalog-table-wrap">
  <table className="catalog-table"><thead><tr><th>Persona</th><th>Codice</th><th>Tipo</th><th>Stato</th><th>Demo</th></tr></thead>
- <tbody>{memorials.map(m=><tr key={m.id}><td data-label="Persona">{m.deceased_name??"In preparazione"}</td><td data-label="Codice">{m.demo_code??"—"}</td><td data-label="Tipo">{m.tier??"—"}</td><td data-label="Stato">{statusLabels[m.status]??m.status}</td><td data-label="Demo">{m.is_demo?"Sì":"No"}</td></tr>)}</tbody></table></div>
+ <tbody>{memorials.map(m=><tr key={m.id}><td data-label="Persona">{m.deceased_name??"In preparazione"}</td><td data-label="Codice">{m.demo_code??"—"}</td><td data-label="Tipo">{m.tier??"—"}</td><td data-label="Stato">{memorialStateLabel(m.status)}</td><td data-label="Demo">{m.is_demo?"Sì":"No"}</td></tr>)}</tbody></table></div>
  {memorials.length===0&&<p>Nessun memoriale assegnato.</p>}</section>
  {agencies.filter(a=>membership.some(m=>m.agency_id===a.id&&m.role==="OWNER"&&m.active)).map(a=><AgencyTeamManager key={a.id} agencyId={a.id}/>)}
  </div>;
@@ -38,7 +33,7 @@ export async function FamilyWorkspace({userId}:{userId:string}) {
  <h1>I memoriali della tua famiglia</h1><p className="muted">Sono visibili soltanto i memoriali per cui disponi di un ruolo attivo.</p>
  <section className="workspace-panel"><div className="catalog-section-head"><h2>Memoriali associati</h2><span>{memorials.length}</span></div>
  <div className="catalog-table-wrap"><table className="catalog-table"><thead><tr><th>Persona</th><th>Stato</th><th>Ruolo</th><th>Modera</th><th>Modifica</th></tr></thead>
- <tbody>{memorials.map(m=>{const role=membershipMap.get(m.id);return <tr key={m.id}><td data-label="Persona"><strong>{m.deceased_name??"In preparazione"}</strong></td><td data-label="Stato">{statusLabels[m.status]??m.status}</td><td data-label="Ruolo">{role?.role??"—"}</td><td data-label="Modera">{role?.can_moderate?"Sì":"No"}</td><td data-label="Modifica">{role?.can_edit_content?"Sì":"No"}</td></tr>})}</tbody>
+ <tbody>{memorials.map(m=>{const role=membershipMap.get(m.id);return <tr key={m.id}><td data-label="Persona"><strong>{m.deceased_name??"In preparazione"}</strong></td><td data-label="Stato">{memorialStateLabel(m.status)}</td><td data-label="Ruolo">{role?.role??"—"}</td><td data-label="Modera">{role?.can_moderate?"Sì":"No"}</td><td data-label="Modifica">{role?.can_edit_content?"Sì":"No"}</td></tr>})}</tbody>
  </table></div>{memorials.length===0&&<p>Nessun memoriale assegnato al tuo account.</p>}</section>
  <section className="workspace-panel">
    <div className="catalog-section-head"><h2>Ricordi</h2><span>{memories.length} registrati</span></div>
@@ -46,7 +41,7 @@ export async function FamilyWorkspace({userId}:{userId:string}) {
     : memories.map(m=><article key={m.id} style={{paddingBlock:12,borderBottom:"1px solid var(--line)"}}>
        <strong>{m.title}</strong>
        <p>{m.body}</p>
-       <span className="workspace-label">Stato: {m.moderation_status}</span>
+       <span className="workspace-label">Stato: {moderationStatusLabel(m.moderation_status)}</span>
      </article>)}
  </section>
  <section className="workspace-panel">
@@ -55,7 +50,7 @@ export async function FamilyWorkspace({userId}:{userId:string}) {
     : thoughts.map(t=><article key={t.id} style={{paddingBlock:12,borderBottom:"1px solid var(--line)"}}>
        <strong>{t.author_name}</strong>
        <p>{t.body}</p>
-       <span className="workspace-label">Stato: {t.moderation_status}</span>
+       <span className="workspace-label">Stato: {moderationStatusLabel(t.moderation_status)}</span>
      </article>)}
  </section></div>;
 }
