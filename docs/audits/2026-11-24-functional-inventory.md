@@ -1,5 +1,5 @@
 # MEMORIAL — Audit funzionale e riconciliazione delle specifiche
-**Data:** 24 novembre 2026 · **Perimetro:** codice GitHub main, schema e funzioni Supabase, deployment Vercel e struttura Testiny MEMOR.
+**Data:** 24 novembre 2026 · **Owner:** Carlo Gonella · **Perimetro:** codice GitHub main, schema e funzioni Supabase, deployment Vercel e struttura Testiny MEMOR.
 
 ## Criteri di classificazione
 - **Presente:** UI e percorso backend esistono; NON implica test browser superato.
@@ -12,7 +12,7 @@
 - GitHub `CarloG76/Memorial`: pagine App Router, componenti, funzioni di dominio, test Vitest/Playwright e migrazioni.
 - Supabase progetto Memorial: 36 tabelle pubbliche, RPC tra cui `family_save_memorial_editor`, `family_publish_memorial_context`, `agency_start_family_context`, `agency_create_free_memorial`, `set_memorial_portrait`, `get_published_memorial_by_token`.
 - Dataset corrente: 3 agenzie DEMO, 13 memoriali DEMO, 11 membership Famiglia DEMO, 2 ricordi e 2 pensieri demo. Solo 1 memoriale in `PUBLISHED_ACTIVE`.
-- Testiny: progetto MEMOR, cartelle per aree, 58 casi funzionali, run TR-1 con tutti NOT RUN.
+- Testiny: progetto MEMOR, cartelle per aree, 63 casi funzionali, run TR-1 con tutti NOT RUN.
 
 ## Inventario feature e testabilità
 | ID | Capacità / comportamento | Stato | Percorso / evidenza codice | Testiny |
@@ -32,7 +32,7 @@
 | F13 | Sfondi e anteprima privata specifica | Presente, E2E da collaudare | `family-background-editor.tsx`; `/memoriale/anteprima/[id]` | FT-031/042 |
 | F14 | Ricordo familiare auto-approvato | Presente | `family-direct-memory.tsx`, `family_create_direct_memory` | FT-030 |
 | F15 | Deleghe SuperAdmin: Agenzia/Famiglia | Presente, E2E da collaudare | `superadmin-open-as-workspace.tsx`, context RPC | FT-032/033 |
-| F16 | Delega Agenzia → Famiglia | **Parziale**: UI upload + pubblicazione, non editor completo | `/console/agenzia/entra-come-famiglia/[contextId]` | FT-034/035 |
+| F16 | Delega Agenzia → Famiglia | **Implementato**: UI editor (biografia, dedica, timeline), foto, ricordi e pubblicazione; moderazione Edge v3; da collaudare in browser | `/console/agenzia/entra-come-famiglia/[contextId]` | FT-034/035 |
 | F17 | Pubblicazione owner e delegata con consenso/audit | Presente, E2E da collaudare | `family-memorial-publisher.tsx`, RPC context | FT-036/043 |
 | F18 | Pagina pubblica per token | Presente, E2E da collaudare | `/memoriale/p/[token]` | FT-041/043 |
 | F19 | Giovanni DEMO e Gino preview distinta | Presente | `/memoriale/demo`; `/memoriale/anteprima/[id]` | FT-044/051 |
@@ -46,10 +46,10 @@
 
 ## Gap e contraddizioni da risolvere PRIMA di sviluppare altro
 1. **Listino canonico obsoleto nei file originali.** Vale l'ultima decisione: PAYG €19,90 Std / €22,90 Premium; Pro mensile €39,90 e €13,90 / €16,90; Pro annuale €379 e €11,90 / €14,90. Regola due attivazioni iniziali gratuite applicabile ai nuovi account secondo entitlement.
-2. **Delega Agenzia→Famiglia incompleta.** Attualmente il percorso Agency as Family espone ritratto e pubblicazione, non la stessa intera esperienza editor, ricordi e moderazione. Non dichiarare equivalenza completa.
+2. **Delega Agenzia→Famiglia estesa il 24/11:** editor biografia/timeline, ricordi diretti e moderazione visitatori ora hanno codice e permessi in contesto Agenzia; manca UAT completa via browser.
 3. **Upload ritratto delegato.** Il componente usa RPC/storage senza context_key: occorre verificare e realizzare autorizzazioni delegate coerenti e audit nel contesto. Il test FT-028 può rilevare bug: non anticipare PASS.
-4. **Ricordo diretto Agenzia delegata.** L'RPC attuale distingue famiglia diretta e SuperAdmin; estendere al context Agenzia prima di definirlo completo.
-5. **Visitor memory proposal:** funzione Edge esiste e autorizza Family/SuperAdmin context, ma non ancora agency context; test del percorso delegato sospeso fino a implementazione.
+4. **Ricordo diretto Agenzia delegata:** RPC estesa al contesto Agenzia, test SQL transazionali OK; UAT browser ancora NOT RUN.
+5. **Moderazione visitatori:** funzione Edge aggiornata alla versione 3 per contesto Agenzia; test browser UAT non ancora eseguito.
 6. **Pagine placeholder:** assistenza, contatti/anniversari/famiglia e impostazioni non sono feature testabili; non aggiungere test di esecuzione.
 7. **Stato del codice ≠ correttezza.** La build READY e i test SQL puntuali non dimostrano che i flussi UI soddisfino la UAT.
 8. **Conservazione.** Il campo `covered_until` è valorizzato alla pubblicazione ma la gestione completa dei rinnovi e garanzie statiche non è operativa; non venderla come completa.
@@ -57,7 +57,7 @@
 ## Test management
 - **Test plan:** documento `docs/testing/2026-11-24-functional-testbook.md` e presente audit.
 - **Suite:** cartelle Testiny per ciascuna area attiva.
-- **Test cases:** 58 casi nel progetto `MEMOR`, descritti con azione e risultato atteso.
+- **Test cases:** 63 casi nel progetto `MEMOR`, descritti con azione e risultato atteso.
 - **Run:** `TR-1` «UAT 01 · Functional Testbook MEMORIAL · Baseline 24-11-2026», 58 `NOT RUN`.
 - Test case per future feature non creati; le cartelle vuote sono placeholders organizzativi, non test da eseguire.
 
