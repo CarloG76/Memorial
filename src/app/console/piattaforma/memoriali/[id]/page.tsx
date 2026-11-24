@@ -1,3 +1,4 @@
+import {memorialStateLabel,moderationStatusLabel} from "@/lib/memorial-states";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -39,7 +40,7 @@ export default async function MemorialDetail({params}:{params:Promise<{id:string
    <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}><OpenAsButton kind="FAMILY" targetId={m.id}/><Link href={"/memoriale/anteprima/"+m.id} target="_blank" rel="noopener noreferrer" style={{background:"#f8f1e5",color:"#17364f",padding:"11px 14px",borderRadius:8,fontWeight:700,fontSize:13,border:"1px solid #d6be90"}}>Anteprima di {m.deceased_name} ↗</Link><Link href={`/console/piattaforma/memoriali/${m.id}/modifica`} style={{background:"#17364f",color:"#fff",padding:"11px 14px",borderRadius:8,fontWeight:700,fontSize:13}}>Modifica memoriale</Link><span className="catalog-demo-tag">{m.is_demo?"Demo":"Reale"}</span></div></div>
   <section className="workspace-panel"><h2><span className="detail-icon detail-icon-gold">◷</span> Dati e ciclo di vita</h2><dl className="catalog-details">
    <div><dt>ID</dt><dd>{m.id}</dd></div><div><dt>Codice demo</dt><dd>{m.demo_code??"—"}</dd></div>
-   <div><dt>Prodotto</dt><dd>{m.tier??"—"}</dd></div><div><dt>Stato</dt><dd>{m.status}</dd></div>
+   <div><dt>Prodotto</dt><dd>{m.tier??"—"}</dd></div><div><dt>Stato</dt><dd>{memorialStateLabel(m.status)}</dd></div>
    <div><dt>Visibilità</dt><dd>{m.visibility}</dd></div><div><dt>Nascita</dt><dd>{date(m.birth_date)}</dd></div>
    <div><dt>Scomparsa</dt><dd>{date(m.death_date)}</dd></div>
    <div><dt>Prima pubblicazione</dt><dd>{date(m.first_published_at)}</dd></div>
@@ -49,10 +50,10 @@ export default async function MemorialDetail({params}:{params:Promise<{id:string
    <table className="catalog-table"><thead><tr><th>Nome</th><th>Ruolo</th><th>Attivo</th><th>Moderazione</th></tr></thead>
    <tbody>{family.data?.map(u=><tr key={u.user_id}><td data-label="Familiare"><strong>{familyNames.get(u.user_id)??"Profilo non disponibile"}</strong></td><td data-label="Ruolo">{u.role}</td><td data-label="Attivo">{u.active?"Sì":"No"}</td><td data-label="Moderazione">{u.can_moderate?"Sì":"No"}</td></tr>)}</tbody></table></div></section>
   <section className="workspace-panel"><h2><span className="detail-icon detail-icon-blue">▤</span> Ricordi ({memories.data?.length??0})</h2>
-   {memories.data?.map(x=><article key={x.id} className="catalog-content"><strong>{x.title}</strong><p>{x.body}</p><small className="detail-status">Stato: {x.moderation_status}</small></article>)}
+   {memories.data?.map(x=><article key={x.id} className="catalog-content"><strong>{x.title}</strong><p>{x.body}</p><small className="detail-status">Stato: {moderationStatusLabel(x.moderation_status)}</small></article>)}
    {!memories.data?.length&&<p>Nessun ricordo.</p>}</section>
   <section className="workspace-panel"><h2><span className="detail-icon detail-icon-rose">♡</span> Pensieri ({thoughts.data?.length??0})</h2>
-   {thoughts.data?.map(x=><article key={x.id} className="catalog-content"><strong>{x.author_name}</strong><p>{x.body}</p><small>Stato: {x.moderation_status}</small></article>)}
+   {thoughts.data?.map(x=><article key={x.id} className="catalog-content"><strong>{x.author_name}</strong><p>{x.body}</p><small>Stato: {moderationStatusLabel(x.moderation_status)}</small></article>)}
    {!thoughts.data?.length&&<p>Nessun pensiero.</p>}</section>
   <p className="catalog-footnote">Le modifiche operate dal SuperAdmin sono soggette alle autorizzazioni e ai controlli di audit.</p>
  </WorkspaceShell>;
