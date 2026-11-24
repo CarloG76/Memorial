@@ -60,7 +60,11 @@ export function FamilyGalleryEditor({memorialId,personName,contextKey}:{memorial
   setBusy(true);setError("");setMessage("");
   const r=await db.rpc("family_gallery_delete",{target_memorial:memorialId,context_key:contextKey??null,photo_id:p.id});
   setBusy(false);if(r.error){setError("Impossibile rimuovere la fotografia: "+r.error.message);return;}
-  reset();setMessage("Fotografia rimossa dalla galleria.");await load();
+  const imageKey=p.image_url.match(/\\/memorial-gallery\\/(.+)$/)?.[1];
+  const cleanup=imageKey?await db.storage.from("memorial-gallery").remove([imageKey]):null;
+  reset();setMessage(cleanup?.error
+   ?"Fotografia rimossa dalla galleria, ma il file non è stato eliminato dallo Storage: "+cleanup.error.message
+   :"Fotografia rimossa dalla galleria.");await load();
  }
  return <section className="workspace-panel" aria-label={"Galleria fotografica di "+personName} style={{marginBlock:18}}>
   <h2>Galleria fotografica · {personName}</h2>
