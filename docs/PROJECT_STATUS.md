@@ -1,5 +1,6 @@
 # MEMORIAL — Registro operativo unico (fonte di avanzamento)
 
+> **AGGIORNAMENTO DI CONTROLLO — 24/11/2026.** Questo registro contiene anche voci storiche del 22/10 e non è una prova di copertura E2E corrente. La fonte di riconciliazione codice/DB/requisiti è [l'audit funzionale 24/11](audits/2026-11-24-functional-inventory.md); il [testbook UAT-01](testing/2026-11-24-functional-testbook.md) contiene **58 test funzionali** creati anche in Testiny MEMOR/TR-1, **tutti NOT RUN**. Nessuna funzionalità è considerata testata dal solo fatto che codice, migrazione o deploy esistano. I prezzi storici 5,90/9,90 ecc. sono superati dal listino 19,90/22,90 PAYG, 13,90/16,90 Pro mensile e 11,90/14,90 Pro annuale; le prime due attivazioni nuove agenzie sono gratuite secondo entitlement. Non eseguire test di checkout reale Stripe, messaging privato, anniversari, conservazione avanzata o AI ritratto: codice operativo assente.\n\n
 Aggiornato: 22 ottobre 2026, responsive obbligatorio per TUTTI i ruoli; account UAT provisionati.
 **Regola:** ogni attività deve avere ID stabile, stato, prova oggettiva, dipendenza e prossimo passo. Non confondere preparato, committato, in DB, verificato, rilasciato.
 Stati: [x] provato sul sistema di destinazione; [~] parziale; [ ] da fare; [!] bloccato.
