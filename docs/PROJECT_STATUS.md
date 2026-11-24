@@ -155,4 +155,4 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 
 
 ## MVP0/MVP2 — Stati e galleria Premium 24/11/2026
-Stati di memoriale centralizzati in `src/lib/memorial-states.ts`; label coerenti fra pagine e cataloghi. Galleria Premium: UI upload/edit/order/delete, Storage e RPC dedicate, delegate actor audit. Limite noto: bucket pubblico espone oggetti a chi conosce URL, e la rimozione UI elimina record metadata ma non l'oggetto dal bucket; non presentare come galleria completamente privata. Testiny UAT-01 = 70 NOT RUN, nuovo FT-065..070. Nessun browser UAT superato.
+Stati di memoriale centralizzati in `src/lib/memorial-states.ts`; label coerenti fra pagine e cataloghi. Galleria Premium: UI upload/edit/order/delete, Storage e RPC dedicate, delegate actor audit. Limite noto: bucket pubblico espone oggetti a chi conosce URL, e la rimozione UI elimina il record e tenta la cancellazione dell'oggetto Storage con policy dedicata (cleanup best-effort, gestione orfani ancora da completare); non presentare come galleria completamente privata. Testiny UAT-01 = 70 NOT RUN, nuovo FT-065..070. Nessun browser UAT superato.
