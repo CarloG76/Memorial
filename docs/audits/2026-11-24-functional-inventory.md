@@ -12,7 +12,7 @@
 - GitHub `CarloG76/Memorial`: pagine App Router, componenti, funzioni di dominio, test Vitest/Playwright e migrazioni.
 - Supabase progetto Memorial: 36 tabelle pubbliche, RPC tra cui `family_save_memorial_editor`, `family_publish_memorial_context`, `agency_start_family_context`, `agency_create_free_memorial`, `set_memorial_portrait`, `get_published_memorial_by_token`.
 - Dataset corrente: 3 agenzie DEMO, 13 memoriali DEMO, 11 membership Famiglia DEMO, 2 ricordi e 2 pensieri demo. Solo 1 memoriale in `PUBLISHED_ACTIVE`.
-- Testiny: progetto MEMOR, cartelle per aree, 63 casi funzionali, run TR-1 con tutti NOT RUN.
+- Testiny: progetto MEMOR, cartelle per aree, 64 casi funzionali, run TR-1 con tutti NOT RUN.
 
 ## Inventario feature e testabilità
 | ID | Capacità / comportamento | Stato | Percorso / evidenza codice | Testiny |
@@ -57,7 +57,7 @@
 ## Test management
 - **Test plan:** documento `docs/testing/2026-11-24-functional-testbook.md` e presente audit.
 - **Suite:** cartelle Testiny per ciascuna area attiva.
-- **Test cases:** 63 casi nel progetto `MEMOR`, descritti con azione e risultato atteso.
+- **Test cases:** 64 casi nel progetto `MEMOR`, descritti con azione e risultato atteso.
 - **Run:** `TR-1` «UAT 01 · Functional Testbook MEMORIAL · Baseline 24-11-2026», 58 `NOT RUN`.
 - Test case per future feature non creati; le cartelle vuote sono placeholders organizzativi, non test da eseguire.
 
@@ -72,3 +72,6 @@
 8. Solo dopo questa baseline, decidere i fix di sviluppo ordinati per impatto.
 
 **Conclusione:** esiste una base funzionale articolata, ma il prodotto non è certificato E2E né pronto per checkout reale. La prossima attività è la UAT manuale, non aggiungere altre feature prima di aver censito i difetti.
+
+## Verifica sprint delega Agenzia 24/11
+**Owner: Carlo Gonella.** Nuove RPC `family_get_memorial_editor_context`, `family_save_memorial_editor_context`, `agency_family_set_memorial_portrait`; `family_create_direct_memory` estesa ad Agency context; Edge `visitor-memory-flow` versione 3. UI Agenzia→Famiglia integra editor, ricordi, moderazione e pubblicazione. SQL transazionale con rollback eseguito per lettura/scrittura/ricordo/audit e blocco contesto chiuso. Casi UAT FT-059…064 creati e NON eseguiti nel browser.
