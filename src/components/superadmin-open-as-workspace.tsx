@@ -15,6 +15,7 @@ import {MemorialPortraitUploader} from "./memorial-portrait-uploader";
 import Link from "next/link";
 import {MilestonesEditor,normalizeMilestones,validMilestoneDate,type MemorialMilestone} from "./memorial-milestones-editor";
 import "./superadmin-open-as-workspace.css";
+import {memorialStateLabel,moderationStatusLabel,agencyStatusLabel} from "@/lib/memorial-states";
 
 type Agency={id:string;legal_name:string;city:string|null;country_code:string;vat_number:string|null;contact_email:string|null;plan:string;status:string;is_demo:boolean};
 type Memorial={id:string;agency_id:string;name:string;status:string;tier:string;visibility?:string;is_demo:boolean;birth_date?:string|null;death_date?:string|null};
@@ -26,7 +27,7 @@ export type OperatorSnapshot={context_id:string;kind:"AGENCY"|"FAMILY";expires_a
 type Event={action:string;at:string;reason:string|null;before:unknown;after:unknown};
 
 function Panel({title,children}:{title:string;children:React.ReactNode}){return <section className="oa-panel"><h2>{title}</h2>{children}</section>;}
-function Status({value}:{value:string}){return <span className="oa-status">{value.replaceAll("_"," ")}</span>;}
+function Status({value}:{value:string}){return <span className="oa-status">{["ACTIVE","SUSPENDED","CLOSED"].includes(value)?agencyStatusLabel(value):["PENDING","APPROVED","REJECTED"].includes(value)?moderationStatusLabel(value):memorialStateLabel(value)}</span>;}
 
 function NewContribution({resource,busy,onCreate}:{resource:"THOUGHT"|"MEMORY";busy:boolean;onCreate:(fields:Record<string,string>)=>Promise<void>}){
  const [label,setLabel]=useState("");
@@ -151,7 +152,7 @@ export function SuperadminOpenAsWorkspace({initial,section}:{initial:OperatorSna
    {tab==="dashboard"&&<div className="oa-summary"><div><span>Memoriali</span><strong>{memorials.length}</strong></div><div><span>Piano</span><strong>{snapshot.agency.plan}</strong></div><div><span>Stato</span><strong>{snapshot.agency.status}</strong></div><div><span>Operatori</span><strong>{members.length}</strong></div></div>}
    {tab==="memoriali"&&<AgencyFreeMemorialCreator agencyId={snapshot.agency.id} contextKey={snapshot.context_id} agencyName={snapshot.agency.legal_name} isDemo={snapshot.agency.is_demo}/>}
    {(tab==="dashboard"||tab==="memoriali")&&<Panel title="Memoriali dell'agenzia">{memorials.length?memorials.map(m=><article key={m.id} className="oa-record">
-     <div><strong>{m.name??"Memoriale in preparazione"}</strong><p>{m.tier} · {m.status} {m.is_demo?"· DEMO":""}</p></div>
+     <div><strong>{m.name??"Memoriale in preparazione"}</strong><p>{m.tier} · {memorialStateLabel(m.status)} {m.is_demo?"· DEMO":""}</p></div>
      <div className="oa-memorial-actions"><Link href={"/memoriale/anteprima/"+m.id+"?contesto="+encodeURIComponent(snapshot.context_id)} target="_blank" rel="noopener noreferrer">Anteprima {m.name} ↗</Link><OpenAsButton kind="FAMILY" targetId={m.id}/></div></article>):<p>Nessun memoriale associato.</p>}</Panel>}
    {(tab==="dashboard"||tab==="la-mia-agenzia")&&<Panel title="Anagrafica e operatori">
     <form className="oa-form" onSubmit={saveAgency}><label>Ragione sociale<input required minLength={2} maxLength={240} value={agencyName} onChange={e=>setAgencyName(e.target.value)}/></label>
@@ -164,7 +165,7 @@ export function SuperadminOpenAsWorkspace({initial,section}:{initial:OperatorSna
   </>}
 
   {family&&snapshot.memorial&&<>
-   {tab==="panoramica"&&<div className="oa-summary"><div><span>Prodotto</span><strong>{snapshot.memorial.tier}</strong></div><div><span>Stato</span><strong>{snapshot.memorial.status}</strong></div><div><span>Pensieri</span><strong>{thoughts.length}</strong></div><div><span>Ricordi</span><strong>{memories.length}</strong></div></div>}
+   {tab==="panoramica"&&<div className="oa-summary"><div><span>Prodotto</span><strong>{snapshot.memorial.tier}</strong></div><div><span>Stato</span><strong>{memorialStateLabel(snapshot.memorial.status)}</strong></div><div><span>Pensieri</span><strong>{thoughts.length}</strong></div><div><span>Ricordi</span><strong>{memories.length}</strong></div></div>}
    {(tab==="panoramica"||tab==="profilo-e-storia")&&<FamilyMemorialPublisher memorialId={snapshot.memorial.id} personName={snapshot.memorial.name} contextKey={snapshot.context_id} delegatedBy="SUPERADMIN"/>}
    {(tab==="panoramica"||tab==="profilo-e-storia")&&<Panel title="Profilo e storia">
     <Link href={"/memoriale/anteprima/"+snapshot.memorial.id+"?contesto="+encodeURIComponent(snapshot.context_id)} target="_blank" rel="noopener noreferrer" className="oa-preview-link">Anteprima privata di {snapshot.memorial.name} ↗</Link>
