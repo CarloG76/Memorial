@@ -6,6 +6,7 @@ import {FamilyMemorialPublisher} from "@/components/family-memorial-publisher";
 import {FamilyMemorialContentEditor} from "@/components/family-memorial-content-editor";
 import {FamilyDirectMemory} from "@/components/family-direct-memory";
 import {FamilyVisitorMemories} from "@/components/family-visitor-memories";
+import {FamilyGalleryEditor} from "@/components/family-gallery-editor";
 import {AgencyExitFamilyContext} from "@/components/agency-exit-family-context";
 import {readIdentityAndMemberships} from "@/lib/authz/server";
 
@@ -19,7 +20,7 @@ export default async function AgencyFamilyDelegation({params}:{params:Promise<{c
  const db=await createServerSupabaseClient();
  const {data,error}=await db.rpc("agency_get_family_context",{context_key:contextId});
  if(error||!data||typeof data!=="object")notFound();
- const c=data as {context_id:string;memorial_id:string;name:string;status:string;agency_name:string;expires_at:string};
+ const c=data as {context_id:string;memorial_id:string;name:string;status:string;agency_name:string;expires_at:string;tier?:string};
  return <WorkspaceShell area="agenzia">
   <div style={{display:"grid",gap:17}}>
    <Link href={"/console/agenzia/memoriali/"+c.memorial_id}>← Torna all'Agenzia</Link>
@@ -31,6 +32,7 @@ export default async function AgencyFamilyDelegation({params}:{params:Promise<{c
     <p>Puoi verificare i requisiti e pubblicare per conto della famiglia. È necessaria una conferma esplicita.</p></header>
    <Link href={"/memoriale/anteprima/"+c.memorial_id} target="_blank" rel="noopener noreferrer">Apri l'anteprima privata di {c.name} ↗</Link>
    <FamilyMemorialContentEditor memorialId={c.memorial_id} memorialName={c.name} contextKey={c.context_id}/>
+   {c.tier==="PREMIUM"&&<FamilyGalleryEditor memorialId={c.memorial_id} personName={c.name} contextKey={c.context_id}/>}
    <FamilyDirectMemory memorialId={c.memorial_id} memorialName={c.name} contextKey={c.context_id}/>
    <FamilyVisitorMemories memorialId={c.memorial_id} memorialName={c.name} contextKey={c.context_id}/>
    <FamilyMemorialPublisher memorialId={c.memorial_id} personName={c.name} contextKey={c.context_id} delegatedBy="AGENCY"/>
