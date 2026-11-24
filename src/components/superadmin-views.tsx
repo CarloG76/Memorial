@@ -7,6 +7,7 @@ import { UiIcon } from "./ui-icon";
 import { OpenAsButton } from "./superadmin-open-as-button";
 import {PlatformAgencyInvitations} from "./platform-agency-invitations";
 import "./superadmin-views.css";
+import {memorialStateLabel,agencyStatusLabel} from "@/lib/memorial-states";
 
 type View="dashboard"|"agenzie"|"memoriali"|"famiglie";
 type Filter="ALL"|"ONLY_DEMO"|"NO_DEMO";
@@ -23,8 +24,8 @@ function Metric({label,value,icon,tone,detail}:{label:string;value:string|number
 }
 function Pill({value,kind}:{value:string;kind?:"plan"|"state"}){
  const tone=kind==="plan"?(value==="PRO"?"gold":"green"):(value==="ACTIVE"||value==="PUBLISHED_ACTIVE"?"green":value==="SUSPENDED"||value==="EXPIRED"?"red":"muted");
- const label:Record<string,string>={PRO:"Pro",FREE:"Free",ACTIVE:"Attiva",SUSPENDED:"Sospesa",CLOSED:"Chiusa",PUBLISHED_ACTIVE:"Pubblicato",PRESERVED_STATIC:"Conservato",EXPIRED:"Scaduto",FAMILY_PREPARING:"In preparazione",DRAFT:"Bozza",PAYMENT_PENDING:"In attesa pagamento"};
- return <span className={"ma-pill ma-pill-"+tone}>{label[value]??value.replaceAll("_"," ").toLowerCase()}</span>;
+ const label=kind==="plan"?(value==="PRO"?"Pro":value==="FREE"?"Free":"Piano non disponibile"):["ACTIVE","SUSPENDED","CLOSED"].includes(value)?agencyStatusLabel(value):memorialStateLabel(value);
+ return <span className={"ma-pill ma-pill-"+tone}>{label}</span>;
 }
 export async function DemoCatalog({view,query,userId}:{view:View;query:string;userId:string}){
  const {agencies,memorials,preference}=await getDemoCatalog(userId);
