@@ -38,7 +38,20 @@ async function familyAuthorized(req:Request,memorialId:string,contextKey:string|
    api.from("platform_memberships").select("user_id").eq("user_id",userId).eq("role","OWNER").eq("active",true).maybeSingle(),
    api.from("platform_operator_contexts").select("id").eq("id",contextKey).eq("actor_id",userId).eq("memorial_id",memorialId).eq("context_type","FAMILY").is("closed_at",null).gt("expires_at",new Date().toISOString()).maybeSingle()
   ]);
-  return !owner.error&&!ctx.error&&!!owner.data&&!!ctx.data;
+  if(!owner.error&&!ctx.error&&!!owner.data&&!!ctx.data)return true;
+  // Agency users may moderate only in their explicit, live as-family context.
+  const [agencyContext,memorial]=await Promise.all([
+    api.from("agency_family_operator_contexts").select("agency_id,memorial_id").eq("id",contextKey)
+      .eq("actor_id",userId).eq("memorial_id",memorialId).is("closed_at",null)
+      .gt("expires_at",new Date().toISOString()).maybeSingle(),
+    api.from("memorials").select("agency_id").eq("id",memorialId).maybeSingle()
+  ]);
+  if(agencyContext.error||memorial.error||!agencyContext.data||!memorial.data
+    ||agencyContext.data.agency_id!==memorial.data.agency_id)return false;
+  const {data:membership,error:memberError}=await api.from("agency_members")
+    .select("role").eq("agency_id",agencyContext.data.agency_id)
+    .eq("user_id",userId).eq("active",true).in("role",["OWNER","OPERATOR"]).maybeSingle();
+  return !memberError&&!!membership;
  }
  const {data:member,error:memberError}=await api.from("family_members").select("role,active,can_moderate").eq("user_id",userId).eq("memorial_id",memorialId).eq("active",true).maybeSingle();
  return !memberError&&!!member&&(member.role==="OWNER"||(member.role==="EDITOR"&&member.can_moderate===true));
