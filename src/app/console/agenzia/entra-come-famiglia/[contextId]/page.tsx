@@ -3,8 +3,10 @@ import {notFound,redirect} from "next/navigation";
 import {createServerSupabaseClient} from "@/lib/supabase/server";
 import {WorkspaceShell} from "@/components/workspace-shell";
 import {FamilyMemorialPublisher} from "@/components/family-memorial-publisher";
+import {FamilyMemorialContentEditor} from "@/components/family-memorial-content-editor";
+import {FamilyDirectMemory} from "@/components/family-direct-memory";
+import {FamilyVisitorMemories} from "@/components/family-visitor-memories";
 import {AgencyExitFamilyContext} from "@/components/agency-exit-family-context";
-import {MemorialPortraitUploader} from "@/components/memorial-portrait-uploader";
 import {readIdentityAndMemberships} from "@/lib/authz/server";
 
 export const dynamic="force-dynamic";
@@ -28,7 +30,9 @@ export default async function AgencyFamilyDelegation({params}:{params:Promise<{c
    <header><span className="workspace-label">ENTRA COME FAMIGLIA · {c.agency_name}</span><h1>{c.name}</h1>
     <p>Puoi verificare i requisiti e pubblicare per conto della famiglia. È necessaria una conferma esplicita.</p></header>
    <Link href={"/memoriale/anteprima/"+c.memorial_id} target="_blank" rel="noopener noreferrer">Apri l'anteprima privata di {c.name} ↗</Link>
-   <MemorialPortraitUploader memorialId={c.memorial_id} personName={c.name}/>
+   <FamilyMemorialContentEditor memorialId={c.memorial_id} memorialName={c.name} contextKey={c.context_id}/>
+   <FamilyDirectMemory memorialId={c.memorial_id} memorialName={c.name} contextKey={c.context_id}/>
+   <FamilyVisitorMemories memorialId={c.memorial_id} memorialName={c.name} contextKey={c.context_id}/>
    <FamilyMemorialPublisher memorialId={c.memorial_id} personName={c.name} contextKey={c.context_id} delegatedBy="AGENCY"/>
   </div>
  </WorkspaceShell>;
