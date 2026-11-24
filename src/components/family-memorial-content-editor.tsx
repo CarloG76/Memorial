@@ -13,6 +13,7 @@ export function FamilyMemorialContentEditor({memorialId,memorialName,portraitUrl
  const [message,setMessage]=useState("");
  const [error,setError]=useState("");
  const [name,setName]=useState(memorialName);
+ const [savedPortrait,setSavedPortrait]=useState<string|null>(portraitUrl);
  const [dedication,setDedication]=useState("");
  const [bio,setBio]=useState("");
  const [milestones,setMilestones]=useState<MemorialMilestone[]>([]);
@@ -23,7 +24,7 @@ export function FamilyMemorialContentEditor({memorialId,memorialName,portraitUrl
    if(dbError||!data){setError("Impossibile caricare il memoriale: "+(dbError?.message??"non disponibile"));setLoading(false);return;}
    const p=data as Profile;
    setName(p.name??memorialName);setDedication(p.dedication??"");setBio(p.biography??"");
-   setMilestones(normalizeMilestones(p.highlights));setLoading(false);
+   setMilestones(normalizeMilestones(p.highlights));setSavedPortrait(p.portrait_url??null);setLoading(false);
   });
   return ()=>{active=false;};
  },[db,memorialId,memorialName,contextKey]);
@@ -47,7 +48,7 @@ export function FamilyMemorialContentEditor({memorialId,memorialName,portraitUrl
    <fieldset><legend>Storia · tappe della vita</legend><MilestonesEditor items={milestones} onChange={setMilestones} disabled={saving}/></fieldset>
    <button className="fmce-save" disabled={saving} type="submit">{saving?"Salvataggio…":"Salva biografia e storia"}</button>
   </form>}
-  <MemorialPortraitUploader memorialId={memorialId} personName={name||memorialName} initialUrl={portraitUrl}/>
+  <MemorialPortraitUploader memorialId={memorialId} personName={name||memorialName} initialUrl={savedPortrait} onSaved={setSavedPortrait}/>
   {error&&<p role="alert" className="fmce-error">{error}</p>}
   {message&&<p role="status" className="fmce-ok">{message}</p>}
  </section>;
