@@ -3,6 +3,7 @@
 import {useState} from "react";
 import {AgencyFreeBalance} from "./agency-free-memorial";
 import "./agency-administration.css";
+import {memorialStateLabel,agencyStatusLabel} from "@/lib/memorial-states";
 import {AgencyDemoCheckout} from "./agency-demo-checkout";
 
 export type AdministrationAgency={
@@ -19,14 +20,7 @@ const prices={
  MONTHLY:{standard:"€ 13,90",premium:"€ 16,90"},
  YEARLY:{standard:"€ 11,90",premium:"€ 14,90"}
 } as const;
-const statusLabels:Record<string,string>={
- ACTIVE:"Attiva",CLOSED:"Chiusa",SUSPENDED:"Sospesa",
- DRAFT:"Bozza",PAYMENT_PENDING:"Pagamento in attesa",SKELETON_ACTIVE:"Skeleton attivo",
- FAMILY_PREPARING:"In preparazione",READY_FOR_PUBLICATION:"Pronto per pubblicazione",
- PUBLISHED_ACTIVE:"Pubblicato",PRESERVED_STATIC:"Conservato",
- EXPIRED:"Scaduto",UNPUBLISHED_ARCHIVED:"Archiviato non pubblicato"
-};
-const format=(value:string)=>statusLabels[value]??value.replaceAll("_"," ").toLowerCase();
+const format=(value:string)=>["ACTIVE","CLOSED","SUSPENDED"].includes(value)?agencyStatusLabel(value):memorialStateLabel(value);
 function metric(value:string|number,label:string,detail?:string){
  return <div className="agency-admin-metric"><strong>{value}</strong><span>{label}</span>{detail&&<small>{detail}</small>}</div>;
 }
