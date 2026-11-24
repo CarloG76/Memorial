@@ -1,3 +1,4 @@
+import {moderationStatusLabel} from "@/lib/memorial-states";
 "use client";
 import {useMemo,useState,type FormEvent} from "react";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
@@ -10,7 +11,7 @@ function ContributionRow({item,resource,onChange,busy}:{item:Contribution;resour
  const [label,setLabel]=useState(resource==="THOUGHT"?(item.author??""):(item.title??""));
  const [body,setBody]=useState(item.body);
  return <article className="mc-row">
-  <header><strong>{resource==="THOUGHT"?"Pensiero":"Ricordo"}</strong><span className={"mc-status mc-"+item.status.toLowerCase()}>{item.status}</span></header>
+  <header><strong>{resource==="THOUGHT"?"Pensiero":"Ricordo"}</strong><span className={"mc-status mc-"+item.status.toLowerCase()}>{moderationStatusLabel(item.status)}</span></header>
   <label>{resource==="THOUGHT"?"Autore":"Titolo"}<input value={label} onChange={e=>setLabel(e.target.value)} maxLength={resource==="THOUGHT"?80:180}/></label>
   <label>Testo<textarea value={body} onChange={e=>setBody(e.target.value)} maxLength={resource==="THOUGHT"?2000:10000} rows={3}/></label>
   <div className="mc-actions">
