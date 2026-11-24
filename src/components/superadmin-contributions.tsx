@@ -1,5 +1,5 @@
-import {moderationStatusLabel} from "@/lib/memorial-states";
 "use client";
+import {moderationStatusLabel} from "@/lib/memorial-states";
 import {useMemo,useState,type FormEvent} from "react";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import "./superadmin-contributions.css";
