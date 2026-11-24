@@ -1,6 +1,6 @@
 # MEMORIAL — Functional Testbook UAT-01
 
-Baseline: 24/11/2026, aggiornata dopo sprint delega Agenzia. **Owner: Carlo Gonella.** Progetto Testiny `MEMOR`, Test Run `TR-1`. **64 casi**, tutti NOT RUN.
+Baseline: 24/11/2026, aggiornata dopo sprint delega Agenzia. **Owner: Carlo Gonella.** Progetto Testiny `MEMOR`, Test Run `TR-1`. **70 casi**, tutti NOT RUN.
 
 ## Regole operative
 - Testare solo funzionalità esistenti, non mock o placeholder.
@@ -631,3 +631,68 @@ Testiny TC-64 | **Owner:** Carlo Gonella | **Stato:** NOT RUN
 
 2. **Azione:** Ricaricare la pagina, verificare il ritratto e l'evento audit; poi chiudere il contesto.
    **Atteso:** Ritratto persistente; evento FAMILY_PORTRAIT_UPDATED associato a identità effettiva Agency e context_id. Dopo uscita il contesto non può salvare ulteriori foto.
+
+
+## Sprint 24/11 — Stati utente e galleria Premium
+
+### [FT-065] Stati leggibili e coerenti fra le dashboard
+**Testiny:** TC-65 · **Esito:** NOT RUN
+**Precondizioni:** Account UAT SuperAdmin, Agenzia e Famiglia; memoriali DEMO con stati DRAFT, SKELETON_ACTIVE, FAMILY_PREPARING, READY_FOR_PUBLICATION, PUBLISHED_ACTIVE.
+
+1. **Azione:** Aprire dashboard, elenco e dettaglio memoriale nei tre ruoli; confrontare lo stato dello stesso record.
+   **Atteso:** Tutti mostrano la stessa etichetta italiana, senza codice tecnico: SKELETON_ACTIVE → Da completare; PUBLISHED_ACTIVE → Pubblicato.
+
+2. **Azione:** Documentare screenshot, pagina, ruolo, ID memoriale ed esito reale. Ripristinare dati UAT, se modificati.
+   **Atteso:** Nessuna alterazione di altri memoriali; l'esito è registrato soltanto dopo esecuzione.
+
+### [FT-066] Galleria Premium: upload e persistenza fotografica
+**Testiny:** TC-66 · **Esito:** NOT RUN
+**Precondizioni:** Family Owner autorizzato su memoriale Premium UAT; file di prova JPG/PNG/WebP inferiore a 5 MB; staging con reset.
+
+1. **Azione:** In Profilo e storia aprire Galleria, indicare titolo/descrizione/ordine, caricare foto e salvare; ricaricare.
+   **Atteso:** Fotografia visibile nella galleria; titolo, descrizione e ordine persistono; immagine del memoriale corretto.
+
+2. **Azione:** Documentare screenshot, pagina, ruolo, ID memoriale ed esito reale. Ripristinare dati UAT, se modificati.
+   **Atteso:** Nessuna alterazione di altri memoriali; l'esito è registrato soltanto dopo esecuzione.
+
+### [FT-067] Galleria Premium: modifica e rimozione
+**Testiny:** TC-67 · **Esito:** NOT RUN
+**Precondizioni:** Galleria Premium con una fotografia UAT già caricata.
+
+1. **Azione:** Modificare titolo/descrizione/ordine e salvare; ricaricare. Eliminare dalla galleria confermando.
+   **Atteso:** Aggiornamenti persistenti; dopo rimozione la foto non compare più nelle liste, e audit registra l'operazione.
+
+2. **Azione:** Documentare screenshot, pagina, ruolo, ID memoriale ed esito reale. Ripristinare dati UAT, se modificati.
+   **Atteso:** Nessuna alterazione di altri memoriali; l'esito è registrato soltanto dopo esecuzione.
+
+### [FT-068] Galleria Premium in Entra come Famiglia
+**Testiny:** TC-68 · **Esito:** NOT RUN
+**Precondizioni:** Account Owner Agenzia Aurora o SuperAdmin, memoriale Premium UAT autorizzato e contesto di delega attivo.
+
+1. **Azione:** Entrare come Famiglia e aggiungere una foto di prova; ricaricare e verificare audit.
+   **Atteso:** La galleria funziona nel contesto attivo e l'operatore effettivo è registrato; contesto scaduto/chiuso nega modifiche.
+
+2. **Azione:** Documentare screenshot, pagina, ruolo, ID memoriale ed esito reale. Ripristinare dati UAT, se modificati.
+   **Atteso:** Nessuna alterazione di altri memoriali; l'esito è registrato soltanto dopo esecuzione.
+
+### [FT-069] Galleria non disponibile per Standard
+**Testiny:** TC-69 · **Esito:** NOT RUN
+**Precondizioni:** Memoriale Standard UAT con Family Owner autorizzato.
+
+1. **Azione:** Accedere a Profilo e storia e verificare disponibilità Galleria, poi tentare RPC premium da account test.
+   **Atteso:** Galleria Premium non offerta e il backend rifiuta salvataggi su memoriali Standard.
+
+2. **Azione:** Documentare screenshot, pagina, ruolo, ID memoriale ed esito reale. Ripristinare dati UAT, se modificati.
+   **Atteso:** Nessuna alterazione di altri memoriali; l'esito è registrato soltanto dopo esecuzione.
+
+### [FT-070] Galleria Premium nel memoriale pubblico
+**Testiny:** TC-70 · **Esito:** NOT RUN
+**Precondizioni:** Memoriale Premium staging pubblicato con fotografie approvate inserite dalla Famiglia.
+
+1. **Azione:** Aprire collegamento visitatore da browser anonimo e verificare la sezione Ricordi e le foto.
+   **Atteso:** Le immagini salvate compaiono nella galleria pubblica con titoli/descrizioni e nell'ordine definito; nessuna foto di altro memoriale.
+
+2. **Azione:** Documentare screenshot, pagina, ruolo, ID memoriale ed esito reale. Ripristinare dati UAT, se modificati.
+   **Atteso:** Nessuna alterazione di altri memoriali; l'esito è registrato soltanto dopo esecuzione.
+
+**Note di verifica:** gestione galleria Premium con RPC e Storage dedicati, ma la prova di upload browser resta aperta. Le fotografie nel bucket pubblico hanno URL non indicizzati e imprevedibili; la limitazione d'accesso ai file via URL è un hardening da progettare prima di dichiarare accesso strettamente privato per i contenuti multimediali. Nessuna nuova UAT è stata contrassegnata come superata.
