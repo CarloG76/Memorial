@@ -1,6 +1,6 @@
 # MEMORIAL — Functional Testbook UAT-01
 
-Baseline: 24/11/2026. Progetto Testiny `MEMOR`, Test Run `TR-1`. Tutti i casi inizialmente NOT RUN.
+Baseline: 24/11/2026, aggiornata dopo sprint delega Agenzia. **Owner: Carlo Gonella.** Progetto Testiny `MEMOR`, Test Run `TR-1`. **63 casi**, tutti NOT RUN.
 
 ## Regole operative
 - Testare solo funzionalità esistenti, non mock o placeholder.
@@ -561,3 +561,62 @@ Funzioni prive di codice operativo (Stripe reale, messaggi privati, anniversary/
 
 ## Gate
 Un test è PASS soltanto dopo esecuzione effettiva con evidenza. Build READY, test SQL storici e review statiche non equivalgono a test manuale utente.
+
+## Aggiornamento funzionale Agenzia → Famiglia (sprint 24/11/2026)
+
+### [FT-059] Agenzia delegata modifica biografia e dedica
+Testiny TC-59 | **Owner:** Carlo Gonella | **Stato:** NOT RUN
+
+**Precondizioni:** Agency Owner Aurora con contesto attivo Entra come Famiglia per Gino su ambiente UAT e dati di test reversibili
+
+1. **Azione:** Aprire editor del memoriale nel contesto delegato. Modificare dedica e biografia, premere Salva. Ricaricare.
+   **Atteso:** Le modifiche persistono nel memoriale corretto. Audit FAMILY_EDITOR_UPDATED registra il vero utente Agenzia e context_id.
+
+2. **Azione:** Registrare screenshot, account, memoriale, URL e risultato effettivo. Ripristinare i dati test.
+   **Atteso:** Nessuna modifica permanente inattesa o attribuzione dell'azione all'identità errata.
+
+### [FT-060] Agenzia delegata gestisce timeline
+Testiny TC-60 | **Owner:** Carlo Gonella | **Stato:** NOT RUN
+
+**Precondizioni:** Agency Owner Aurora in contesto Famiglia di Gino, timeline con backup dei valori originali
+
+1. **Azione:** Aggiungere una tappa di prova con data, titolo e descrizione; salvare e ricaricare. Ripristinare valori originali.
+   **Atteso:** La tappa compare dopo reload; nessun dato di un altro memoriale cambia; audit tracciato.
+
+2. **Azione:** Registrare screenshot, account, memoriale, URL e risultato effettivo. Ripristinare i dati test.
+   **Atteso:** Nessuna modifica permanente inattesa o attribuzione dell'azione all'identità errata.
+
+### [FT-061] Agenzia delegata crea ricordo familiare
+Testiny TC-61 | **Owner:** Carlo Gonella | **Stato:** NOT RUN
+
+**Precondizioni:** Agency Owner Aurora in contesto Famiglia valido, memoriale DEMO ripristinabile
+
+1. **Azione:** Aprire Ricordi, inserire titolo e testo del ricordo e salvare; controllare lo stato da interfaccia/database.
+   **Atteso:** Un solo ricordo creato con APPROVED, visitor_submitted=false e operazione tracciata come FAMILY_MEMORY_DIRECT_CREATE.
+
+2. **Azione:** Registrare screenshot, account, memoriale, URL e risultato effettivo. Ripristinare i dati test.
+   **Atteso:** Nessuna modifica permanente inattesa o attribuzione dell'azione all'identità errata.
+
+### [FT-062] Agenzia delegata modera foto del visitatore
+Testiny TC-62 | **Owner:** Carlo Gonella | **Stato:** NOT RUN
+
+**Precondizioni:** Agency Owner Aurora in contesto Famiglia attivo; proposta PENDING di visitatore su memoriale staging
+
+1. **Azione:** Aprire proposte dei visitatori nel contesto delegato, approvare oppure rifiutare la proposta test; ricaricare.
+   **Atteso:** Stato aggiornato, pubblicazione foto solo con APPROVED; nessun bisogno di account Famiglia o SuperAdmin.
+
+2. **Azione:** Registrare screenshot, account, memoriale, URL e risultato effettivo. Ripristinare i dati test.
+   **Atteso:** Nessuna modifica permanente inattesa o attribuzione dell'azione all'identità errata.
+
+### [FT-063] Agenzia delegata riapre il ritratto salvato
+Testiny TC-63 | **Owner:** Carlo Gonella | **Stato:** NOT RUN
+
+**Precondizioni:** Agency Owner Aurora in contesto Entra come Famiglia e ritratto già salvato in DB su memoriale UAT
+
+1. **Azione:** Aprire l'editor nel contesto delegato, ricaricare la pagina e guardare la miniatura.
+   **Atteso:** Il ritratto precedentemente salvato resta visibile e corrisponde a quel memoriale.
+
+2. **Azione:** Registrare screenshot, account, memoriale, URL e risultato effettivo. Ripristinare i dati test.
+   **Atteso:** Nessuna modifica permanente inattesa o attribuzione dell'azione all'identità errata.
+
+**Verifiche tecniche del blocco:** backend RPC editor/ricordo con esecuzione autorizzata e rollback verificati; revoca contesto negata; Edge visitor-memory-flow versione 3 deploy ACTIVE. Queste verifiche **non** sono un test funzionale browser superato.
