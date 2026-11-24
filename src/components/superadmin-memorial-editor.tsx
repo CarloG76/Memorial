@@ -1,5 +1,5 @@
-import {memorialStateLabel} from "@/lib/memorial-states";
 "use client";
+import {memorialStateLabel} from "@/lib/memorial-states";
 import {useMemo,useState,type FormEvent} from "react";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import Link from "next/link";
