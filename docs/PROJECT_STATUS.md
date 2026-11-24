@@ -148,3 +148,7 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 - [x] GitHub CI, inclusi lint/typecheck/test/build e job RLS, **SUCCESS** sul commit `e3ddae70`. Vercel Git → `main` produce deploy production.
 
 **Ancora da implementare:** upload privato persistente e pubblicazione dei media personalizzati dalla Famiglia (attualmente solo anteprima locale); verifica email e invio reale degli interventi visitatore; CRUD SuperAdmin per tutte le altre feature oltre ai memoriali; permessi per STAFF Admin/Customer Care; percorso Standard/Premium completo e E2E autenticati; collaudo visivo browser reale.
+
+
+## MVP0 — Sprint delega Agenzia→Famiglia 24/11/2026
+**Owner: Carlo Gonella.** Editor biografia/timeline e ricordi diretti contestualizzati implementati e verificati con test SQL rollback; Edge visitor-memory-flow v3 deploy ACTIVE; fotografia delegata con audit tramite RPC dedicata. Testiny MEMOR TR-1 aggiornato a 64 casi funzionali, tutti NOT RUN (richiedono UAT browser). Nuovi sviluppi non equivalgono a test passati.
