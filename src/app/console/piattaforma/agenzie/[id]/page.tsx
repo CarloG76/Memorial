@@ -1,3 +1,4 @@
+import {memorialStateLabel,agencyStatusLabel} from "@/lib/memorial-states";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -38,13 +39,13 @@ export default async function AgencyDetail({params}:{params:Promise<{id:string}>
    <div><dt>Partita IVA</dt><dd>{agency.vat_number??"—"}</dd></div>
    <div><dt>Email contatto</dt><dd>{agency.contact_email??"—"}</dd></div>
    <div><dt>Piano</dt><dd>{agency.plan}</dd></div>
-   <div><dt>Stato</dt><dd>{agency.status}</dd></div>
+   <div><dt>Stato</dt><dd>{agencyStatusLabel(agency.status)}</dd></div>
    </dl></section>
   <section className="workspace-panel"><h2>Memoriali ({m.data?.length??0})</h2>
   <div className="catalog-table-wrap"><table className="catalog-table">
    <thead><tr><th>Persona</th><th>Tipologia</th><th>Stato</th><th>Demo</th><th>Apri</th></tr></thead>
    <tbody>{m.data?.map(row=><tr key={row.id}>
-    <td data-label="Persona">{row.deceased_name??"In preparazione"}</td><td data-label="Tipologia">{row.tier??"—"}</td><td data-label="Stato">{row.status}</td>
+    <td data-label="Persona">{row.deceased_name??"In preparazione"}</td><td data-label="Tipologia">{row.tier??"—"}</td><td data-label="Stato">{memorialStateLabel(row.status)}</td>
     <td data-label="Demo">{row.is_demo?"Sì":"No"}</td>
     <td data-label="Azioni"><Link href={`/console/piattaforma/memoriali/${row.id}`}>Dettaglio →</Link></td>
    </tr>)}</tbody></table></div></section>
