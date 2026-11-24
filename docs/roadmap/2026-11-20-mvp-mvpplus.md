@@ -33,7 +33,7 @@ Prime **due attivazioni gratuite** per nuova agenzia secondo regola corrente. Pr
 
 ## MVP 2 — Famiglia e pubblicazione
 - [ ] Invito→login→editor→upload→anteprima→pubblicazione E2E
-- [ ] Galleria media familiare (foto, ordinamento, cancellazione, consenso/diritti)
+- [~] Galleria Premium familiare: upload JPG/PNG/WebP 5 MB, titolo, descrizione, ordine e rimozione metadata implementati, anche in contesto delegato. **Da collaudare nel browser, da completare gestione privacy URL/storage, rimozione fisica degli oggetti e conferma diritti dei contenuti.**
 - [ ] Distinzione Standard/Premium e validazione delle capability lato DB
 - [ ] Impostazioni di privacy, PIN opzionale e consensi
 - [ ] Pubblicazione diretta e delegata, link/QR stabile, notifiche
@@ -69,3 +69,7 @@ Prime **due attivazioni gratuite** per nuova agenzia secondo regola corrente. Pr
 
 ## Definition of Done
 Ogni voce ha una checklist di DB/migrazione, API e permessi, UI, test positivo/negativo, audit se richiesto, deploy Vercel READY e prova browser con dati reali di test.
+
+
+## Aggiornamento 24/11 — Stato UI e galleria
+Etichette user-friendly centralizzate per memoriali e contributi. DB invariato. Galleria Premium codice e RPC implementati, pubblicazione verificata solo a livello build/SQL parziale, non UAT manuale. Testiny FT-065..FT-070 aggiunti; 70 casi in TR-1 NOT RUN.
