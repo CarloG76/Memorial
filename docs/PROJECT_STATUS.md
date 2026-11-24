@@ -152,3 +152,7 @@ Questo file governa il lavoro e va aggiornato nello stesso commit della relativa
 
 ## MVP0 — Sprint delega Agenzia→Famiglia 24/11/2026
 **Owner: Carlo Gonella.** Editor biografia/timeline e ricordi diretti contestualizzati implementati e verificati con test SQL rollback; Edge visitor-memory-flow v3 deploy ACTIVE; fotografia delegata con audit tramite RPC dedicata. Testiny MEMOR TR-1 aggiornato a 64 casi funzionali, tutti NOT RUN (richiedono UAT browser). Nuovi sviluppi non equivalgono a test passati.
+
+
+## MVP0/MVP2 — Stati e galleria Premium 24/11/2026
+Stati di memoriale centralizzati in `src/lib/memorial-states.ts`; label coerenti fra pagine e cataloghi. Galleria Premium: UI upload/edit/order/delete, Storage e RPC dedicate, delegate actor audit. Limite noto: bucket pubblico espone oggetti a chi conosce URL, e la rimozione UI elimina record metadata ma non l'oggetto dal bucket; non presentare come galleria completamente privata. Testiny UAT-01 = 70 NOT RUN, nuovo FT-065..070. Nessun browser UAT superato.
