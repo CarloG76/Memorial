@@ -33,7 +33,7 @@ Prime **due attivazioni gratuite** per nuova agenzia secondo regola corrente. Pr
 
 ## MVP 2 — Famiglia e pubblicazione
 - [ ] Invito→login→editor→upload→anteprima→pubblicazione E2E
-- [~] Galleria Premium familiare: upload JPG/PNG/WebP 5 MB, titolo, descrizione, ordine e rimozione metadata implementati, anche in contesto delegato. **Da collaudare nel browser, da completare gestione privacy URL/storage, rimozione fisica degli oggetti e conferma diritti dei contenuti.**
+- [~] Galleria Premium familiare: upload JPG/PNG/WebP 5 MB, titolo, descrizione, ordine e rimozione metadata implementati, anche in contesto delegato. **Da collaudare nel browser, da completare gestione privacy URL/storage, gestione di eventuali file orfani e privacy URL/storage (rimozione file implementata best-effort, conferma diritti introdotta).**
 - [ ] Distinzione Standard/Premium e validazione delle capability lato DB
 - [ ] Impostazioni di privacy, PIN opzionale e consensi
 - [ ] Pubblicazione diretta e delegata, link/QR stabile, notifiche
