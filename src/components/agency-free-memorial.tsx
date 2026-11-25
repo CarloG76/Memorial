@@ -21,7 +21,15 @@ export function AgencyFreeMemorialCreator({agencyId,contextKey=null,agencyName,i
   if(r.error)setError("Impossibile leggere le attivazioni gratuite: "+r.error.message);
   else setFree(r.data as FreeStatus);
  },[db,agencyId]);
- useEffect(()=>{void refresh();},[refresh]);
+ useEffect(()=>{
+  let cancelled=false;
+  void db.rpc("agency_free_entitlements_status",{agency_key:agencyId}).then(r=>{
+   if(cancelled)return;
+   if(r.error)setError("Impossibile leggere le attivazioni gratuite: "+r.error.message);
+   else setFree(r.data as FreeStatus);
+  });
+  return ()=>{cancelled=true;};
+ },[db,agencyId]);
  async function create(event:FormEvent<HTMLFormElement>){
   event.preventDefault();if(busy||!free?.remaining)return;
   setBusy(true);setError("");setNotice("");setInvite("");setCreatedId("");
@@ -61,7 +69,7 @@ export function AgencyFreeMemorialCreator({agencyId,contextKey=null,agencyName,i
    {createdId&&<small>Memoriale registrato: {createdId}</small>}</div>}
   {notice&&<p role="status" className="afm-success">{notice}</p>}
   {error&&<p role="alert" className="afm-error">{error}</p>}
-  <p className="afm-foot">Il memoriale è privato durante la preparazione. Il referente familiare deve verificare la propria email e accettare l'invito. Nessuna email è inviata automaticamente.</p>
+  <p className="afm-foot">Il memoriale è privato durante la preparazione. Il referente familiare deve verificare la propria email e accettare l&apos;invito. Nessuna email è inviata automaticamente.</p>
  </section>;
 }
 
