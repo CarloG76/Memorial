@@ -3,7 +3,8 @@ import { WORKSPACE_NAV, isWorkspaceArea } from "./navigation";
 
 describe("canonical workspace navigation", () => {
   it("has exactly the approved menu counts", () => {
-    expect(WORKSPACE_NAV.piattaforma).toHaveLength(7);
+    expect(WORKSPACE_NAV.piattaforma).toHaveLength(8);
+    expect(WORKSPACE_NAV.piattaforma.map(item => item.slug)).toContain("famiglie");
     expect(WORKSPACE_NAV.agenzia).toHaveLength(5);
     expect(WORKSPACE_NAV.famiglia).toHaveLength(7);
   });
