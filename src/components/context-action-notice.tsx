@@ -16,7 +16,7 @@ export function ContextActionNotice({memorialId,onOpen}:{memorialId:string;onOpe
   setError(false);
  },[db,memorialId]);
  useEffect(()=>{
-  void refresh();
+  void Promise.resolve().then(refresh);
   const timer=window.setInterval(()=>{if(!document.hidden)void refresh();},15000);
   const onFocus=()=>void refresh();
   window.addEventListener("focus",onFocus);
