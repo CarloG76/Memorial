@@ -1,7 +1,7 @@
 "use client";
 import {useCallback,useEffect,useMemo,useState,type FormEvent} from "react";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
-import {memorialGallerySrc} from "@/lib/memorial-portrait-url";
+import {GalleryThumbnail} from "./private-gallery-image";
 
 type Photo={id:string;title:string;subtitle:string;image_url:string;position:number};
 export function FamilyGalleryEditor({memorialId,personName,contextKey}:{memorialId:string;personName:string;contextKey?:string}){
@@ -68,11 +68,11 @@ export function FamilyGalleryEditor({memorialId,personName,contextKey}:{memorial
  }
  return <section className="workspace-panel" aria-label={"Galleria fotografica di "+personName} style={{marginBlock:18}}>
   <h2>Galleria fotografica · {personName}</h2>
-  <p>Gestisci fotografie, ordine e descrizioni. Nella pagina dei visitatori saranno mostrate soltanto dopo la pubblicazione del memoriale. Attenzione: per ora chi conosce l'URL diretto del file può accedervi anche prima della pubblicazione; non caricare immagini riservate.</p>
+  <p>Gestisci fotografie, ordine e descrizioni. Nella pagina dei visitatori saranno mostrate soltanto dopo la pubblicazione del memoriale. Prima della pubblicazione, l'accesso alle immagini caricate è limitato agli operatori autorizzati.</p>
   {loading?<p>Caricamento fotografie…</p>:
    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(190px,1fr))",gap:12}}>
     {photos.map(p=><article key={p.id} style={{border:"1px solid #d5dce1",borderRadius:9,padding:11}}>
-     <img src={memorialGallerySrc(p.image_url)} alt={p.title} style={{width:"100%",height:145,objectFit:"cover",borderRadius:6}}/>
+     <GalleryThumbnail url={p.image_url} alt={p.title} style={{width:"100%",height:145,objectFit:"cover",borderRadius:6}}/>
      <strong style={{display:"block",marginTop:8}}>{p.position}. {p.title}</strong><p>{p.subtitle}</p>
      <div style={{display:"flex",gap:8}}><button type="button" disabled={busy} onClick={()=>startEdit(p)}>Modifica</button><button type="button" disabled={busy} onClick={()=>void remove(p)}>Rimuovi</button></div>
     </article>)}
