@@ -89,3 +89,5 @@ Il limite rilevato il 24/11 (bucket galleria pubblico) è stato corretto: `memor
 
 ## Revisione 25/11/2026 — QR di stampa
 **Presente e build verificata:** generazione QR locale V6-L, codice random 32 caratteri esadecimali per ciascuno dei 13 memoriali esistenti, endpoint pubblico `/r/[code]`, stato d'attesa generico prima della pubblicazione, redirect alla pagina `/memoriale/p/[token]` pubblicata e coperta, fallback demo legacy Giovanni, download SVG/PNG da Agenzia/Famiglia/contesto delegato. `resolve_memorial_qr` non divulga PII su memoriali non pubblicati. Le modifiche al token di pubblicazione non modificano `qr_code`. **Test manuali browser/stampa non eseguiti:** Testiny FT-076–084 NOT RUN; totale 84 test NOT RUN.
+
+**Hardening QR 25/11:** identificativo `qr_code` immutabile tramite trigger `trg_memorial_qr_immutable`, oltre all'indice univoco. Live HTTP verificato: QR Gino → pagina di attesa 200; QR demo Giovanni → demo pubblica 200; codice inesistente → 404. Nessuna scansione fisica PNG/SVG ancora eseguita.
