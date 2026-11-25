@@ -160,3 +160,7 @@ Stati di memoriale centralizzati in `src/lib/memorial-states.ts`; label coerenti
 
 ## 25/11/2026 — Galleria Premium privata, preparata per UAT
 Bucket galleria privato; policy SELECT granulari; frontend galleria e memoriale pubblico utilizzano download tramite Supabase SDK. Build Vercel READY del commit privacy, senza prova UAT browser. Testiny aggiornato a 75 casi NOT RUN. Il requisito privacy riguarda esclusivamente il bucket galleria, non equivale a protezione di tutti i media del prodotto.
+
+
+## 25/11/2026 — QR Code permanente e stampa
+Identificatore QR univoco per memoriale, separato dal token di pubblicazione. Route `/r/[code]` attesa prima di pubblicazione, redirect dopo pubblicazione, gestione demo legacy Giovanni. Download SVG e PNG integrato nei tre ambienti operativi. Database: 13/13 memoriali con QR distinto. Build verificata READY. Testiny UAT-01 = 84 casi Not Run (9 QR nuovi). Il dominio canonico stampato oggi è `https://memorial-ai-visions.vercel.app`; richiede manutenzione del redirect in caso di futuro rebranding.
