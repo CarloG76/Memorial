@@ -33,7 +33,7 @@ function OwnerContact({owner,onSave,busy}:{owner:Member;onSave:(userId:string,va
    <label>Telefono *<input required type="tel" pattern="\+[1-9][0-9 ()-]{6,23}" placeholder="+39 333 1234567" autoComplete="tel" value={values.phone} onChange={e=>setValues(v=>({...v,phone:e.target.value}))}/></label>
    <label>Email di contatto *<input required type="email" maxLength={254} autoComplete="email" value={values.email} onChange={e=>setValues(v=>({...v,email:e.target.value}))}/></label>
   </div>
-  <p className="agency-team-hint">Questa email è il recapito per contattare il titolare; non cambia l'email utilizzata per accedere.</p>
+  <p className="agency-team-hint">Questa email è il recapito per contattare il titolare; non cambia l&apos;email utilizzata per accedere.</p>
   <button type="submit" disabled={busy||working}>{working?"Salvataggio…":"Salva anagrafica Owner"}</button>
  </form>;
 }
@@ -52,7 +52,16 @@ export function AgencyTeamManager({agencyId,contextKey=null}:{agencyId:string;co
   else{setTeam(r.data as Team);setError("");}
   setLoading(false);
  }
- useEffect(()=>{void refresh();},[agencyId,contextKey,db]);
+ useEffect(()=>{
+  let cancelled=false;
+  void db.rpc("agency_team_snapshot",{agency_key:agencyId,context_key:contextKey}).then(r=>{
+   if(cancelled)return;
+   if(r.error)setError("Impossibile caricare gli utenti: "+r.error.message);
+   else{setTeam(r.data as Team);setError("");}
+   setLoading(false);
+  });
+  return ()=>{cancelled=true;};
+ },[agencyId,contextKey,db]);
  async function saveOwner(id:string,values:OwnerValues){
   setBusy(true);setError("");setNotice("");
   const r=await db.rpc("agency_save_owner_contact",{
@@ -96,7 +105,7 @@ export function AgencyTeamManager({agencyId,contextKey=null}:{agencyId:string;co
   catch{setNotice("Seleziona e copia manualmente il link.");}
  }
  return <section className="agency-team" aria-label="Titolare e collaboratori dell'agenzia">
-  <div className="agency-team-header"><h2>Titolare e collaboratori</h2><p>Contatti del responsabile e accessi del personale dell'agenzia.</p></div>
+  <div className="agency-team-header"><h2>Titolare e collaboratori</h2><p>Contatti del responsabile e accessi del personale dell&apos;agenzia.</p></div>
   {loading?<p>Caricamento utenti…</p>:!team?<p>Utenti non disponibili.</p>:<>
    {team.members.filter(m=>m.role==="OWNER").map(m=><OwnerContact key={m.user_id} owner={m} onSave={saveOwner} busy={busy}/>)}
    <div className="agency-team-staff">
@@ -110,10 +119,10 @@ export function AgencyTeamManager({agencyId,contextKey=null}:{agencyId:string;co
      </div>)}
     <h3>Invita un collaboratore</h3>
     <form className="agency-team-invite" onSubmit={e=>void invite(e)}>
-     <label>Email personale dell'utente<input required type="email" maxLength={254} value={email} onChange={e=>setEmail(e.target.value)} placeholder="collaboratore@azienda.it"/></label>
+     <label>Email personale dell&apos;utente<input required type="email" maxLength={254} value={email} onChange={e=>setEmail(e.target.value)} placeholder="collaboratore@azienda.it"/></label>
      <button type="submit" disabled={busy}>{busy?"Attendere…":"Genera invito"}</button>
     </form>
-    {link&&<div className="agency-team-link"><label>Link di invito da condividere<input readOnly value={link} onFocus={e=>e.target.select()}/></label><button type="button" onClick={()=>void copy()}>Copia link</button><small>Il link è visibile solo adesso, scade dopo 7 giorni e funziona soltanto per l'email indicata. Non viene inviata automaticamente un'email.</small></div>}
+    {link&&<div className="agency-team-link"><label>Link di invito da condividere<input readOnly value={link} onFocus={e=>e.target.select()}/></label><button type="button" onClick={()=>void copy()}>Copia link</button><small>Il link è visibile solo adesso, scade dopo 7 giorni e funziona soltanto per l&apos;email indicata. Non viene inviata automaticamente un&apos;email.</small></div>}
     {(team.invites??[]).filter(i=>!i.revoked_at&&new Date(i.expires_at).getTime()>Date.now()).length>0&&
      <div className="agency-team-pending"><h4>Inviti in attesa</h4>{team.invites.filter(i=>!i.revoked_at&&new Date(i.expires_at).getTime()>Date.now()).map(i=><div className="agency-team-person" key={i.id}><div><strong>{i.email}</strong><small>Scade il {new Date(i.expires_at).toLocaleDateString("it-IT")}</small></div><button type="button" disabled={busy} onClick={()=>void revoke(i.id)}>Revoca</button></div>)}</div>}
    </div>
