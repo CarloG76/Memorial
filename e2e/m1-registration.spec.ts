@@ -1,17 +1,15 @@
 import { expect, test } from "@playwright/test";
 
-test("agency signup is available as a route without leaking private data", async ({ page }) => {
+test("agency registration route explains invitation-only access", async ({ page }) => {
   await page.goto("/registrati");
-  await expect(page.getByRole("heading", { name: "Crea il tuo account." })).toBeVisible();
-  await expect(page.getByLabel("Ragione sociale")).toBeVisible();
-  await expect(page.getByLabel("Partita IVA italiana")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "La tua agenzia entra su invito." })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Accedi a Memorial" })).toBeVisible();
 });
 
-test("signup endpoint is fail-closed without approved privacy settings", async ({ page }) => {
+test("registration cannot be submitted without a private invitation", async ({ page }) => {
   await page.goto("/registrati");
-  const button = page.getByRole("button", { name: "Crea credenziali" });
-  // CI does not configure explicit approval, therefore registration must not open.
-  await expect(button).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Crea credenziali" })).toHaveCount(0);
+  await expect(page.getByLabel("Partita IVA italiana")).toHaveCount(0);
 });
 
 test("unverified or missing email token does not create a session", async ({ page }) => {
