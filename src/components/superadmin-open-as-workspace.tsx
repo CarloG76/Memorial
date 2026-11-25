@@ -69,7 +69,9 @@ export function SuperadminOpenAsWorkspace({initial,section}:{initial:OperatorSna
  const defaultSection=initial.kind==="AGENCY"?"dashboard":"panoramica";
  const [tab,setTab]=useState(section&&validSections.includes(section)?section:defaultSection);
  useEffect(()=>{
-  setTab(section&&validSections.includes(section)?section:defaultSection);
+  let active=true;
+  void Promise.resolve().then(()=>{if(active)setTab(section&&validSections.includes(section)?section:defaultSection);});
+  return ()=>{active=false;};
  },[section,defaultSection,initial.context_id]);
  const [busy,setBusy]=useState(false);
  const [notice,setNotice]=useState("");
