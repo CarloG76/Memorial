@@ -26,7 +26,7 @@ export function FamilyGalleryEditor({memorialId,personName,contextKey}:{memorial
   else {setPhotos(r.data as Photo[]);setError("");}
   setLoading(false);
  },[db,memorialId,contextKey]);
- useEffect(()=>{void load();},[load]);
+ useEffect(()=>{void Promise.resolve().then(load);},[load]);
  function startEdit(p:Photo){setEdit(p);setTitle(p.title);setSubtitle(p.subtitle);setPosition(p.position);setFile(null);setSavedKey(null);setRightsConfirmed(false);setMessage("");setError("");}
  function reset(){setEdit(null);setTitle("");setSubtitle("");setPosition(Math.min(99,photos.length+1));setFile(null);setSavedKey(null);setRightsConfirmed(false);}
  function choose(f:File|null){
@@ -68,7 +68,7 @@ export function FamilyGalleryEditor({memorialId,personName,contextKey}:{memorial
  }
  return <section className="workspace-panel" aria-label={"Galleria fotografica di "+personName} style={{marginBlock:18}}>
   <h2>Galleria fotografica · {personName}</h2>
-  <p>Gestisci fotografie, ordine e descrizioni. Nella pagina dei visitatori saranno mostrate soltanto dopo la pubblicazione del memoriale. Prima della pubblicazione, l'accesso alle immagini caricate è limitato agli operatori autorizzati.</p>
+  <p>Gestisci fotografie, ordine e descrizioni. Nella pagina dei visitatori saranno mostrate soltanto dopo la pubblicazione del memoriale. Prima della pubblicazione, l&apos;accesso alle immagini caricate è limitato agli operatori autorizzati.</p>
   {loading?<p>Caricamento fotografie…</p>:
    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(190px,1fr))",gap:12}}>
     {photos.map(p=><article key={p.id} style={{border:"1px solid #d5dce1",borderRadius:9,padding:11}}>
