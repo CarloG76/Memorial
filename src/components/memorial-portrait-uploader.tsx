@@ -15,11 +15,13 @@ export function MemorialPortraitUploader({memorialId,personName,initialUrl,onSav
  const [busy,setBusy]=useState(false);
  const [message,setMessage]=useState("");
  const [error,setError]=useState("");
- useEffect(()=>setPicture(initialUrl??""),[initialUrl,memorialId]);
+ useEffect(()=>{let active=true;void Promise.resolve().then(()=>{if(active)setPicture(initialUrl??"");});return ()=>{active=false;};},[initialUrl,memorialId]);
  useEffect(()=>{
-  if(!file){setPreview("");return;}
-  const url=URL.createObjectURL(file);setPreview(url);
-  return ()=>URL.revokeObjectURL(url);
+  let active=true;
+  if(!file){void Promise.resolve().then(()=>{if(active)setPreview("");});return ()=>{active=false;};}
+  const url=URL.createObjectURL(file);
+  void Promise.resolve().then(()=>{if(active)setPreview(url);});
+  return ()=>{active=false;URL.revokeObjectURL(url);};
  },[file]);
  async function upload(){
   if(!file||busy||disabled)return;
