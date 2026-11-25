@@ -2,6 +2,7 @@ import {getFamilyDashboard} from "@/features/catalog/workspace-server";
 import {FamilyMemorialContentEditor} from "./family-memorial-content-editor";
 import {FamilyMemorialPublisher} from "./family-memorial-publisher";
 import {FamilyGalleryEditor} from "./family-gallery-editor";
+import {MemorialQrCard} from "./memorial-qr-card";
 import {createServerSupabaseClient} from "@/lib/supabase/server";
 import {FamilyBackgroundEditor,type FamilyHeroMemorial,type FamilyBackgroundOption} from "./family-background-editor";
 import type {MemorialBackgroundPreset} from "@/lib/memorial-backgrounds";
@@ -37,6 +38,7 @@ export async function FamilyProfileAppearance({userId}:{userId:string}) {
  return <div>
   {items.filter(x=>x.canEdit).map(x=><FamilyMemorialContentEditor key={x.id} memorialId={x.id} memorialName={x.name} portraitUrl={x.portraitUrl}/>)}
   {items.filter(x=>x.canEdit&&x.tier==="PREMIUM").map(x=><FamilyGalleryEditor key={x.id} memorialId={x.id} personName={x.name}/>)}
+  {items.filter(x=>x.canEdit||x.canPublish).map(x=><MemorialQrCard key={x.id} memorialId={x.id} personName={x.name}/>)}
   {items.filter(x=>x.canPublish).map(x=><FamilyMemorialPublisher key={x.id} memorialId={x.id} personName={x.name}/>)}
   <FamilyBackgroundEditor memorials={items} presets={presets}/>
  </div>;
