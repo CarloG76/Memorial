@@ -57,15 +57,15 @@ export function InvitationActivation({token,kind,documents=[]}:{token:string;kin
  return <main className="ia-main"><Link href="/" className="ia-brand">✦ Memorial</Link>
   <span className="workspace-label">INVITO RISERVATO · VALIDO 72 ORE</span>
   <h1>{kind==="AGENCY"?"Attiva la tua agenzia":"Partecipa al memoriale"}</h1>
-  <p>Hai ricevuto un invito personale. Verifica la tua email, crea una password e attiva l'accesso come {label}.</p>
-  {!legalReady&&<div className="ia-error">Attivazione aziendale sospesa: le condizioni B2B e l'informativa privacy devono essere pubblicate e approvate dall'amministratore prima dell'accettazione.</div>}
+  <p>Hai ricevuto un invito personale. Verifica la tua email, crea una password e attiva l&apos;accesso come {label}.</p>
+  {!legalReady&&<div className="ia-error">Attivazione aziendale sospesa: le condizioni B2B e l&apos;informativa privacy devono essere pubblicate e approvate dall&apos;amministratore prima dell&apos;accettazione.</div>}
   {accepted?<section className="ia-card ia-success"><h2>Invito accettato</h2><p>Le autorizzazioni sono state associate al tuo account.</p><Link href={kind==="AGENCY"?"/console/agenzia?sezione=dashboard":"/console/famiglia?sezione=panoramica"}>Apri il tuo ambiente Memorial</Link></section>:
   checking?<p>Verifica della sessione…</p>:connectedEmail?
    <section className="ia-card"><h2>Conferma attivazione</h2>
-    <p>Account collegato: <strong>{connectedEmail}</strong>. Deve coincidere con l'email destinataria dell'invito e risultare verificato.</p>
-    {kind==="AGENCY"&&terms&&privacy&&<p>Leggi le <a href={terms.document_url} target="_blank" rel="noopener noreferrer">condizioni B2B</a> e l'<a href={privacy.document_url} target="_blank" rel="noopener noreferrer">informativa privacy</a>.</p>}
-    <label className="ia-check"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/>Confermo di essere il destinatario dell'invito e di accettare l'accesso al ruolo indicato.</label>
-    {kind==="AGENCY"&&<label className="ia-check"><input type="checkbox" checked={privateConsent} onChange={e=>setPrivateConsent(e.target.checked)}/>Accetto le condizioni B2B e dichiaro di aver letto l'informativa privacy pubblicata.</label>}
+    <p>Account collegato: <strong>{connectedEmail}</strong>. Deve coincidere con l&apos;email destinataria dell&apos;invito e risultare verificato.</p>
+    {kind==="AGENCY"&&terms&&privacy&&<p>Leggi le <a href={terms.document_url} target="_blank" rel="noopener noreferrer">condizioni B2B</a> e l&apos;<a href={privacy.document_url} target="_blank" rel="noopener noreferrer">informativa privacy</a>.</p>}
+    <label className="ia-check"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/>Confermo di essere il destinatario dell&apos;invito e di accettare l&apos;accesso al ruolo indicato.</label>
+    {kind==="AGENCY"&&<label className="ia-check"><input type="checkbox" checked={privateConsent} onChange={e=>setPrivateConsent(e.target.checked)}/>Accetto le condizioni B2B e dichiaro di aver letto l&apos;informativa privacy pubblicata.</label>}
     <button type="button" disabled={busy||!consent||!legalReady||(kind==="AGENCY"&&!privateConsent)} onClick={()=>void accept()}>{busy?"Attivazione…":"Accetta invito e accedi"}</button>
    </section>:
    <section className="ia-card"><div className="ia-switch"><button type="button" aria-pressed={action==="REGISTER"} onClick={()=>setAction("REGISTER")}>Crea account</button>
