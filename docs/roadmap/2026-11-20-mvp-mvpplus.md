@@ -92,3 +92,5 @@ Etichette user-friendly centralizzate per memoriali e contributi. DB invariato. 
 - [x] **Test tecnici parziali**: 13 codici distinti verificati nel DB, resolver WAITING/PUBLISHED/LEGACY_DEMO verificato, generatore QR confrontato con riferimento indipendente, Vercel build READY.
 - [ ] **UAT browser/scansione stampa** FT-076–084 (Testiny UAT-01): download, scansione QR reale, stato attesa, pubblicato, token ruotato, scadenza, privacy. Tutti NOT RUN.
 - [ ] Formalizzare dominio canonico definitivo e mantenere un redirect permanente dal dominio impresso ai futuri indirizzi, per garantire validità fisica dei QR nel tempo.
+
+**Hardening QR 25/11:** identificativo `qr_code` immutabile tramite trigger `trg_memorial_qr_immutable`, oltre all'indice univoco. Live HTTP verificato: QR Gino → pagina di attesa 200; QR demo Giovanni → demo pubblica 200; codice inesistente → 404. Nessuna scansione fisica PNG/SVG ancora eseguita.
