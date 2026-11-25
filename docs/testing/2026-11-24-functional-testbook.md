@@ -1,6 +1,6 @@
 # MEMORIAL — Functional Testbook UAT-01
 
-Baseline: 24/11/2026, aggiornata dopo sprint delega Agenzia. **Owner: Carlo Gonella.** Progetto Testiny `MEMOR`, Test Run `TR-1`. **70 casi**, tutti NOT RUN.
+Baseline: 24/11/2026, aggiornata dopo sprint delega Agenzia. **Owner: Carlo Gonella.** Progetto Testiny `MEMOR`, Test Run `TR-1`. **75 casi**, tutti NOT RUN.
 
 ## Regole operative
 - Testare solo funzionalità esistenti, non mock o placeholder.
@@ -696,3 +696,58 @@ Testiny TC-64 | **Owner:** Carlo Gonella | **Stato:** NOT RUN
    **Atteso:** Nessuna alterazione di altri memoriali; l'esito è registrato soltanto dopo esecuzione.
 
 **Note di verifica:** gestione galleria Premium con RPC e Storage dedicati, ma la prova di upload browser resta aperta. Le fotografie nel bucket pubblico hanno URL non indicizzati e imprevedibili; la limitazione d'accesso ai file via URL è un hardening da progettare prima di dichiarare accesso strettamente privato per i contenuti multimediali. Nessuna nuova UAT è stata contrassegnata come superata.
+
+
+## MVP2 — Privacy galleria fotografica, 25/11/2026
+
+**Implementazione:** bucket Storage privato, policy di lettura anonima limitata a memoriale pubblicato/coperto e foto associata; componenti Famiglia e Visitatore leggono tramite download autorizzato. **Test nel browser ancora NON ESEGUITI.**
+
+### [FT-071] Foto Premium privata prima della pubblicazione
+**Testiny:** TC-71 · **Esito:** NOT RUN
+**Precondizioni:** Staging: memoriale Premium SKELETON_ACTIVE e una fotografia di galleria caricata da Famiglia; browser anonimo e browser autenticato Famiglia disponibili.
+
+1. **Azione:** Accedere alla galleria come Famiglia, quindi tentare di aprire da finestra anonima l'URL diretto /storage/v1/object/public/memorial-gallery/... e la richiesta Storage download.
+   **Atteso:** La famiglia autorizzata visualizza la foto; la richiesta anonima è negata. Il memoriale privato non espone i byte dell'immagine.
+
+2. **Azione:** Annotare URL, stato memoriale, screenshot, esito HTTP della richiesta Storage e risultato effettivo. Ripristinare i dati fixture di staging.
+   **Atteso:** Nessuna alterazione di dati reali; prova riproducibile.
+
+### [FT-072] Foto Premium visibile dopo la pubblicazione
+**Testiny:** TC-72 · **Esito:** NOT RUN
+**Precondizioni:** Staging: memoriale Premium completo, pubblicato con conferma esplicita, copertura attiva, almeno una foto collegata alla galleria.
+
+1. **Azione:** Aprire in incognito il link /memoriale/p/[token] e controllare se le foto si caricano tramite Storage download.
+   **Atteso:** Le foto approvate e collegate al memoriale risultano visibili. L'URL diretto /object/public/ non restituisce file nonostante il memoriale pubblicato.
+
+2. **Azione:** Annotare URL, stato memoriale, screenshot, esito HTTP della richiesta Storage e risultato effettivo. Ripristinare i dati fixture di staging.
+   **Atteso:** Nessuna alterazione di dati reali; prova riproducibile.
+
+### [FT-073] Foto Premium non disponibile dopo scadenza copertura
+**Testiny:** TC-73 · **Esito:** NOT RUN
+**Precondizioni:** Staging: memoriale Premium con foto in galleria; copertura scaduta su fixture controllata.
+
+1. **Azione:** Da browser anonimo riprovare il download di un oggetto precedentemente accessibile durante la copertura.
+   **Atteso:** Accesso anonimo negato quando covered_until <= now(); l'account autorizzato Family può ancora accedere secondo i permessi previsti.
+
+2. **Azione:** Annotare URL, stato memoriale, screenshot, esito HTTP della richiesta Storage e risultato effettivo. Ripristinare i dati fixture di staging.
+   **Atteso:** Nessuna alterazione di dati reali; prova riproducibile.
+
+### [FT-074] Foto della galleria cancellata non più scaricabile
+**Testiny:** TC-74 · **Esito:** NOT RUN
+**Precondizioni:** Staging: una foto di prova caricata e associata al memoriale Premium, con riferimento all'oggetto Storage.
+
+1. **Azione:** Rimuovere la foto dall'editor Famiglia e riprovare il download dall'utente anonimo e dagli editor.
+   **Atteso:** Il record non compare più; il file Storage viene eliminato, oppure un errore di rimozione viene mostrato. Il download anonimo è sempre negato dopo la rimozione del riferimento.
+
+2. **Azione:** Annotare URL, stato memoriale, screenshot, esito HTTP della richiesta Storage e risultato effettivo. Ripristinare i dati fixture di staging.
+   **Atteso:** Nessuna alterazione di dati reali; prova riproducibile.
+
+### [FT-075] Foto di altro memoriale non visibile in anteprima
+**Testiny:** TC-75 · **Esito:** NOT RUN
+**Precondizioni:** Due memoriali Premium UAT distinti, uno privato e uno pubblicato, account Famiglia autorizzato soltanto al primo.
+
+1. **Azione:** Aprire in anteprima il proprio memoriale, poi tentare di accedere all'immagine privata dell'altro memoriale.
+   **Atteso:** L'immagine non autorizzata non viene scaricata e non compare tra le foto. Nessun cross-memorial leakage.
+
+2. **Azione:** Annotare URL, stato memoriale, screenshot, esito HTTP della richiesta Storage e risultato effettivo. Ripristinare i dati fixture di staging.
+   **Atteso:** Nessuna alterazione di dati reali; prova riproducibile.
