@@ -164,3 +164,5 @@ Bucket galleria privato; policy SELECT granulari; frontend galleria e memoriale 
 
 ## 25/11/2026 — QR Code permanente e stampa
 Identificatore QR univoco per memoriale, separato dal token di pubblicazione. Route `/r/[code]` attesa prima di pubblicazione, redirect dopo pubblicazione, gestione demo legacy Giovanni. Download SVG e PNG integrato nei tre ambienti operativi. Database: 13/13 memoriali con QR distinto. Build verificata READY. Testiny UAT-01 = 84 casi Not Run (9 QR nuovi). Il dominio canonico stampato oggi è `https://memorial-ai-visions.vercel.app`; richiede manutenzione del redirect in caso di futuro rebranding.
+
+**Hardening QR 25/11:** identificativo `qr_code` immutabile tramite trigger `trg_memorial_qr_immutable`, oltre all'indice univoco. Live HTTP verificato: QR Gino → pagina di attesa 200; QR demo Giovanni → demo pubblica 200; codice inesistente → 404. Nessuna scansione fisica PNG/SVG ancora eseguita.
