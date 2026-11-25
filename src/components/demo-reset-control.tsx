@@ -21,7 +21,7 @@ export function DemoResetControl(){
   else{setError("");setPreview(r.data as Preview);}
   setLoading(false);
  }
- useEffect(()=>{void refresh();},[]); // initial owner-scoped fetch, never mutate on mount
+ useEffect(()=>{void Promise.resolve().then(refresh);},[]); // initial owner-scoped fetch, never mutate on mount
  async function reset(){
   if(busy||confirmation!==confirmText||!preview)return;
   if(!window.confirm("Ripristinare i dati DEMO? Le modifiche a contenuti e anagrafiche DEMO verranno perse. I dati reali non saranno toccati."))return;
