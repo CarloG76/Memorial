@@ -42,7 +42,16 @@ export function AgencyDemoCheckout({agencyId,agencyName,contextKey=null,isDemo=f
   setModel(fresh);setLoading(false);
   return fresh;
  },[db,agencyId,contextKey]);
- useEffect(()=>{if(isDemo)void refresh();},[isDemo,refresh]);
+ useEffect(()=>{
+  if(!isDemo)return;
+  let cancelled=false;
+  void db.rpc("agency_demo_commercial_snapshot",{agency_key:agencyId,context_key:contextKey}).then(({data,error:dbError})=>{
+   if(cancelled)return;
+   if(dbError){setError("Impossibile leggere la DEMO: "+dbError.message);setLoading(false);return;}
+   setModel(data as Snapshot);setLoading(false);
+  });
+  return ()=>{cancelled=true;};
+ },[isDemo,db,agencyId,contextKey]);
  if(!isDemo)return null;
  const remaining=model?.free_remaining??0;
  const currentPlan=model?.plan??"PAYG";
@@ -93,7 +102,7 @@ export function AgencyDemoCheckout({agencyId,agencyName,contextKey=null,isDemo=f
  }
  return <section className="adc-root" aria-label="Checkout dimostrativo con memoriali reali">
   <div className="adc-top"><div><span className="adc-kicker">DEMO REALE · PAGAMENTO SIMULATO</span>
-   <h2>Prova l'intero percorso di acquisto</h2>
+   <h2>Prova l&apos;intero percorso di acquisto</h2>
    <p>{agencyName} · Il checkout non addebita denaro, ma crea realmente memoriale, famiglia e invito.</p></div>
    <button type="button" className="adc-reset" onClick={()=>void refresh()} disabled={loading||saving}>Aggiorna dati</button>
   </div>
@@ -121,7 +130,7 @@ export function AgencyDemoCheckout({agencyId,agencyName,contextKey=null,isDemo=f
     <tr><th>Memoriale Standard</th><td>€19,90</td><td>€13,90</td><td>€11,90</td></tr>
     <tr><th>Memoriale Premium*</th><td>€22,90</td><td>€16,90</td><td>€14,90</td></tr>
     <tr><th>2 memoriali iniziali</th><td colSpan={3}>Gratuiti una volta, anche Premium</td></tr></tbody></table>
-  <p className="adc-disclaimer">*Premium +€3 è un'ipotesi commerciale. Il canone e i rinnovi sono simulati; nessun pagamento o fattura reale.</p>
+  <p className="adc-disclaimer">*Premium +€3 è un&apos;ipotesi commerciale. Il canone e i rinnovi sono simulati; nessun pagamento o fattura reale.</p>
   {editingPlan&&<div className="adc-plan-confirm"><div><strong>{currentPlan==="PAYG"?"Attiva":"Cambia"} piano DEMO: {fees[choice].label}</strong>
     <small>{choice==="PAYG"?"Nessun abbonamento, nessun rinnovo.":money(fees[choice].subscription)+" / "+(choice==="MONTHLY"?"mese":"anno")+" · rinnovo soltanto simulato."}</small>
     {choice!=="PAYG"&&<small>Canone annualizzato: {money(annualFee)}.</small>}</div>
@@ -131,7 +140,7 @@ export function AgencyDemoCheckout({agencyId,agencyName,contextKey=null,isDemo=f
   {stage==="SUCCESS"&&last?<div className="adc-success" role="status">
    <strong>Memoriale {last.demo_code} creato davvero</strong>
    <p>{last.free_activation?"Prima attivazione gratuita":"Operazione confermata"} · {money(last.amount_cents/100)} · {last.payment_status==="SIMULATED"?"Pagamento fake":"Gratuito"}</p>
-   <p>Scheletro non pubblico, famiglia associata e invito di 72 ore pronti. L'invito non è ancora stato inviato via email.</p>
+   <p>Scheletro non pubblico, famiglia associata e invito di 72 ore pronti. L&apos;invito non è ancora stato inviato via email.</p>
    <label className="adc-invite-label">Link di invito famiglia<input readOnly value={window.location.origin+"/invito-famiglia/"+last.family_invite_token} onFocus={e=>e.target.select()}/></label>
    <div className="adc-actions"><button type="button" onClick={()=>void copyInvite()}>Copia invito</button>
     {contextKey&&<OpenAsButton kind="FAMILY" targetId={last.memorial_id}/>}
@@ -143,7 +152,7 @@ export function AgencyDemoCheckout({agencyId,agencyName,contextKey=null,isDemo=f
    <dl><div><dt>Persona</dt><dd>{person}</dd></div><div><dt>Famiglia</dt><dd>{email}</dd></div>
     <div><dt>Prodotto</dt><dd>{tier}</dd></div><div><dt>Piano</dt><dd>{fees[currentPlan].label}</dd></div>
     <div><dt>Importo</dt><dd><b>{money(price)}</b></dd></div></dl>
-   <p className="adc-disclaimer">{price===0?"Questa creazione utilizza un'attivazione gratuita.":"Simuliamo il pagamento e registriamo l'ordine come SIMULATO."} In entrambi i casi viene creato un vero scheletro del memoriale.</p>
+   <p className="adc-disclaimer">{price===0?"Questa creazione utilizza un&apos;attivazione gratuita.":"Simuliamo il pagamento e registriamo l&apos;ordine come SIMULATO."} In entrambi i casi viene creato un vero scheletro del memoriale.</p>
    <div className="adc-actions"><button type="button" className="adc-secondary" onClick={()=>setStage("SELECT")} disabled={saving}>Indietro</button>
     <button type="button" disabled={saving||editingPlan} onClick={()=>void create()}>{saving?"Creazione…":price===0?"Attiva memoriale gratuito":"Conferma pagamento fake e crea memoriale"}</button></div>
   </div>:<form className="adc-form" onSubmit={prepare}>
