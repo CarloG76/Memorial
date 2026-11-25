@@ -49,7 +49,7 @@ export default async function AgencyDetail({params}:{params:Promise<{id:string}>
     <td data-label="Demo">{row.is_demo?"Sì":"No"}</td>
     <td data-label="Azioni"><Link href={`/console/piattaforma/memoriali/${row.id}`}>Dettaglio →</Link></td>
    </tr>)}</tbody></table></div></section>
-  <section className="workspace-panel"><h2>Titolare e collaboratori</h2><p>{members.length} utenti associati. Per aggiornare l'anagrafica o i permessi usa «Entra come».</p>
+  <section className="workspace-panel"><h2>Titolare e collaboratori</h2><p>{members.length} utenti associati. Per aggiornare l&apos;anagrafica o i permessi usa «Entra come».</p>
    <div className="catalog-table-wrap"><table className="catalog-table">
     <thead><tr><th>Nome e cognome</th><th>Ruolo</th><th>Email</th><th>Telefono</th><th>Stato</th></tr></thead>
     <tbody>{members.map(u=><tr key={u.user_id}>

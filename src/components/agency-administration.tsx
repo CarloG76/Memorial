@@ -65,7 +65,7 @@ export function AgencyAdministration({agency,memorials,contextKey=null}:{agency:
    <section className="agency-admin-card">
     <h2>Memoriali gratuiti e prezzi</h2>
     {!agency.is_demo&&<AgencyFreeBalance agencyId={agency.id}/>}
-    <p className="agency-admin-muted">Il piano visualizzato è quello effettivamente assegnato all'agenzia. Non è indicativo di un pagamento verificato.</p>
+    <p className="agency-admin-muted">Il piano visualizzato è quello effettivamente assegnato all&apos;agenzia. Non è indicativo di un pagamento verificato.</p>
     <dl className="agency-admin-terms">
      <div><dt>Primi due memoriali per nuova agenzia</dt><dd>Gratuiti una sola volta</dd></div>
      <div><dt>Senza abbonamento · Standard</dt><dd>{prices.PAYG.standard}</dd></div>
@@ -91,12 +91,12 @@ export function AgencyAdministration({agency,memorials,contextKey=null}:{agency:
     </dl>
     <h3>Conservazione dei memoriali</h3>
     <p>Un anno incluso; durata complessiva di 3 anni € 12, 5 anni € 18, 10 anni € 30. Questi sono prezzi di listino, non addebiti registrati.</p>
-    <p className="agency-admin-muted">La chiusura o il downgrade dell'agenzia non terminano i periodi di conservazione già pagati.</p>
+    <p className="agency-admin-muted">La chiusura o il downgrade dell&apos;agenzia non terminano i periodi di conservazione già pagati.</p>
    </section>
   </div>
   <AgencyDemoCheckout agencyId={agency.id} agencyName={agency.legal_name} isDemo={agency.is_demo} contextKey={contextKey}/>
   <section className="agency-admin-card">
-   <div className="agency-admin-card-head"><div><h2>Memoriali e documentazione</h2><p>Inventario dell'agenzia, esportabile per controllo interno.</p></div>
+   <div className="agency-admin-card-head"><div><h2>Memoriali e documentazione</h2><p>Inventario dell&apos;agenzia, esportabile per controllo interno.</p></div>
     <button type="button" className="agency-admin-export" onClick={exportInventory}>Esporta CSV</button></div>
    {exportError&&<p role="alert">{exportError}</p>}
    <div className="agency-admin-table-wrap"><table><thead><tr><th>Memoriale</th><th>Prodotto</th><th>Stato</th><th>Tipo dati</th></tr></thead>

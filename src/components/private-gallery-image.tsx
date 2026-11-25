@@ -10,13 +10,13 @@ function useGalleryMedia(value:string|null|undefined){
  const [resolved,setResolved]=useState("");
  const [failed,setFailed]=useState(false);
  useEffect(()=>{
-  setResolved("");setFailed(false);
-  if(!value)return;
-  const prefix="/storage/v1/object/public/memorial-gallery/";
-  if(!value.startsWith(prefix)){setResolved(value);return;}
-  const key=value.slice(prefix.length);
-  if(!/^[0-9a-f-]{36}\/[-0-9a-f]{36}\.(jpg|png|webp)$/.test(key)){setFailed(true);return;}
   let alive=true;
+  void Promise.resolve().then(()=>{if(alive){setResolved("");setFailed(false);}});
+  if(!value)return ()=>{alive=false;};
+  const prefix="/storage/v1/object/public/memorial-gallery/";
+  if(!value.startsWith(prefix)){void Promise.resolve().then(()=>{if(alive)setResolved(value);});return ()=>{alive=false;};}
+  const key=value.slice(prefix.length);
+  if(!/^[0-9a-f-]{36}\/[-0-9a-f]{36}\.(jpg|png|webp)$/.test(key)){void Promise.resolve().then(()=>{if(alive)setFailed(true);});return ()=>{alive=false;};}
   let blobUrl="";
   void db.storage.from("memorial-gallery").download(key).then(({data,error})=>{
    if(!alive)return;

@@ -25,7 +25,7 @@ export function FamilyMemorialPublisher({memorialId,personName,contextKey,delega
   else {const next=a.data as Check;setCheck(next);setToken(next.share_token??"");setHash(String((b.data as {hash:string}).hash));}
   setLoading(false);
  }
- useEffect(()=>{void refresh();},[memorialId,db]);
+ useEffect(()=>{void Promise.resolve().then(refresh);},[memorialId,db]);
  async function publish(){
   if(!check?.ready||busy||!approved||!hash)return;
   if(!window.confirm("Confermi la prima pubblicazione del memoriale di "+personName+"? La pagina diventerà accessibile tramite link."))return;

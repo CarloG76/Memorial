@@ -42,12 +42,18 @@ export function WorkspaceNotifications({area}:{area:WorkspaceArea}){
   setBusy(false);
  },[area,db]);
  useEffect(()=>{
-  void refresh();
+  let cancelled=false;
+  void db.rpc("workspace_notifications_snapshot",{area_key:area}).then(r=>{
+   if(cancelled)return;
+   if(r.error)setError("Notifiche non disponibili.");
+   else{const value=r.data as WorkNoticeSnapshot|null;setItems(Array.isArray(value?.items)?value.items:[]);setError("");}
+   setBusy(false);
+  });
   const tick=window.setInterval(()=>{if(!document.hidden)void refresh();},60000);
   const visible=()=>{if(!document.hidden)void refresh();};
   document.addEventListener("visibilitychange",visible);
-  return ()=>{window.clearInterval(tick);document.removeEventListener("visibilitychange",visible);};
- },[refresh]);
+  return ()=>{cancelled=true;window.clearInterval(tick);document.removeEventListener("visibilitychange",visible);};
+ },[refresh,db,area]);
  useEffect(()=>{
   if(!isOpen)return;
   function close(e:MouseEvent){if(ref.current&&!ref.current.contains(e.target as Node))setOpen(false);}

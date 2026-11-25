@@ -82,7 +82,7 @@ export function RevenueForecast(){
  function changeSegment(i:number,key:Exclude<keyof Segment,"plan">,value:number){
   setSegments(old=>old.map((s,j)=>i===j?{...s,[key]:value}:s));
  }
- function usePreset(name:string){
+ function applyPreset(name:string){
   setPreset(name);setSegments(presets[name].map(s=>({...s})));
  }
  function changeAssumption(key:keyof Assumptions,value:number){
@@ -105,13 +105,13 @@ export function RevenueForecast(){
   </header>
   <section className="rf-card">
    <div className="rf-section-top"><div><h2>Scenario di lavoro</h2><p>Scegli un esempio o modifica direttamente tutti i valori.</p></div>
-    <div className="rf-switch" role="group" aria-label="Scenario di partenza">{Object.keys(presets).map(name=><button key={name} type="button" onClick={()=>usePreset(name)} className={preset===name?"active":""}>{name==="base"?"Base":name==="espansione"?"Espansione":"Conservativo"}</button>)}</div>
+    <div className="rf-switch" role="group" aria-label="Scenario di partenza">{Object.keys(presets).map(name=><button key={name} type="button" onClick={()=>applyPreset(name)} className={preset===name?"active":""}>{name==="base"?"Base":name==="espansione"?"Espansione":"Conservativo"}</button>)}</div>
    </div>
    <div className="rf-input-scroll"><table className="rf-input-table"><thead><tr><th>Tipo agenzia</th><th>N° agenzie</th><th>Standard / ag. / mese</th><th>Premium / ag. / mese</th><th>Standard gratuiti totali nel mese</th><th>Premium gratuiti totali nel mese</th><th>Memoriali già ospitati / ag.</th></tr></thead>
     <tbody>{segments.map((s,i)=><tr key={s.plan}><th scope="row">{planLabels[s.plan]}</th>
      {(["agencies","std","premium","freeStd","freePremium","stored"] as const).map(k=><td key={k}><NumberInput label={planLabels[s.plan]+" — "+k} value={s[k]} onChange={v=>{changeSegment(i,k,v);setPreset("");}} step={k==="agencies"||k==="freeStd"||k==="freePremium"?1:.1}/></td>)}
     </tr>)}</tbody></table></div>
-   <p className="rf-note">I memoriali gratuiti sono conteggiati per segmento nell'intero mese, non per singola agenzia: spettano soltanto alle agenzie nuove (due in totale per tutta la loro vita).</p>
+   <p className="rf-note">I memoriali gratuiti sono conteggiati per segmento nell&apos;intero mese, non per singola agenzia: spettano soltanto alle agenzie nuove (due in totale per tutta la loro vita).</p>
   </section>
   <div className="rf-kpis">
    <div><small>Ricavi medi mensili</small><strong>{euro.format(result.revenue)}</strong><span>{euro.format(result.revenue*12)} annualizzati</span></div>

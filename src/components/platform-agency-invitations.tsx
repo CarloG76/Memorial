@@ -8,13 +8,14 @@ export function PlatformAgencyInvitations(){
  const [name,setName]=useState("");const [vat,setVat]=useState("");const [country,setCountry]=useState("IT");
  const [email,setEmail]=useState("");const [busy,setBusy]=useState(false);
  const [status,setStatus]=useState("");const [error,setError]=useState("");
+ const [clock]=useState(()=>Date.now());
  const [tokenLink,setTokenLink]=useState("");const [invites,setInvites]=useState<Invite[]>([]);
  const refresh=useCallback(async()=>{
   const r=await db.rpc("platform_agency_invitation_directory");
   if(r.error)setError("Inviti non disponibili: "+r.error.message);
   else setInvites((r.data??[]) as Invite[]);
  },[db]);
- useEffect(()=>{void refresh();},[refresh]);
+ useEffect(()=>{void Promise.resolve().then(refresh);},[refresh]);
  async function submit(e:FormEvent<HTMLFormElement>){
   e.preventDefault();if(busy)return;
   setBusy(true);setError("");setStatus("");setTokenLink("");
@@ -42,7 +43,7 @@ export function PlatformAgencyInvitations(){
   catch{setError("Copia il link selezionandolo manualmente.");}
  }
  return <section className="pai-card">
-  <header><div><span className="workspace-label">ONBOARDING AGENZIA</span><h2>Crea invito per nuova agenzia</h2><p>Attiva un contatto durante la visita commerciale. L'invito dura 72 ore; il responsabile imposta le proprie credenziali.</p></div></header>
+  <header><div><span className="workspace-label">ONBOARDING AGENZIA</span><h2>Crea invito per nuova agenzia</h2><p>Attiva un contatto durante la visita commerciale. L&apos;invito dura 72 ore; il responsabile imposta le proprie credenziali.</p></div></header>
   <form className="pai-form" onSubmit={e=>void submit(e)}>
    <label>Ragione sociale<input required minLength={2} maxLength={240} autoComplete="organization" value={name} onChange={e=>setName(e.target.value)}/></label>
    <label>Partita IVA o identificativo fiscale<input required minLength={5} maxLength={32} value={vat} onChange={e=>setVat(e.target.value)}/></label>
@@ -55,10 +56,10 @@ export function PlatformAgencyInvitations(){
   {error&&<p className="pai-error" role="alert">{error}</p>}
   <h3>Inviti creati</h3>
   <div className="pai-invite-list">{invites.length===0?<p>Nessun invito.</p>:invites.map(i=>{
-   const state=i.accepted_at?"Accettato":i.revoked_at?"Revocato":new Date(i.expires_at).getTime()<=Date.now()?"Scaduto":"In attesa";
+   const state=i.accepted_at?"Accettato":i.revoked_at?"Revocato":new Date(i.expires_at).getTime()<=clock?"Scaduto":"In attesa";
    return <div key={i.id}><div><strong>{i.company}</strong><small>{i.email} · {state} · scadenza {new Date(i.expires_at).toLocaleString("it-IT")}</small></div>
     {state==="In attesa"&&<button type="button" disabled={busy} onClick={()=>void revoke(i.id)}>Revoca</button>}</div>;
   })}</div>
-  <p className="pai-footnote">Per l'attivazione definitiva servono i documenti B2B e privacy approvati, una email verificata e l'accettazione del titolare. La creazione dell'invito non attiva servizi né invia automaticamente email.</p>
+  <p className="pai-footnote">Per l&apos;attivazione definitiva servono i documenti B2B e privacy approvati, una email verificata e l&apos;accettazione del titolare. La creazione dell&apos;invito non attiva servizi né invia automaticamente email.</p>
  </section>;
 }

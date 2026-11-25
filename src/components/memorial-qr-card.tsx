@@ -20,7 +20,8 @@ export function MemorialQrCard({memorialId,personName,contextKey}:{
  const [error,setError]=useState("");
  const [notice,setNotice]=useState("");
  useEffect(()=>{
-  let active=true;setLoading(true);setQr(null);setError("");
+  let active=true;
+  void Promise.resolve().then(()=>{if(active){setLoading(true);setQr(null);setError("");}});
   void db.rpc("get_memorial_qr",{target_memorial:memorialId,context_key:contextKey??null}).then(({data,error:rpcError})=>{
    if(!active)return;
    if(rpcError){setError("QR Code non disponibile: "+rpcError.message);}

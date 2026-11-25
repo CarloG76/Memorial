@@ -30,7 +30,7 @@ export function FamilyVisitorMemories({memorialId,contextKey=null,memorialName}:
   }catch(e){setError(e instanceof Error?e.message:"Impossibile caricare le proposte.");}
   finally{setLoading(false);}
  },[endpoint,memorialId,contextKey,headers]);
- useEffect(()=>{void refresh();},[refresh]);
+ useEffect(()=>{void Promise.resolve().then(refresh);},[refresh]);
  async function moderate(item:Proposal,action:"APPROVE"|"REJECT"){
   if(busy)return;
   setBusy(item.id);setError("");setNotice("");
@@ -53,7 +53,7 @@ export function FamilyVisitorMemories({memorialId,contextKey=null,memorialName}:
  const decided=items.filter(m=>m.status!=="PENDING");
  return <section className="family-visitor-memories" aria-label="Proposte dei visitatori">
   <div className="family-visitor-heading">
-   <div><h2>Ricordi proposti dai visitatori</h2><p>{memorialName?memorialName+" · ":""}Le fotografie restano private fino all'approvazione.</p></div>
+   <div><h2>Ricordi proposti dai visitatori</h2><p>{memorialName?memorialName+" · ":""}Le fotografie restano private fino all&apos;approvazione.</p></div>
    <button type="button" onClick={()=>void refresh()} disabled={loading||!!busy}>Aggiorna proposte</button>
   </div>
   {error&&<p role="alert" className="family-visitor-error">{error}</p>}

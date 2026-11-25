@@ -44,9 +44,11 @@ export function PublicMemorialDemo({data}:{data:DemoMemorial}){
  const [submitting,setSubmitting]=useState(false);
  const [rightsConfirmed,setRightsConfirmed]=useState(false);
  useEffect(()=>{
-  if(!photo){setPhotoPreview("");return;}
-  const url=URL.createObjectURL(photo);setPhotoPreview(url);
-  return ()=>URL.revokeObjectURL(url);
+  let active=true;
+  if(!photo){void Promise.resolve().then(()=>{if(active)setPhotoPreview("");});return ()=>{active=false;};}
+  const url=URL.createObjectURL(photo);
+  void Promise.resolve().then(()=>{if(active)setPhotoPreview(url);});
+  return ()=>{active=false;URL.revokeObjectURL(url);};
  },[photo]);
  function selectPhoto(file:File|null){
   setPhotoError("");
