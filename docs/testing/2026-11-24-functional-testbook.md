@@ -1,6 +1,6 @@
 # MEMORIAL — Functional Testbook UAT-01
 
-Baseline: 24/11/2026, aggiornata dopo sprint delega Agenzia. **Owner: Carlo Gonella.** Progetto Testiny `MEMOR`, Test Run `TR-1`. **75 casi**, tutti NOT RUN.
+Baseline: 24/11/2026, aggiornata dopo sprint delega Agenzia. **Owner: Carlo Gonella.** Progetto Testiny `MEMOR`, Test Run `TR-1`. **84 casi**, tutti NOT RUN.
 
 ## Regole operative
 - Testare solo funzionalità esistenti, non mock o placeholder.
@@ -751,3 +751,110 @@ Testiny TC-64 | **Owner:** Carlo Gonella | **Stato:** NOT RUN
 
 2. **Azione:** Annotare URL, stato memoriale, screenshot, esito HTTP della richiesta Storage e risultato effettivo. Ripristinare i dati fixture di staging.
    **Atteso:** Nessuna alterazione di dati reali; prova riproducibile.
+
+
+## Sprint 25/11/2026 — QR Code permanente e stampa
+
+Un QR per memoriale, collegamento `/r/[code]` permanente e distinto dal token di pubblicazione. Download SVG vettoriale e PNG per manifesti e ricordini. Il link mostra una pagina generica prima della pubblicazione e un memoriale pubblico successivamente. I test seguenti sono stati registrati in Testiny e **non sono ancora stati eseguiti nell'interfaccia**.
+
+### [FT-076] QR univoco presente nella scheda Agenzia
+**Testiny:** TC-76 · **Esito:** NOT RUN
+**Precondizioni:** Agenzia Aurora, account Owner, memoriale Gino Fustellati attivo come scheletro.
+
+
+1. **Azione:** Aprire Agenzia → Memoriali → Gino. Verificare QR e collegamento /r/[codice]. Ricaricare la pagina e riaprire il memoriale.
+   **Atteso:** QR visibile; URL stabile e identico dopo refresh. Il QR è presente anche prima della pubblicazione.
+
+2. **Azione:** Raccogliere screenshot e/o file scaricati, URL effettivo, stato di pubblicazione e risultato reale; ripristinare eventuali dati di staging.
+   **Atteso:** Test riproducibile. Nessuna pubblicazione o modifica involontaria di memoriali di produzione.
+
+### [FT-077] QR disponibile in Famiglia e contesti delegati
+**Testiny:** TC-77 · **Esito:** NOT RUN
+**Precondizioni:** Account Family Owner, Agenzia → Entra come Famiglia e SuperAdmin → Entra come Famiglia per lo stesso memoriale UAT.
+
+
+1. **Azione:** Aprire le rispettive sezioni di gestione e confrontare il valore del link QR stampabile.
+   **Atteso:** La stessa persona ha sempre il medesimo QR e lo stesso link, indipendentemente dal ruolo o dall'utente che opera.
+
+2. **Azione:** Raccogliere screenshot e/o file scaricati, URL effettivo, stato di pubblicazione e risultato reale; ripristinare eventuali dati di staging.
+   **Atteso:** Test riproducibile. Nessuna pubblicazione o modifica involontaria di memoriali di produzione.
+
+### [FT-078] QR in bozza mostra pagina di attesa anonima
+**Testiny:** TC-78 · **Esito:** NOT RUN
+**Precondizioni:** Memoriale UAT in stato SKELETON_ACTIVE; codice QR già generato; browser in incognito.
+
+
+1. **Azione:** Aprire /r/[codice] da un browser senza sessione, oppure scansionare il QR stampato.
+   **Atteso:** Pagina di attesa non indicizzata, senza nome, immagini, contatti familiari o altri contenuti privati; nessun login richiesto.
+
+2. **Azione:** Raccogliere screenshot e/o file scaricati, URL effettivo, stato di pubblicazione e risultato reale; ripristinare eventuali dati di staging.
+   **Atteso:** Test riproducibile. Nessuna pubblicazione o modifica involontaria di memoriali di produzione.
+
+### [FT-079] QR pubblicato apre il memoriale
+**Testiny:** TC-79 · **Esito:** NOT RUN
+**Precondizioni:** Memoriale UAT pubblicato correttamente tramite Family Owner o delega, con token pubblico valido e copertura attiva.
+
+
+1. **Azione:** Aprire in incognito lo stesso URL QR stampato prima della pubblicazione.
+   **Atteso:** Redirect verso /memoriale/p/[token] corrispondente alla persona; contenuti visibili secondo il suo stato.
+
+2. **Azione:** Raccogliere screenshot e/o file scaricati, URL effettivo, stato di pubblicazione e risultato reale; ripristinare eventuali dati di staging.
+   **Atteso:** Test riproducibile. Nessuna pubblicazione o modifica involontaria di memoriali di produzione.
+
+### [FT-080] QR rimane stabile dopo rotazione token
+**Testiny:** TC-80 · **Esito:** NOT RUN
+**Precondizioni:** Fixture UAT pubblicata; possibilità di ruotare il token pubblico in una transazione controllata di staging.
+
+
+1. **Azione:** Registrare URL /r/[codice], aggiornare soltanto il token pubblico della fixture e riaprire il QR.
+   **Atteso:** L'indirizzo /r/[codice] resta identico e indirizza al nuovo token. Il QR non deve essere ristampato.
+
+2. **Azione:** Raccogliere screenshot e/o file scaricati, URL effettivo, stato di pubblicazione e risultato reale; ripristinare eventuali dati di staging.
+   **Atteso:** Test riproducibile. Nessuna pubblicazione o modifica involontaria di memoriali di produzione.
+
+### [FT-081] Download QR SVG e PNG per stampa
+**Testiny:** TC-81 · **Esito:** NOT RUN
+**Precondizioni:** Account Agenzia Owner, memoriale Standard o Premium. Browser con download abilitato.
+
+
+1. **Azione:** Aprire il QR card. Scaricare SVG e PNG; aprire i due file e inquadrarli con smartphone.
+   **Atteso:** I due file sono scaricabili, con contrasto nero/bianco, bordo bianco e QR leggibile; PNG 1568×1568 pixel, SVG vettoriale. Il link decodificato coincide con /r/[codice].
+
+2. **Azione:** Raccogliere screenshot e/o file scaricati, URL effettivo, stato di pubblicazione e risultato reale; ripristinare eventuali dati di staging.
+   **Atteso:** Test riproducibile. Nessuna pubblicazione o modifica involontaria di memoriali di produzione.
+
+### [FT-082] QR sconosciuto non rivela dati
+**Testiny:** TC-82 · **Esito:** NOT RUN
+**Precondizioni:** Browser anonimo e codice di 32 caratteri esadecimali non presente in MEMORIAL.
+
+
+1. **Azione:** Aprire /r/[codice] inventato e poi un codice con formato non valido.
+   **Atteso:** Risultato 404; nessun contenuto, nome o ID interno divulgato.
+
+2. **Azione:** Raccogliere screenshot e/o file scaricati, URL effettivo, stato di pubblicazione e risultato reale; ripristinare eventuali dati di staging.
+   **Atteso:** Test riproducibile. Nessuna pubblicazione o modifica involontaria di memoriali di produzione.
+
+### [FT-083] QR DEMO pubblicato Giovanni Rossi
+**Testiny:** TC-83 · **Esito:** NOT RUN
+**Precondizioni:** Memoriale DEMO Giovanni Rossi legacy, già PUBLISHED_ACTIVE senza token; QR disponibile dalla scheda Agenzia/SuperAdmin.
+
+
+1. **Azione:** Scansionare il suo QR da finestra anonima e confrontare il sito DEMO.
+   **Atteso:** Si apre /memoriale/demo relativo a Giovanni Rossi, senza confondersi con Gino o con un altro memoriale.
+
+2. **Azione:** Raccogliere screenshot e/o file scaricati, URL effettivo, stato di pubblicazione e risultato reale; ripristinare eventuali dati di staging.
+   **Atteso:** Test riproducibile. Nessuna pubblicazione o modifica involontaria di memoriali di produzione.
+
+### [FT-084] QR di memoriale scaduto non espone contenuti
+**Testiny:** TC-84 · **Esito:** NOT RUN
+**Precondizioni:** Fixture in staging con QR assegnato, stato pubblicato e covered_until nel passato.
+
+
+1. **Azione:** Aprire lo stesso link /r/[codice] dopo aver configurato la copertura come scaduta.
+   **Atteso:** Mostra una pagina di indisponibilità generica e non il memoriale pubblicato. L'identificativo QR non cambia.
+
+2. **Azione:** Raccogliere screenshot e/o file scaricati, URL effettivo, stato di pubblicazione e risultato reale; ripristinare eventuali dati di staging.
+   **Atteso:** Test riproducibile. Nessuna pubblicazione o modifica involontaria di memoriali di produzione.
+
+### Nota tecnica
+Il QR è implementato localmente senza provider esterni. Il generatore QR (versione 6-L, mask 0) è stato confrontato con una libreria di riferimento durante lo sviluppo; la relativa regressione automatica è in `src/lib/memorial-qr.test.ts`. La build READY e le verifiche SQL non equivalgono a UAT browser passati.
