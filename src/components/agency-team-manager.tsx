@@ -39,6 +39,7 @@ function OwnerContact({owner,onSave,busy}:{owner:Member;onSave:(userId:string,va
 }
 export function AgencyTeamManager({agencyId,contextKey=null}:{agencyId:string;contextKey?:string|null}){
  const db=useMemo(()=>createBrowserSupabaseClient(),[]);
+ const [clock]=useState(()=>Date.now());
  const [team,setTeam]=useState<Team|null>(null);
  const [busy,setBusy]=useState(false);
  const [loading,setLoading]=useState(true);
@@ -123,8 +124,8 @@ export function AgencyTeamManager({agencyId,contextKey=null}:{agencyId:string;co
      <button type="submit" disabled={busy}>{busy?"Attendere…":"Genera invito"}</button>
     </form>
     {link&&<div className="agency-team-link"><label>Link di invito da condividere<input readOnly value={link} onFocus={e=>e.target.select()}/></label><button type="button" onClick={()=>void copy()}>Copia link</button><small>Il link è visibile solo adesso, scade dopo 7 giorni e funziona soltanto per l&apos;email indicata. Non viene inviata automaticamente un&apos;email.</small></div>}
-    {(team.invites??[]).filter(i=>!i.revoked_at&&new Date(i.expires_at).getTime()>Date.now()).length>0&&
-     <div className="agency-team-pending"><h4>Inviti in attesa</h4>{team.invites.filter(i=>!i.revoked_at&&new Date(i.expires_at).getTime()>Date.now()).map(i=><div className="agency-team-person" key={i.id}><div><strong>{i.email}</strong><small>Scade il {new Date(i.expires_at).toLocaleDateString("it-IT")}</small></div><button type="button" disabled={busy} onClick={()=>void revoke(i.id)}>Revoca</button></div>)}</div>}
+    {(team.invites??[]).filter(i=>!i.revoked_at&&new Date(i.expires_at).getTime()>clock).length>0&&
+     <div className="agency-team-pending"><h4>Inviti in attesa</h4>{team.invites.filter(i=>!i.revoked_at&&new Date(i.expires_at).getTime()>clock).map(i=><div className="agency-team-person" key={i.id}><div><strong>{i.email}</strong><small>Scade il {new Date(i.expires_at).toLocaleDateString("it-IT")}</small></div><button type="button" disabled={busy} onClick={()=>void revoke(i.id)}>Revoca</button></div>)}</div>}
    </div>
   </>}
   {error&&<p role="alert" className="agency-team-error">{error}</p>}
