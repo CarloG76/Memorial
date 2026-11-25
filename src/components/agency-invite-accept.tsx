@@ -30,16 +30,16 @@ export function AgencyInviteAccept({token}:{token:string}){
   setWorking(false);setPassword("");
  }
  return <main style={{maxWidth:620,margin:"48px auto",padding:"20px",fontFamily:"Montserrat,Arial,sans-serif",color:"#173951"}}>
-  <Link href="/">✦ Memorial</Link><h1>Invito a collaborare con un'agenzia</h1>
-  <p>Questo invito dà accesso come <strong>Operatore</strong> all'agenzia che ti ha invitato. Non permette di amministrare altre agenzie.</p>
-  {loading?<p>Verifica dell'accesso…</p>:result?.success?
+  <Link href="/">✦ Memorial</Link><h1>Invito a collaborare con un&apos;agenzia</h1>
+  <p>Questo invito dà accesso come <strong>Operatore</strong> all&apos;agenzia che ti ha invitato. Non permette di amministrare altre agenzie.</p>
+  {loading?<p>Verifica dell&apos;accesso…</p>:result?.success?
    <section role="status" style={{background:"#eaf6ee",borderRadius:10,padding:18}}>
     <h2>Accesso attivato</h2><p>Sei ora Operatore di <strong>{result.agency}</strong>.</p>
     <Link href="/console/agenzia">Apri la tua area Agenzia</Link>
    </section>:userEmail?
    <section style={{background:"white",padding:20,borderRadius:12,border:"1px solid #e0e6eb"}}>
-    <p>Hai effettuato l'accesso come <strong>{userEmail}</strong>.</p>
-    <p>L'email di questo account deve coincidere con quella indicata nell'invito.</p>
+    <p>Hai effettuato l&apos;accesso come <strong>{userEmail}</strong>.</p>
+    <p>L&apos;email di questo account deve coincidere con quella indicata nell&apos;invito.</p>
     <button onClick={()=>void accept()} disabled={working} style={{padding:"12px 18px",background:"#183a55",color:"white",border:0,borderRadius:8,cursor:"pointer"}}>{working?"Verifica in corso…":"Accetta invito"}</button>
    </section>:
    <section style={{background:"white",padding:20,borderRadius:12,border:"1px solid #e0e6eb"}}>
