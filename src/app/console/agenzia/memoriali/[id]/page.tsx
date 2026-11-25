@@ -39,7 +39,7 @@ export default async function AgencyMemorialDetail({params}:{params:Promise<{id:
    </dl>
   </section>
   <section className="workspace-panel"><h2>Attività successive</h2>
-   <p>La preparazione dei contenuti spetta ai familiari autorizzati. Gli inviti familiari e la creazione di nuovi memoriali richiedono l'attivazione del relativo workflow; questa schermata mostra soltanto dati realmente registrati.</p>
+   <p>La preparazione dei contenuti spetta ai familiari autorizzati. Gli inviti familiari e la creazione di nuovi memoriali richiedono l&apos;attivazione del relativo workflow; questa schermata mostra soltanto dati realmente registrati.</p>
   </section>
  </WorkspaceShell>;
 }
