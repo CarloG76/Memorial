@@ -82,3 +82,13 @@ Etichette user-friendly centralizzate per memoriali e contributi. DB invariato. 
 - [x] Build Vercel `READY` per codice privacy galleria.
 - [ ] **Test browser** con immagine reale in UAT per verificare upload, anteprima editor, visitatore anonimo e scadenza; FT-071…075 tutti NOT RUN.
 - [ ] Riconciliazione automatica file orfani e validazione completa lifecycle/gallery nel browser.
+
+
+## Sprint 25/11/2026 — QR Code e link permanente
+- [x] **QR per ogni memoriale**: identificativo casuale univoco a 128 bit, distinto dal token di pubblicazione, valorizzato anche sui memoriali preesistenti.
+- [x] **Link stampabile**: `/r/[code]`, generabile prima di pubblicare, senza dati personali in bozza; dopo la pubblicazione reindirizza alla pagina del memoriale senza cambiare il QR.
+- [x] **Compatibilità DEMO legacy**: QR di Giovanni Rossi → `/memoriale/demo`; Gino Fustellati resta in attesa.
+- [x] **Download per stampa**: SVG vettoriale e PNG 1568×1568 con quiet zone di 4 moduli, senza provider QR esterni; integrato in Agenzia, Famiglia e contesti delegati.
+- [x] **Test tecnici parziali**: 13 codici distinti verificati nel DB, resolver WAITING/PUBLISHED/LEGACY_DEMO verificato, generatore QR confrontato con riferimento indipendente, Vercel build READY.
+- [ ] **UAT browser/scansione stampa** FT-076–084 (Testiny UAT-01): download, scansione QR reale, stato attesa, pubblicato, token ruotato, scadenza, privacy. Tutti NOT RUN.
+- [ ] Formalizzare dominio canonico definitivo e mantenere un redirect permanente dal dominio impresso ai futuri indirizzi, per garantire validità fisica dei QR nel tempo.
