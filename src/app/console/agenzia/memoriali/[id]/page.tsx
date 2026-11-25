@@ -4,6 +4,7 @@ import {WorkspaceShell} from "@/components/workspace-shell";
 import {memorialStateLabel,memorialStateDescription} from "@/lib/memorial-states";
 import {MemorialPortraitUploader} from "@/components/memorial-portrait-uploader";
 import {AgencyOpenAsFamilyButton} from "@/components/agency-open-as-family-button";
+import {MemorialQrCard} from "@/components/memorial-qr-card";
 import {getAgencyDashboard} from "@/features/catalog/workspace-server";
 import {requireWorkspaceAccess} from "@/lib/authz/server";
 
@@ -23,6 +24,7 @@ export default async function AgencyMemorialDetail({params}:{params:Promise<{id:
   <p>{memorialStateDescription(m.status)}</p>
   <Link href={"/memoriale/anteprima/"+m.id} target="_blank" rel="noopener noreferrer">Apri anteprima di {m.deceased_name} ↗</Link>
   <AgencyOpenAsFamilyButton memorialId={m.id}/>
+  <MemorialQrCard memorialId={m.id} personName={m.deceased_name??"Persona ricordata"}/>
   <MemorialPortraitUploader memorialId={m.id} personName={m.deceased_name??"Persona ricordata"}/>
   <section className="workspace-panel"><h2>Riepilogo</h2>
    <dl className="catalog-details">
