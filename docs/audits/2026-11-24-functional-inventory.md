@@ -85,3 +85,7 @@ Rimozione Storage della foto: policy SELECT/DELETE scoped e chiamata Storage rem
 
 ## Revisione 25/11/2026 — Privacy galleria
 Il limite rilevato il 24/11 (bucket galleria pubblico) è stato corretto: `memorial-gallery` è privato, con zero oggetti legacy al cambio. La policy `memorial_gallery_controlled_read` abilita utenti autorizzati e visitatori anonimi **solo per foto referenziate da memoriali pubblicati con copertura attiva**. L'interfaccia usa `storage.download` sotto RLS. La verifica di upload e download end-to-end da browser rimane **non eseguita**. Testiny totale 75 casi, tutti Not Run. I bucket ritratto e ricordi approvati non rientrano in questa modifica.
+
+
+## Revisione 25/11/2026 — QR di stampa
+**Presente e build verificata:** generazione QR locale V6-L, codice random 32 caratteri esadecimali per ciascuno dei 13 memoriali esistenti, endpoint pubblico `/r/[code]`, stato d'attesa generico prima della pubblicazione, redirect alla pagina `/memoriale/p/[token]` pubblicata e coperta, fallback demo legacy Giovanni, download SVG/PNG da Agenzia/Famiglia/contesto delegato. `resolve_memorial_qr` non divulga PII su memoriali non pubblicati. Le modifiche al token di pubblicazione non modificano `qr_code`. **Test manuali browser/stampa non eseguiti:** Testiny FT-076–084 NOT RUN; totale 84 test NOT RUN.
