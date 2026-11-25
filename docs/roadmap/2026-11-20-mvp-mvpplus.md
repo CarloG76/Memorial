@@ -73,3 +73,12 @@ Ogni voce ha una checklist di DB/migrazione, API e permessi, UI, test positivo/n
 
 ## Aggiornamento 24/11 — Stato UI e galleria
 Etichette user-friendly centralizzate per memoriali e contributi. DB invariato. Galleria Premium codice e RPC implementati, pubblicazione verificata solo a livello build/SQL parziale, non UAT manuale. Testiny FT-065..FT-070 aggiunti; 70 casi in TR-1 NOT RUN.
+
+
+## Sprint 25/11/2026 — Galleria privata fino a pubblicazione
+- [x] Bucket `memorial-gallery` convertito a privato (verificati 0 file preesistenti).
+- [x] Policy Storage: accesso editor autorizzato in bozza; accesso anonimo solo se memoriale `PUBLISHED_ACTIVE`, copertura valida e foto associata.
+- [x] Preview Famiglia e pagina visitatore utilizzano `storage.download` con autorizzazione, non URL public.
+- [x] Build Vercel `READY` per codice privacy galleria.
+- [ ] **Test browser** con immagine reale in UAT per verificare upload, anteprima editor, visitatore anonimo e scadenza; FT-071…075 tutti NOT RUN.
+- [ ] Riconciliazione automatica file orfani e validazione completa lifecycle/gallery nel browser.
