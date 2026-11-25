@@ -29,7 +29,7 @@ export function AgencyMemorials({agencies,memorials}:{agencies:Agency[];memorial
    {filtered.map(m=><tr key={m.id}><td>{m.deceased_name??"Da completare"}</td><td>{labels.get(m.agency_id)??"—"}</td><td>{m.tier??"—"}</td><td>{status(m.status)}</td><td>{date(m.created_at)}</td><td><Link href={"/console/agenzia/memoriali/"+m.id}>Dettaglio</Link></td></tr>)}
   </tbody></table></div>
   {!filtered.length&&<p>Nessun memoriale corrisponde ai filtri.</p>}
-  <div className="ac-explainer"><strong>Nuovi memoriali</strong><p>L'acquisto e l'attivazione dei due memoriali iniziali gratuiti richiedono il flusso transazionale di creazione, ancora da integrare. Non vengono effettuati acquisti o attivazioni simulate.</p></div>
+  <div className="ac-explainer"><strong>Nuovi memoriali</strong><p>L&apos;acquisto e l&apos;attivazione dei due memoriali iniziali gratuiti richiedono il flusso transazionale di creazione, ancora da integrare. Non vengono effettuati acquisti o attivazioni simulate.</p></div>
  </section>;
 }
 export function AgencyStatistics({agencies,memorials}:{agencies:Agency[];memorials:Memorial[]}){
@@ -75,6 +75,6 @@ export function AgencyContactProfile({agency,canEdit}:{agency:Agency;canEdit:boo
     <button type="submit" disabled={saving}>{saving?"Salvataggio…":"Salva recapiti"}</button>
     {message&&<p role="status" className="ac-success">{message}</p>}
     {error&&<p role="alert" className="ac-error">{error}</p>}
-   </form>:<p>Solo il responsabile Owner può modificare i recapiti dell'agenzia.</p>}
+   </form>:<p>Solo il responsabile Owner può modificare i recapiti dell&apos;agenzia.</p>}
  </article>;
 }
