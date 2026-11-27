@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { calculateVatPreview } from "./tax";
-import { previewInitialOrder } from "./pricing";
+import { previewMemorialOrder } from "./pricing";
 
 describe("VAT arithmetic without unapproved fiscal defaults", () => {
   it("computes net prices with an explicitly provided 22% rate", () => {
@@ -21,15 +21,15 @@ describe("VAT arithmetic without unapproved fiscal defaults", () => {
       .toMatchObject({ netCents: 3270, vatCents: 720, grossCents: 3990 });
   });
 
-  it("can illustrate the discounted Pro quote only after a server-approved tax selection", () => {
-    const quote = previewInitialOrder({
-      agencyPlan: "PRO", tier: "PREMIUM", totalYears: 1, useProCredit: true,
+  it("calculates an explicitly selected VAT preview for the current Pro Premium quote", () => {
+    const quote = previewMemorialOrder({
+      plan: "MONTHLY", tier: "PREMIUM", freeActivationsRemaining: 0,
     });
-    expect(quote.creditReservationRequired).toBe(true);
+    expect(quote).toMatchObject({ totalCents: 1690, isQuoteOnly: true });
     const vat = calculateVatPreview({
       listAmountCents: quote.totalCents, rateBasisPoints: 2200, basis: "EXCLUDING_VAT",
     });
-    expect(vat).toMatchObject({ netCents: 200, vatCents: 44, grossCents: 244 });
+    expect(vat).toMatchObject({ netCents: 1690, vatCents: 372, grossCents: 2062 });
   });
 
   it("handles 0 euro orders and zero-rate arithmetic without treating it as fiscal authorization", () => {
