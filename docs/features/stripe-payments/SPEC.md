@@ -1,7 +1,7 @@
 # Stripe Payments — feature isolata prevista
 
-**Stato:** PROPOSTA / BRANCH NON ANCORA APERTO.
-**Branch designato:** `feature/stripe-payments` a partire dall'HEAD attuale di `main` quando inizierà lo sviluppo dell'integrazione.
+**Stato:** IN SVILUPPO — branch isolato, Stripe Sandbox disabilitato di default.
+**Branch:** `feature/stripe-payments`. Implementazione e limiti in `IMPLEMENTATION.md`.
 **Origine:** esempio esplicito della strategia di branching del 20/10/2026; la parte pagamenti compare già nelle milestone ufficiali, ma viene volutamente isolata su branch per test e merge.
 
 ## Ambito senza invenzioni business
