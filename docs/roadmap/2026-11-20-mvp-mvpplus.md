@@ -106,3 +106,14 @@ Etichette user-friendly centralizzate per memoriali e contributi. DB invariato. 
 - [ ] Check automatici CI e build del branch MVP1A: da registrare dopo esecuzione. La UAT completa di Testiny rimane successiva al completamento MVP, come richiesto.
 - [ ] Riconciliare tariffe di conservazione/rinnovi/riattivazione prima di usarle nel checkout: il vecchio preventivo di ottobre non è una fonte valida per il listino di novembre.
 - [ ] **Dominio QR:** attualmente `memorial-ai-visions.vercel.app`; stabilire dominio permanente e strategia redirect prima di stampa commerciale.
+
+## 27/11/2026 — MVP1B carta integrata, prima tranche Stripe Sandbox
+- [x] Branch isolato `feature/stripe-payments`; CC incorporata in MEMORIAL via Stripe Payment Element, senza memorizzazione dati carta.
+- [x] Versionato schema ordini PAYG, registro eventi e riconciliazione transazionale firmata/idempotente; NON applicato al DB di produzione.
+- [x] Endpoint Checkout Session server-only, verifica membership OWNER, account reale, attivazioni gratuite esaurite, amount server-side e chiave sandbox.
+- [x] UI carta dopo le due attivazioni gratuite, feature flag disabilitato di default.
+- [x] Webhook raw-body/HMAC, validazione importo e anti-duplicato; transizione PAID con fulfilment PENDING, senza attivazione memoriale.
+- [ ] Applicare migration a staging isolato; configurare Stripe Sandbox e credenziali solo in Vercel Preview.
+- [ ] Implementare provisioning memoriale/invito familiare atomico e idempotente **dopo** webhook verificato; stato ordine lato Agenzia.
+- [ ] Subscription Pro mensile/annuale e fatturazione, successiva tranche.
+- [ ] CI, Preview e test automatici del branch da registrare con evidence.
