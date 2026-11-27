@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { paymentAdmin, verifyStripeSignature, type SignedStripeEvent } from "@/lib/business/stripe-sandbox";
+import { paymentAdmin, type SignedStripeEvent } from "@/lib/business/stripe-sandbox";
+import { verifyStripeSignature } from "@/lib/business/stripe-signature";
 
 export const runtime="nodejs";
 const accepted=new Set([
@@ -26,7 +27,7 @@ export async function POST(request:NextRequest){
     event.livemode||session.livemode||!session.id?.startsWith("cs_test_")||
     !event.id?.startsWith("evt_")||!uuid.test(session.metadata?.order_id||"")||
     !uuid.test(session.metadata?.agency_id||"")||
-    !Number.isSafeInteger(session.amount_total)||session.amount_total!<0)return fail(400);
+    !Number.isSafeInteger(session.amount_total)||session.amount_total < 0)return fail(400);
  const expected=Number(session.metadata.expected_amount_cents);
  if(!Number.isSafeInteger(expected)||expected!==session.amount_total)return fail(400);
  try{
