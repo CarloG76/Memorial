@@ -92,3 +92,47 @@ jobs:
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/M1_rpc_privilege_assertions.sql
       - name: Test agency onboarding against role and identity restrictions
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/M1_onboarding.sql
+
+  mvp0-portrait-authorization:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: memorial_portrait_ci
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d memorial_portrait_ci"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 15
+    env:
+      PGHOST: localhost
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGDATABASE: memorial_portrait_ci
+      PGOPTIONS: "-c client_min_messages=warning"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: PostgreSQL client
+        run: |
+          if ! command -v psql >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y postgresql-client
+          fi
+      - name: Bootstrap Auth role stubs in temporary database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/M1_auth_harness.sql
+      - name: Bootstrap memorial portrait security fixtures
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/mvp0_portrait_harness.sql
+      - name: Apply proposed MVP0 portrait delegation migration
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/20261127154500_mvp0_agency_portrait_delegation.sql
+      - name: Apply proposed SuperAdmin portrait family-context audit RPC
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/20261127155000_mvp0_superadmin_portrait_context.sql
+      - name: Assert tenant boundaries, revocation and delegated audit
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/mvp0_portrait_boundaries.sql

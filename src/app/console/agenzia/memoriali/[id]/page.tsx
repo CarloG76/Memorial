@@ -2,7 +2,6 @@ import Link from "next/link";
 import {notFound} from "next/navigation";
 import {WorkspaceShell} from "@/components/workspace-shell";
 import {memorialStateLabel,memorialStateDescription} from "@/lib/memorial-states";
-import {MemorialPortraitUploader} from "@/components/memorial-portrait-uploader";
 import {AgencyOpenAsFamilyButton} from "@/components/agency-open-as-family-button";
 import {MemorialQrCard} from "@/components/memorial-qr-card";
 import {getAgencyDashboard} from "@/features/catalog/workspace-server";
@@ -25,7 +24,7 @@ export default async function AgencyMemorialDetail({params}:{params:Promise<{id:
   <Link href={"/memoriale/anteprima/"+m.id} target="_blank" rel="noopener noreferrer">Apri anteprima di {m.deceased_name} ↗</Link>
   <AgencyOpenAsFamilyButton memorialId={m.id}/>
   <MemorialQrCard memorialId={m.id} personName={m.deceased_name??"Persona ricordata"}/>
-  <MemorialPortraitUploader memorialId={m.id} personName={m.deceased_name??"Persona ricordata"}/>
+  <p>Per modificare il ritratto, apri il contesto delegato «Entra come Famiglia»: le modifiche sono temporanee e tracciate.</p>
   <section className="workspace-panel"><h2>Riepilogo</h2>
    <dl className="catalog-details">
     <div><dt>Persona</dt><dd>{m.deceased_name??"Da completare"}</dd></div>

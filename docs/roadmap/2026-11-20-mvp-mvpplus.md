@@ -2,6 +2,20 @@
 
 Aggiornata: 24 novembre 2026 · Owner: Carlo Gonella. Questo documento rappresenta le decisioni successive alle specifiche iniziali. Una funzione è considerata completata solo se verificata nel DB, UI e test browser.
 
+## Priorità operative approvate — 27 novembre 2026 (sostituiscono l'ordine storico)
+1. **MVP 0 — consolidamento**: confini tra Agenzia/Famiglia, contesti di delega, media, upload persistenti, audit. Chiuderlo prima di iniziare ulteriori feature.
+2. **Famiglia**: editor, gestione Standard/Premium, privacy, PIN, galleria, approvazione e pubblicazione.
+3. **Inviti e notifiche**: Agenzia/Famiglia, scadenze token, invio email, reinvii, esiti e gestione fallimenti.
+4. **Visitatore**: pagina pubblica definitiva, contributi/moderazione, messaggi privati, consensi, antispam.
+5. **Conservazione**: scadenze, coperture, rinnovi, ricorrenze, archiviazione/export, URL e QR.
+6. **Stripe payments**: PAYG, abbonamenti Pro, fatture e riconciliazione dopo i flussi prodotto.
+
+**Gestione del lavoro già avviato:** PR #10 `feature/stripe-payments` rimane isolata, non integrata né attiva. Il catalogo commerciale già presente in `main` resta invariato; non riprendere implementazione Stripe prima delle milestone precedenti.
+
+**MVP 0, primo intervento del 27/11:** sul branch `feature/mvp0-security-hardening`, in corso la restrizione della modifica ritratto da parte dell'Agenzia: solo attraverso contesto familiare autorizzato, attivo e tracciato. Rimosso uploader diretto dalla scheda Agenzia. Migrazione e test SQL di confine versionati su branch; non applicati alla produzione. Per chiusura MVP0 restano upload/refresh per ogni ruolo, autorizzazioni cross-tenant con account reali, E2E tecnici e revisione dei percorsi media. La UAT generale Testiny resta dopo lo sviluppo delle funzionalità.
+
+---
+
 ## Prezzi approvati più recenti
 | Piano | Canone | Standard | Premium |
 |---|---:|---:|---:|
