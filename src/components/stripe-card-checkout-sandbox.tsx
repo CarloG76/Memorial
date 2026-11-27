@@ -89,6 +89,6 @@ export function StripeCardCheckoutSandbox({agencyId}:{agencyId:string}){
    <button type="button" disabled={busy} onClick={reset}>Annulla</button>
   </div>}
   {message&&<p role="status">{message}</p>}
-  <p className="afm-foot">Non usare carte reali. Il pagamento confermato viene registrato nell'ordine; la creazione automatica del memoriale è una fase successiva.</p>
+  <p className="afm-foot">Non usare carte reali. Il pagamento confermato viene registrato nell&apos;ordine; la creazione automatica del memoriale è una fase successiva.</p>
  </section>;
 }
