@@ -8,6 +8,9 @@ test("agency family delegation cannot be opened anonymously", async ({ page }) =
 });
 
 test("private memorial preview requires authentication", async ({ page }) => {
+  // This route validates identity through Supabase. Run only against an explicitly
+  // configured staging environment; default CI has no Supabase credentials.
+  test.skip(!process.env.MEMORIAL_E2E_BASE_URL, "Requires configured staging Supabase for auth integration");
   await page.goto("/memoriale/anteprima/cccccccc-cccc-4ccc-8ccc-cccccccccccc");
   await expect(page).toHaveURL(/\/accedi/);
 });
