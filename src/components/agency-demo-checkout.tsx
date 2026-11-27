@@ -4,6 +4,7 @@ import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import {OpenAsButton} from "./superadmin-open-as-button";
+import {COMMERCIAL_CATALOG, previewMemorialOrder, INITIAL_FREE_ACTIVATIONS} from "@/lib/business/commercial-catalog";
 import "./agency-demo-checkout.css";
 
 type Plan="PAYG"|"MONTHLY"|"YEARLY";
@@ -12,11 +13,12 @@ type Stage="SELECT"|"CONFIRM"|"SUCCESS";
 type DemoEvent={id:string;kind:"PLAN_SELECTED"|"MEMORIAL_CONFIRMED";name:string|null;email:string|null;tier:Tier|null;plan:Plan;amount:number;is_free:boolean;memorial_id:string|null;date:string};
 type Snapshot={plan:Plan;free_used:number;free_remaining:number;events:DemoEvent[]};
 type Created={memorial_id:string;demo_code:string;family_invite_token:string;family_email:string;amount_cents:number;free_activation:boolean;free_remaining:number;payment_status:string;already_processed?:boolean};
-const fees:Record<Plan,{label:string;subscription:number;standard:number;premium:number;period:string}>={
- PAYG:{label:"Senza abbonamento",subscription:0,standard:19.90,premium:22.90,period:"Nessun rinnovo"},
- MONTHLY:{label:"Pro mensile",subscription:39.90,standard:13.90,premium:16.90,period:"Rinnovo mensile"},
- YEARLY:{label:"Pro annuale",subscription:379,standard:11.90,premium:14.90,period:"Rinnovo annuale"}
-};
+const fees:Record<Plan,{label:string;subscription:number;standard:number;premium:number;period:string}>=Object.fromEntries(
+ (["PAYG","MONTHLY","YEARLY"] as Plan[]).map(plan=>{
+  const c=COMMERCIAL_CATALOG[plan];
+  return [plan,{label:c.label,subscription:c.subscriptionCents/100,standard:c.standardCents/100,premium:c.premiumCents/100,period:c.period}];
+ })
+) as Record<Plan,{label:string;subscription:number;standard:number;premium:number;period:string}>;
 const money=(n:number)=>new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR"}).format(n);
 export function AgencyDemoCheckout({agencyId,agencyName,contextKey=null,isDemo=false}:{
  agencyId:string;agencyName:string;contextKey?:string|null;isDemo?:boolean
@@ -55,7 +57,7 @@ export function AgencyDemoCheckout({agencyId,agencyName,contextKey=null,isDemo=f
  if(!isDemo)return null;
  const remaining=model?.free_remaining??0;
  const currentPlan=model?.plan??"PAYG";
- const price=remaining>0?0:tier==="STANDARD"?fees[currentPlan].standard:fees[currentPlan].premium;
+ const price=previewMemorialOrder({plan:currentPlan,tier,freeActivationsRemaining:Math.max(0,Math.min(INITIAL_FREE_ACTIVATIONS,remaining))}).totalCents/100;
  const annualFee=choice==="MONTHLY"?fees[choice].subscription*12:choice==="YEARLY"?fees[choice].subscription:0;
  const events=model?.events??[];
  const orders=events.filter(e=>e.kind==="MEMORIAL_CONFIRMED");
@@ -121,16 +123,16 @@ export function AgencyDemoCheckout({agencyId,agencyName,contextKey=null,isDemo=f
     <strong>{p==="PAYG"?"€0":money(fees[p].subscription)}</strong>
     <small>{p==="MONTHLY"?"/ mese · rinnovo simulato":p==="YEARLY"?"/ anno · rinnovo simulato":"nessun canone"}</small>
     <span className="adc-line">Standard <b>{money(fees[p].standard)}</b></span>
-    <span className="adc-line">Premium* <b>{money(fees[p].premium)}</b></span>
+    <span className="adc-line">Premium <b>{money(fees[p].premium)}</b></span>
     <span className="adc-plan-foot">{p==="PAYG"?"Paghi solo i singoli memoriali":p==="MONTHLY"?"Canone e prezzo unitario ridotto":"Prezzo unitario più basso"}</span>
    </button>)}
   </div>
   <table className="adc-table"><thead><tr><th>Condizioni</th><th>Senza abbonamento</th><th>Pro mensile</th><th>Pro annuale</th></tr></thead>
-   <tbody><tr><th>Canone</th><td>€0</td><td>€39,90/mese</td><td>€379/anno</td></tr>
-    <tr><th>Memoriale Standard</th><td>€19,90</td><td>€13,90</td><td>€11,90</td></tr>
-    <tr><th>Memoriale Premium*</th><td>€22,90</td><td>€16,90</td><td>€14,90</td></tr>
+   <tbody><tr><th>Canone</th><td>{money(fees.PAYG.subscription)}</td><td>{money(fees.MONTHLY.subscription)}/mese</td><td>{money(fees.YEARLY.subscription)}/anno</td></tr>
+    <tr><th>Memoriale Standard</th><td>{money(fees.PAYG.standard)}</td><td>{money(fees.MONTHLY.standard)}</td><td>{money(fees.YEARLY.standard)}</td></tr>
+    <tr><th>Memoriale Premium</th><td>{money(fees.PAYG.premium)}</td><td>{money(fees.MONTHLY.premium)}</td><td>{money(fees.YEARLY.premium)}</td></tr>
     <tr><th>2 memoriali iniziali</th><td colSpan={3}>Gratuiti una volta, anche Premium</td></tr></tbody></table>
-  <p className="adc-disclaimer">*Premium +€3 è un&apos;ipotesi commerciale. Il canone e i rinnovi sono simulati; nessun pagamento o fattura reale.</p>
+  <p className="adc-disclaimer">Prezzi indicativi da listino commerciale. Il canone e i rinnovi sono simulati; nessun pagamento o fattura reale.</p>
   {editingPlan&&<div className="adc-plan-confirm"><div><strong>{currentPlan==="PAYG"?"Attiva":"Cambia"} piano DEMO: {fees[choice].label}</strong>
     <small>{choice==="PAYG"?"Nessun abbonamento, nessun rinnovo.":money(fees[choice].subscription)+" / "+(choice==="MONTHLY"?"mese":"anno")+" · rinnovo soltanto simulato."}</small>
     {choice!=="PAYG"&&<small>Canone annualizzato: {money(annualFee)}.</small>}</div>
