@@ -5,9 +5,9 @@ import {memorialPortraitSrc} from "@/lib/memorial-portrait-url";
 import {validatePortraitFile} from "@/lib/portrait-validation";
 import "./memorial-portrait-uploader.css";
 
-export function MemorialPortraitUploader({memorialId,personName,initialUrl,onSaved,disabled=false,contextKey}:{
+export function MemorialPortraitUploader({memorialId,personName,initialUrl,onSaved,disabled=false,contextKey,contextMode="AGENCY"}:{
  memorialId:string;personName:string;initialUrl?:string|null;
- onSaved?:(url:string)=>void;disabled?:boolean;contextKey?:string;
+ onSaved?:(url:string)=>void;disabled?:boolean;contextKey?:string;contextMode?:"AGENCY"|"SUPERADMIN";
 }){
  const db=useMemo(()=>createBrowserSupabaseClient(),[]);
  const [picture,setPicture]=useState(initialUrl??"");
@@ -37,7 +37,8 @@ export function MemorialPortraitUploader({memorialId,personName,initialUrl,onSav
    if(uploaded.error){setError("Caricamento non riuscito: "+uploaded.error.message);return;}
    // The RPC rechecks the actor, memorial and context. Upload success alone
    // never means that the portrait is linked to the memorial.
-   const saved=await db.rpc(contextKey?"agency_family_set_memorial_portrait":"set_memorial_portrait",{
+   const rpcName=contextKey?(contextMode==="SUPERADMIN"?"platform_context_set_memorial_portrait":"agency_family_set_memorial_portrait"):"set_memorial_portrait";
+   const saved=await db.rpc(rpcName,{
     memorial_key:memorialId,object_key:key,...(contextKey?{context_key:contextKey}:{})
    });
    if(saved.error){
