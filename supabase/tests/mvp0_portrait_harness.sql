@@ -97,3 +97,31 @@ insert into storage.objects(bucket_id,name) values
 -- The original public portrait upload policy must exist to exercise replacement.
 create policy "authorized_memorial_portrait_upload" on storage.objects
  for insert to authenticated with check (true);
+
+
+-- Platform-owner family context and event ledger, matching live schema.
+create table public.platform_operator_contexts(
+ id uuid primary key,
+ actor_id uuid references auth.users(id),
+ context_type text not null,
+ agency_id uuid references public.agencies(id),
+ memorial_id uuid references public.memorials(id),
+ closed_at timestamptz,
+ expires_at timestamptz not null
+);
+create table public.platform_operator_context_events(
+ id bigint generated always as identity primary key,
+ context_id uuid references public.platform_operator_contexts(id),
+ actor_id uuid references auth.users(id),
+ event_type text not null,
+ target_type text not null,
+ target_id uuid not null,
+ reason text,
+ before_data jsonb,
+ after_data jsonb,
+ occurred_at timestamptz default now()
+);
+insert into public.platform_operator_contexts(id,actor_id,context_type,memorial_id,expires_at)
+values ('99999999-9999-4999-8999-999999999999',
+ '33333333-3333-4333-8333-333333333333','FAMILY',
+ 'cccccccc-cccc-4ccc-8ccc-cccccccccccc',now()+interval '2 hours');
