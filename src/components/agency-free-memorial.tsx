@@ -3,6 +3,7 @@ import {useCallback,useEffect,useMemo,useState,type FormEvent} from "react";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import "./agency-free-memorial.css";
 import {AgencyDemoCheckout} from "./agency-demo-checkout";
+import {StripeCardCheckoutSandbox} from "./stripe-card-checkout-sandbox";
 
 type FreeStatus={total:number;used:number;remaining:number;not_configured?:boolean};
 export function AgencyFreeMemorialCreator({agencyId,contextKey=null,agencyName,isDemo=false}:{agencyId:string;contextKey?:string|null;agencyName:string;isDemo?:boolean}){
@@ -64,6 +65,7 @@ export function AgencyFreeMemorialCreator({agencyId,contextKey=null,agencyName,i
    <button type="submit" disabled={busy}>{busy?"Attivazione…":"Attiva memoriale gratuito e genera invito famiglia"}</button>
   </form>:
   <div className="afm-info"><strong>Le due attivazioni gratuite sono terminate.</strong><p>Puoi continuare senza abbonamento a €19,90 Standard o €22,90 Premium (sovrapprezzo Premium ancora da confermare). Il checkout Stripe non è ancora attivato, quindi non verranno creati memoriali a pagamento senza incasso.</p></div>}
+  {remaining===0&&free&&!free.not_configured&&process.env.NEXT_PUBLIC_STRIPE_SANDBOX_ENABLED==="true"&&<StripeCardCheckoutSandbox agencyId={agencyId}/>}
   {invite&&<div className="afm-output"><label>Link personale per la famiglia (72 ore)<input readOnly value={invite} onFocus={e=>e.target.select()}/></label>
    <button type="button" onClick={()=>void copy()}>Copia link</button>
    {createdId&&<small>Memoriale registrato: {createdId}</small>}</div>}
