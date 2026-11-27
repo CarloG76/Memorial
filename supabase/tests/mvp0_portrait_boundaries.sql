@@ -90,3 +90,45 @@ begin
  if not (select relrowsecurity from pg_class where oid='storage.objects'::regclass)
  then raise exception 'Storage RLS disabled';end if;
 end $$;
+
+
+-- Platform-owner delegated upload requires a live family context and audits it.
+set role authenticated;
+select set_config('request.jwt.claims','{"sub":"33333333-3333-4333-8333-333333333333"}',false);
+select public.platform_context_set_memorial_portrait(
+ 'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+ 'cccccccc-cccc-4ccc-8ccc-cccccccccccc/ffffffff-ffff-4fff-8fff-ffffffffffff.jpg',
+ '99999999-9999-4999-8999-999999999999'
+);
+reset role;
+do $$
+begin
+ if (select count(*) from public.platform_operator_context_events
+ where event_type='FAMILY_PORTRAIT_UPDATED'
+ and actor_id='33333333-3333-4333-8333-333333333333'
+ and context_id='99999999-9999-4999-8999-999999999999')<>1
+ then raise exception 'SuperAdmin delegated edit missing context audit';end if;
+end $$;
+update public.platform_operator_contexts set closed_at=now()
+where id='99999999-9999-4999-8999-999999999999';
+set role authenticated;
+select set_config('request.jwt.claims','{"sub":"33333333-3333-4333-8333-333333333333"}',false);
+do $$
+declare denied boolean:=false;
+begin
+ begin
+ perform public.platform_context_set_memorial_portrait(
+ 'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+ 'cccccccc-cccc-4ccc-8ccc-cccccccccccc/ffffffff-ffff-4fff-8fff-ffffffffffff.jpg',
+ '99999999-9999-4999-8999-999999999999'
+ );
+ exception when insufficient_privilege then denied:=true;end;
+ if not denied then raise exception 'Closed SuperAdmin context allowed portrait edit';end if;
+end $$;
+reset role;
+do $$
+begin
+ if has_function_privilege('anon',
+ 'public.platform_context_set_memorial_portrait(uuid,text,uuid)','EXECUTE')
+ then raise exception 'Anonymous SuperAdmin context RPC';end if;
+end $$;
