@@ -38,3 +38,9 @@
 - Se la RPC nega il salvataggio, il client tenta la rimozione dell'oggetto appena creato; il cleanup è **best-effort** e la UI segnala l'eventuale fallimento.
 - Un'interruzione di rete non genera automaticamente un nuovo caricamento né elimina un file che potrebbe essere già stato associato; la UI chiede di ricaricare e verificare.
 - La disponibilità pubblica del bucket `memorial-portraits` rimane un tema aperto di privacy media: non dichiarare il ritratto privato senza una futura migrazione di delivery autorizzato.
+
+## SuperAdmin «Apri come Famiglia»: audit fotografico
+- Il caricamento nel contesto FAMILY SuperAdmin usa `platform_context_set_memorial_portrait`, distinto dalla RPC diretta `set_memorial_portrait`.
+- La nuova RPC controlla contesto familiare assegnato all'attore, memoriale coincidente, scadenza e revoca; registra `FAMILY_PORTRAIT_UPDATED` in `platform_operator_context_events` nella stessa transazione dell'associazione Storage.
+- Migrazione additiva `20261127155000_mvp0_superadmin_portrait_context.sql`, coperta da test SQL di contesto attivo/revocato.
+- I test anonimi Playwright sono sempre attivi. Il test di redirect della preview, che chiama Supabase Auth, è eseguito soltanto contro un ambiente E2E esplicitamente configurato (`MEMORIAL_E2E_BASE_URL`), evitando falsi errori dovuti all'assenza di configurazione nel runner CI. Questo non costituisce un PASS end-to-end autenticato.
