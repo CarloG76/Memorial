@@ -175,7 +175,7 @@ export function SuperadminOpenAsWorkspace({initial,section}:{initial:OperatorSna
    {(tab==="panoramica"||tab==="profilo-e-storia")&&<FamilyMemorialPublisher memorialId={snapshot.memorial.id} personName={snapshot.memorial.name} contextKey={snapshot.context_id} delegatedBy="SUPERADMIN"/>}
    {(tab==="panoramica"||tab==="profilo-e-storia")&&<Panel title="Profilo e storia">
     <Link href={"/memoriale/anteprima/"+snapshot.memorial.id+"?contesto="+encodeURIComponent(snapshot.context_id)} target="_blank" rel="noopener noreferrer" className="oa-preview-link">Anteprima privata di {snapshot.memorial.name} ↗</Link>
-    <MemorialPortraitUploader memorialId={snapshot.memorial.id} personName={snapshot.memorial.name} initialUrl={portraitUrl} onSaved={setPortraitUrl}/>
+    <MemorialPortraitUploader memorialId={snapshot.memorial.id} personName={snapshot.memorial.name} initialUrl={portraitUrl} onSaved={setPortraitUrl} contextKey={snapshot.context_id} contextMode="SUPERADMIN"/>
     <form className="oa-form" onSubmit={saveFamily}><label>Nome della persona<input value={personName} onChange={e=>setPersonName(e.target.value)} required minLength={3} maxLength={180}/></label>
       <label>Dedica<textarea value={dedication} onChange={e=>setDedication(e.target.value)} rows={2} maxLength={500}/></label>
       <label>Biografia — introduzione breve<textarea value={bio} onChange={e=>setBio(e.target.value)} rows={4} maxLength={8000}/></label>
