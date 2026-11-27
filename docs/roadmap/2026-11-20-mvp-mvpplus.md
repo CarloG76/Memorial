@@ -94,3 +94,15 @@ Etichette user-friendly centralizzate per memoriali e contributi. DB invariato. 
 - [ ] Formalizzare dominio canonico definitivo e mantenere un redirect permanente dal dominio impresso ai futuri indirizzi, per garantire validità fisica dei QR nel tempo.
 
 **Hardening QR 25/11:** identificativo `qr_code` immutabile tramite trigger `trg_memorial_qr_immutable`, oltre all'indice univoco. Live HTTP verificato: QR Gino → pagina di attesa 200; QR demo Giovanni → demo pubblica 200; codice inesistente → 404. Nessuna scansione fisica PNG/SVG ancora eseguita.
+
+## Verifica e avanzamento — 27/11/2026, MVP 1A catalogo
+- [x] Confermato che la pipeline CI del fix PR #8 era verde, merge in main `132e706`.
+- [x] Riconciliato il catalogo commerciale di novembre in `src/lib/business/commercial-catalog.ts`: PAYG (€19,90/€22,90), Pro mensile (€39,90; €13,90/€16,90), Pro annuale (€379; €11,90/€14,90), prime due attivazioni gratuite.
+- [x] Calcoli preventivo in centesimi, sola quotazione; nessuna IVA presunta, nessun diritto o incasso assegnato dal client.
+- [x] Rimossa l'API di preventivo basata sui prezzi e crediti Pro superati di ottobre. Schermata commerciale DEMO collegata al catalogo condiviso.
+- [ ] **MVP 1B:** modello ordini e checkout Stripe in modalità test, webhook firmati, idempotenza, riconciliazione importi ed entitlement; branch separato `feature/stripe-payments`.
+- [ ] **MVP 1C:** subscription Pro mensile/annuale, cambi piano, fatturazione e notifiche; confermare regole IVA / fatture prima di live.
+- [ ] **MVP 1D:** completare inviti famiglia e notifiche errori/rinvii.
+- [ ] Check automatici CI e build del branch MVP1A: da registrare dopo esecuzione. La UAT completa di Testiny rimane successiva al completamento MVP, come richiesto.
+- [ ] Riconciliare tariffe di conservazione/rinnovi/riattivazione prima di usarle nel checkout: il vecchio preventivo di ottobre non è una fonte valida per il listino di novembre.
+- [ ] **Dominio QR:** attualmente `memorial-ai-visions.vercel.app`; stabilire dominio permanente e strategia redirect prima di stampa commerciale.
