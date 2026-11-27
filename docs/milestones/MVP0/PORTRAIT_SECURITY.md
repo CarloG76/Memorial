@@ -30,3 +30,11 @@
 - Verifica della scadenza/revoca su editor, media e pubblicazione, non soltanto ritratto.
 - Ricontrollo bucket media e presenza di eventuali file orfani.
 - UAT generale rinviata a valle degli sviluppi Famiglia, Inviti/Notifiche, Visitatore, Conservazione e Stripe, secondo la priorità utente.
+
+## Robustezza upload applicativo
+- La validazione formato/dimensione è centralizzata in `src/lib/portrait-validation.ts`, con test Vitest per limiti e formati.
+- Un errore di validazione azzera la selezione precedente, impedendo il caricamento accidentale di una fotografia diversa.
+- L'upload è trattato come due fasi distinte: Storage → RPC di associazione e audit.
+- Se la RPC nega il salvataggio, il client tenta la rimozione dell'oggetto appena creato; il cleanup è **best-effort** e la UI segnala l'eventuale fallimento.
+- Un'interruzione di rete non genera automaticamente un nuovo caricamento né elimina un file che potrebbe essere già stato associato; la UI chiede di ricaricare e verificare.
+- La disponibilità pubblica del bucket `memorial-portraits` rimane un tema aperto di privacy media: non dichiarare il ritratto privato senza una futura migrazione di delivery autorizzato.
