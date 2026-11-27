@@ -92,3 +92,9 @@ jobs:
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/M1_rpc_privilege_assertions.sql
       - name: Test agency onboarding against role and identity restrictions
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/M1_onboarding.sql
+      - name: Bootstrap disposable service role for Stripe schema
+        run: psql -X -v ON_ERROR_STOP=1 -c "CREATE ROLE service_role NOLOGIN"
+      - name: Apply Stripe Sandbox candidate migration in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/20261127111000_stripe_sandbox_orders.sql
+      - name: Check Stripe Sandbox RLS and RPC grants
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/stripe_sandbox_security.sql
