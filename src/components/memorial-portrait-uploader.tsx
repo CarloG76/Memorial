@@ -2,6 +2,7 @@
 import {useEffect,useMemo,useState} from "react";
 import {createBrowserSupabaseClient} from "@/lib/supabase/browser";
 import {memorialPortraitSrc} from "@/lib/memorial-portrait-url";
+import {validatePortraitFile} from "@/lib/portrait-validation";
 import "./memorial-portrait-uploader.css";
 
 export function MemorialPortraitUploader({memorialId,personName,initialUrl,onSaved,disabled=false,contextKey}:{
@@ -25,22 +26,47 @@ export function MemorialPortraitUploader({memorialId,personName,initialUrl,onSav
  },[file]);
  async function upload(){
   if(!file||busy||disabled)return;
+  const validation=validatePortraitFile(file);
+  if(!validation.ok){setFile(null);setError(validation.message);return;}
   setError("");setMessage("");setBusy(true);
-  const ext=file.type==="image/jpeg"?"jpg":file.type==="image/png"?"png":"webp";
-  const key=memorialId+"/"+crypto.randomUUID()+"."+ext;
-  const stored=await db.storage.from("memorial-portraits").upload(key,file,{upsert:false,contentType:file.type,cacheControl:"3600"});
-  if(stored.error){setError("Caricamento non riuscito: "+stored.error.message);setBusy(false);return;}
-  const saved=await db.rpc(contextKey?"agency_family_set_memorial_portrait":"set_memorial_portrait",{memorial_key:memorialId,object_key:key,...(contextKey?{context_key:contextKey}:{})});
-  if(saved.error){setError("Foto caricata, ma salvataggio del ritratto non riuscito: "+saved.error.message);setBusy(false);return;}
-  const path=String(saved.data);
-  setPicture(path);setFile(null);setMessage("Foto salvata su Supabase e collegata a "+personName+".");onSaved?.(path);
-  setBusy(false);
+  const key=memorialId+"/"+crypto.randomUUID()+"."+validation.extension;
+  try{
+   const uploaded=await db.storage.from("memorial-portraits").upload(key,file,{
+    upsert:false,contentType:file.type,cacheControl:"3600"
+   });
+   if(uploaded.error){setError("Caricamento non riuscito: "+uploaded.error.message);return;}
+   // The RPC rechecks the actor, memorial and context. Upload success alone
+   // never means that the portrait is linked to the memorial.
+   const saved=await db.rpc(contextKey?"agency_family_set_memorial_portrait":"set_memorial_portrait",{
+    memorial_key:memorialId,object_key:key,...(contextKey?{context_key:contextKey}:{})
+   });
+   if(saved.error){
+    const cleanup=await db.storage.from("memorial-portraits").remove([key]);
+    setError("Foto caricata ma non collegata: "+saved.error.message+
+     (cleanup.error?" Il file non è stato eliminato automaticamente; segnala il problema all'assistenza.":" Il caricamento non valido è stato rimosso."));
+    return;
+   }
+   if(typeof saved.data!=="string"||!saved.data.startsWith("/storage/v1/object/public/memorial-portraits/")){
+    setError("Il server non ha confermato il percorso del ritratto. Aggiorna la pagina per verificarne il salvataggio prima di riprovare.");
+    return;
+   }
+   setPicture(saved.data);
+   setFile(null);
+   setMessage("Foto salvata su Supabase e collegata a "+personName+".");
+   onSaved?.(saved.data);
+  }catch{
+   // Network interruption might occur after the server committed a change;
+   // never delete that file blindly or trigger an automatic retry.
+   setError("Connessione interrotta. Aggiorna la pagina e verifica se il ritratto è stato salvato prima di riprovare.");
+  }finally{
+   setBusy(false);
+  }
  }
  function choose(f:File|null){
   setError("");setMessage("");
   if(!f){setFile(null);return;}
-  if(!["image/jpeg","image/png","image/webp"].includes(f.type)){setError("Sono accettati solo JPG, PNG e WebP.");return;}
-  if(f.size<1||f.size>5*1024*1024){setError("Dimensione massima: 5 MB.");return;}
+  const result=validatePortraitFile(f);
+  if(!result.ok){setFile(null);setError(result.message);return;}
   setFile(f);
  }
  return <section className="mpu-section">
