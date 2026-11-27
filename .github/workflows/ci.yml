@@ -132,5 +132,7 @@ jobs:
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/mvp0_portrait_harness.sql
       - name: Apply proposed MVP0 portrait delegation migration
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/20261127154500_mvp0_agency_portrait_delegation.sql
+      - name: Apply proposed SuperAdmin portrait family-context audit RPC
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/20261127155000_mvp0_superadmin_portrait_context.sql
       - name: Assert tenant boundaries, revocation and delegated audit
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/mvp0_portrait_boundaries.sql
